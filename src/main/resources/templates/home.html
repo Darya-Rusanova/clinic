@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns = "http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<header class="header" id="header">
+    <div class="container">
+        <a href="#" class="logo">Профи <span>Care</span></a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Главная</a></li>
+                <li><a href="#services" class="nav-link">Наши услуги</a></li>
+                <li><a href="#" class="nav-link">Наши врачи</a></li>
+                <li><a href="#about" class="nav-link">О нас</a></li>
+                <li><a href="#booking" class="btn-book">Записаться</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h6 class="hero-suptitle">г. Иркутск</h6>
+            <h1 class="hero-title">Профессиональные косметологические услуги</h1>
+            <h6 class="hero-suptitle">Широкий спектр услуг от опытных специалистов в области косметологии, физиотерапии и маникюра.</h6>
+            <a href="#booking" class="btn-hero">Записаться на услугу</a>
+        </div>
+
+        <div class="advantages-grid">
+            <div class="advantage-card">
+                <h3>Комфорт и забота</h3>
+                <p>Индивидуальный подход и уютная атмосфера на каждой процедуре.</p>
+            </div>
+            <div class="advantage-card">
+                <h3>Современные методики</h3>
+                <p>Только проверенные аппараты и препараты премиум-класса.</p>
+            </div>
+            <div class="advantage-card">
+                <h3>Результат с первого раза</h3>
+                <p>Видимые улучшения после первой процедуры.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="gallery-container">
+        <h2 class="services-title">Наши услуги</h2>
+        <div>
+            <button class="gallery-btn prev" id="prevBtn">❮</button>
+
+            <div class="gallery-wrapper" id="galleryWrapper">
+                <div class="gallery-track" id="galleryTrack">
+                    <div th:each="service : ${services}" class="service-card">
+                        <div class="service-image">
+                            <img th:src="${service.path != null ? service.path : '/images/bg.jpg'}"
+                                 th:alt="${service.name}">
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title" th:text="${service.name}"></h3>
+                            <div class="service-duration">
+                                <span th:text="'Продолжительность: ' + ${service.duration} + ' мин'"></span>
+                            </div>
+                            <p class="service-description" th:text="${service.description}"></p>
+                            <div class="service-footer">
+                                <div class="service-price" th:text="${service.price} + ' ₽'"></div>
+                                <a class="btn-book">Записаться</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="gallery-btn next" id="nextBtn">❯</button>
+        </div>
+    </section>
+    <section id="about" style="height: 100vh; ">
+        <h1>О нас</h1>
+    </section>
+    <section id="booking" style="height: 100vh; ">
+        <h1>Запись</h1>
+    </section>
+</main>
+<script src="/js/gallery.js"></script>
+<script>
+    document.querySelectorAll('.nav-link, .btn-book').forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    });
+
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+</script>
+</body>
+</html>
