@@ -309,3 +309,227 @@ body {
 .next {
     right: 0;
 }
+
+/* Секция врачей */
+.doctors-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 1rem;
+    margin-top:80px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: #D3836B;
+}
+
+/* Сетка */
+.doctors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    align-items: start;
+    overflow: visible;
+}
+
+/* Карточка врача */
+.doctor-card {
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+    height: 480px;
+}
+
+.doctor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(211, 131, 107, 0.1);
+}
+
+/* Фото врача (квадратное со скруглением) */
+.doctor-avatar {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1.2rem;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.doctor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Информация */
+.doctor-info {
+    text-align: center;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+
+.doctor-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 0.3rem;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* Категории */
+.doctor-categories-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #A08B7E;
+    margin-top: 0.8rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.doctor-categories-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.category-badge {
+    background: #FFF2EC;
+    color: #D3836B;
+    padding: 0.25rem 0.9rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+/* Опыт */
+.doctor-experience {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: #A08B7E;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #F0E0D6;
+}
+
+/* Кнопка подробнее */
+.doctor-details-btn {
+    width: 100%;
+    background: #FFF2EC;
+    border: none;
+    padding: 0.7rem;
+    border-radius: 40px;
+    color: #D3836B;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 0.8rem;
+    font-size: 0.85rem;
+}
+
+.doctor-details-btn:hover {
+    background: #D3836B;
+    color: white;
+}
+
+/* Разворачивающийся блок (накладывается поверх) */
+.doctor-details {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 20px;
+    padding: 1rem 1.5rem;
+    margin-top: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    border: 1px solid #F0E0D6;
+}
+
+.doctor-details.open {
+    display: block;
+}
+
+.doctor-bio h4, .doctor-license h4 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 0.5rem;
+}
+
+.doctor-bio p {
+    font-size: 0.8rem;
+    color: #7A5A4A;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+/* Лицензия */
+.license-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #F9F5F0;
+    padding: 0.6rem 0.8rem;
+    border-radius: 16px;
+    margin-bottom: 0.5rem;
+}
+
+.btn-download {
+    margin-left: auto;
+    background: #D3836B;
+    color: white;
+    text-decoration: none;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    transition: 0.2s;
+}
+
+.btn-download:hover {
+    background: #bc6a52;
+}
+
+.license-note {
+    font-size: 0.65rem;
+    color: #A08B7E;
+}
+
+.license-missing {
+    font-size: 0.75rem;
+    color: #CCBBAE;
+    text-align: center;
+    padding: 0.8rem;
+}

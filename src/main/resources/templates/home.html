@@ -80,11 +80,63 @@
             <button class="gallery-btn next" id="nextBtn">❯</button>
         </div>
     </section>
+    <section id="doctors" class="doctors-section">
+        <h2 class="section-title">Наши специалисты</h2>
+
+        <div class="doctors-grid">
+            <div th:each="doctor : ${doctors}" class="doctor-card">
+                <div class="doctor-avatar">
+                    <img th:src="${doctor.imagePath != null ? doctor.imagePath : '/images/default-doctor.jpg'}"
+                         th:alt="${doctor.user.name}">
+                </div>
+
+                <div class="doctor-info">
+                    <h3 class="doctor-name" th:text="${doctor.user.name}">Имя врача</h3>
+                    <p class="doctor-categories-label">Направления:</p>
+                    <div class="doctor-categories-list">
+                        <span th:each="cat : ${doctor.categories}"
+                              th:text="${cat}"
+                              class="category-badge"></span>
+                    </div>
+                    <p class="doctor-experience">
+                        Опыт: <span th:text="${doctor.experienceYears} + ' лет'"></span>
+                    </p>
+                </div>
+
+                <!-- Кнопка "Подробнее" -->
+                <button class="doctor-details-btn" th:data-id="${doctor.userId}">
+                    Подробнее ▼
+                </button>
+
+                <!-- Разворачивающийся блок (скрыт по умолчанию) -->
+                <div class="doctor-details" th:id="'details-' + ${doctor.userId}" style="display: none;">
+                    <div class="doctor-bio">
+                        <h4>О специалисте</h4>
+                        <p th:text="${doctor.bio}">Биография врача...</p>
+                    </div>
+
+                    <div th:if="${doctor.licensePath != null}" class="doctor-license">
+                        <h4>Лицензия и сертификаты</h4>
+                        <div class="license-info">
+                            <span>📜</span>
+                            <span>license.pdf</span>
+                            <a th:href="${doctor.licensePath}" class="btn-download" download>
+                                Скачать ▼
+                            </a>
+                        </div>
+                        <p class="license-note">
+                            Нажмите "Скачать", чтобы просмотреть документ об образовании
+                        </p>
+                    </div>
+                    <div th:unless="${doctor.licensePath != null}" class="doctor-license">
+                        <p class="license-missing">Документы временно недоступны</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="about" style="height: 100vh; ">
         <h1>О нас</h1>
-    </section>
-    <section id="booking" style="height: 100vh; ">
-        <h1>Запись</h1>
     </section>
 </main>
 <script src="/js/gallery.js"></script>
@@ -109,6 +161,32 @@
         } else {
             header.classList.remove('scrolled');
         }
+    });
+</script>
+
+<script>
+    document.querySelectorAll('.doctor-details-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const doctorId = this.getAttribute('data-id');
+            const detailsDiv = document.getElementById('details-' + doctorId);
+            const isVisible = detailsDiv.style.display === 'block';
+
+            // Закрываем другие
+            document.querySelectorAll('.doctor-details').forEach(div => {
+                if (div.id !== 'details-' + doctorId) {
+                    div.style.display = 'none';
+                }
+            });
+
+            // Плавно открываем/закрываем
+            if (isVisible) {
+                detailsDiv.style.display = 'none';
+                this.textContent = 'Подробнее ▼';
+            } else {
+                detailsDiv.style.display = 'block';
+                this.textContent = 'Свернуть ▲';
+            }
+        });
     });
 </script>
 </body>

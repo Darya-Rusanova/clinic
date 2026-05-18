@@ -1,7 +1,12 @@
 package com.example.clinic.controller;
 
+import com.example.clinic.model.Doctor;
 import com.example.clinic.model.Service;
+import com.example.clinic.repository.DoctorRepository;
 import com.example.clinic.repository.ServiceRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +19,16 @@ import java.util.Optional;
 public class HomeController {
     @Autowired
     ServiceRepository serviceRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
+
     @GetMapping("/")
     public String home(Model model){
         List<Service> services = serviceRepository.findAll();
+        List<Doctor> doctors = doctorRepository.findAll();
+
         model.addAttribute("services",services);
+        model.addAttribute("doctors",doctors);
         return "home";
     }
 }

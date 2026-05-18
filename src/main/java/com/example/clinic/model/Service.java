@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,4 +26,6 @@ public class Service {
     private ServiceCategory category;
     @Column(name = "image_path")
     private String path;
+    @ManyToMany(mappedBy = "services", fetch = FetchType.LAZY)
+    List<Doctor> doctors = new ArrayList<>();
 }
