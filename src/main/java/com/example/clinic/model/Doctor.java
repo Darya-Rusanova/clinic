@@ -45,4 +45,11 @@ public class Doctor {
                 .distinct()
                 .toList();
     }
+    public Integer getMinPrice() {
+        if (services == null || services.isEmpty()) {
+            return 0;
+        }
+        services.sort((s1, s2) -> s1.getPrice() - s2.getPrice());
+        return services.get(0).getPrice();
+    }
 }

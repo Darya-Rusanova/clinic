@@ -314,7 +314,8 @@ body {
 .doctors-section {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding-top:50px;
+
 }
 
 .section-title {
@@ -363,7 +364,7 @@ body {
     flex-direction: column;
     position: relative;
     z-index: 1;
-    height: 480px;
+    height: 500px;
 }
 
 .doctor-card:hover {
@@ -435,11 +436,25 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.3rem;
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: #A08B7E;
     margin-top: 1rem;
     padding-top: 0.8rem;
     border-top: 1px solid #F0E0D6;
+}
+.doctor-price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    color: #A08B7E;
+    padding-top: 0.3rem;
+}
+.doctor-card .btn-book{
+    border:none;
+    width:60%;
+    margin:0 auto;
 }
 
 /* Кнопка подробнее */
@@ -532,4 +547,60 @@ body {
     color: #CCBBAE;
     text-align: center;
     padding: 0.8rem;
+}
+
+
+/* О нас */
+.about-section {
+    padding: 5rem 2rem;
+    background: transparent;
+}
+
+.about-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.about-content {
+    text-align: center;
+}
+
+.about-text {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: #4C3A33;
+    margin-bottom: 2rem;
+}
+
+.about-text strong {
+    color: #D3836B;
+    font-weight: 600;
+}
+
+.about-features {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+}
+
+.about-feature {
+    text-align: center;
+    min-width: 120px;
+}
+
+.feature-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #D3836B;
+    font-family: 'Cormorant Garamond', serif;
+    margin-bottom: 0.5rem;
+}
+
+.feature-text {
+    font-size: 0.85rem;
+    color: #7A5A4A;
+    letter-spacing: 0.5px;
 }

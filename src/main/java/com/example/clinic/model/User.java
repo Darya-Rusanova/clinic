@@ -20,4 +20,15 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private boolean gender;
+
+    public String getFirstName(){
+        return name.split(" ")[1];
+    }
+    public String getLastName(){
+        return name.split(" ")[0];
+    }
+    public String getPatronymic(){
+        return name.split(" ").length == 3 ? name.split(" ")[2] : "";
+    }
 }

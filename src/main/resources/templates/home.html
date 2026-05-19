@@ -17,7 +17,7 @@
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link">Главная</a></li>
                 <li><a href="#services" class="nav-link">Наши услуги</a></li>
-                <li><a href="#" class="nav-link">Наши врачи</a></li>
+                <li><a href="#doctors" class="nav-link">Наши врачи</a></li>
                 <li><a href="#about" class="nav-link">О нас</a></li>
                 <li><a href="#booking" class="btn-book">Записаться</a></li>
             </ul>
@@ -99,16 +99,21 @@
                               class="category-badge"></span>
                     </div>
                     <p class="doctor-experience">
-                        Опыт: <span th:text="${doctor.experienceYears} + ' лет'"></span>
+                        Стаж: <span th:text="${doctor.experienceYears} + ' лет'"></span>
+                    </p>
+                    <p class="doctor-price">
+                        Цена услуг от: <span th:text="${doctor.minPrice} + ' ₽'"></span>
                     </p>
                 </div>
 
-                <!-- Кнопка "Подробнее" -->
+                <button class="btn-book">
+                    Записаться на приём
+                </button>
+
                 <button class="doctor-details-btn" th:data-id="${doctor.userId}">
                     Подробнее ▼
                 </button>
 
-                <!-- Разворачивающийся блок (скрыт по умолчанию) -->
                 <div class="doctor-details" th:id="'details-' + ${doctor.userId}" style="display: none;">
                     <div class="doctor-bio">
                         <h4>О специалисте</h4>
@@ -118,8 +123,6 @@
                     <div th:if="${doctor.licensePath != null}" class="doctor-license">
                         <h4>Лицензия и сертификаты</h4>
                         <div class="license-info">
-                            <span>📜</span>
-                            <span>license.pdf</span>
                             <a th:href="${doctor.licensePath}" class="btn-download" download>
                                 Скачать ▼
                             </a>
@@ -135,8 +138,35 @@
             </div>
         </div>
     </section>
-    <section id="about" style="height: 100vh; ">
-        <h1>О нас</h1>
+    <section id="about" class="about-section">
+        <div class="about-container">
+            <h2 class="section-title">О нас</h2>
+
+            <div class="about-content">
+                <p class="about-text"><strong>Профи Care</strong> — это современный центр косметологии и эстетической медицины в Иркутске. Мы объединяем опытных специалистов, передовые технологии и индивидуальный подход к каждому пациенту.</p>
+
+                <p class="about-text">Наша миссия — помогать людям чувствовать себя уверенно, сохраняя молодость и красоту без вреда для здоровья. Мы используем только сертифицированные препараты и проверенные методики.</p>
+
+                <div class="about-features">
+                    <div class="about-feature">
+                        <span class="feature-number">7+</span>
+                        <span class="feature-text">лет на рынке</span>
+                    </div>
+                    <div class="about-feature">
+                        <span class="feature-number">3000+</span>
+                        <span class="feature-text">довольных клиентов</span>
+                    </div>
+                    <div class="about-feature">
+                        <span class="feature-number">15+</span>
+                        <span class="feature-text">специалистов</span>
+                    </div>
+                    <div class="about-feature">
+                        <span class="feature-number">100%</span>
+                        <span class="feature-text">безопасность</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </main>
 <script src="/js/gallery.js"></script>
