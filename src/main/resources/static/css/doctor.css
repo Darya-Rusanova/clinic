@@ -1,0 +1,985 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-image: url("/images/bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* ХЕДЕР */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem 2rem;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.header.scrolled {
+    background-color: #fff;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: 500;
+    font-family: 'Cormorant Garamond', serif;
+    text-decoration: none;
+    color: #3E2C26;
+}
+
+.logo span {
+    color: #D3836B;
+    background: #FFF2EC;
+    padding: 0.1rem 0.4rem;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #4C3A33;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+.nav-menu a:hover {
+    color: #D3836B;
+}
+
+/* Меню пользователя */
+.user-menu {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4C3A33;
+    font-weight: 500;
+}
+
+.user-name i:first-child {
+    font-size: 1.2rem;
+    color: #D3836B;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    display: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.user-dropdown.show {
+    display: block;
+}
+
+.user-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.2rem;
+    text-decoration: none;
+    color: #4C3A33;
+    transition: background 0.2s;
+}
+
+.user-dropdown a:hover {
+    background: #FFF2EC;
+    color: #D3836B;
+}
+
+/* Дашборд */
+.dashboard {
+    min-height: 100vh;
+    padding: 6rem 2rem 4rem;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* Левая колонка - карточка профиля */
+.profile-sidebar {
+    flex: 0 0 320px;
+    position: sticky;
+    top: 100px;
+}
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.profile-avatar i {
+    font-size: 5rem;
+    color: #D3836B;
+    margin-bottom: 1rem;
+}
+
+.profile-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    font-family: 'Cormorant Garamond', serif;
+    margin-bottom: 0.3rem;
+}
+
+.profile-specialization {
+    font-size: 0.85rem;
+    color: #D3836B;
+    margin-bottom: 1.5rem;
+}
+
+.profile-details {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.profile-detail {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #F0E0D6;
+    font-size: 0.9rem;
+    color: #4C3A33;
+}
+
+.profile-detail i {
+    width: 24px;
+    color: #D3836B;
+}
+
+.profile-edit-btn {
+    width: 100%;
+    background: #FFF2EC;
+    border: none;
+    padding: 0.7rem;
+    border-radius: 40px;
+    color: #D3836B;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.profile-edit-btn:hover {
+    background: #D3836B;
+    color: white;
+}
+
+/* Правая колонка */
+.main-content {
+    flex: 1;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: #D3836B;
+}
+
+/* Услуги - сетка */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.service-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: 0.2s;
+}
+
+.service-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.service-icon i {
+    font-size: 1.8rem;
+    color: #D3836B;
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4C2A1F;
+}
+
+.service-info p {
+    font-size: 0.8rem;
+    color: #7A5A4A;
+}
+
+.service-price {
+    font-weight: 600;
+    color: #D3836B;
+}
+
+/* Карточки расписания */
+.working-hours-card, .breaks-card, .appointments-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.working-hours-card h3, .breaks-card h3, .appointments-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.working-hours-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.day-schedule {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.day {
+    font-weight: 500;
+    color: #4C2A1F;
+    width: 120px;
+}
+
+.hours {
+    flex: 1;
+    color: #7A5A4A;
+}
+
+.edit-day-btn, .edit-break-btn {
+    background: transparent;
+    border: none;
+    color: #A08B7E;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.edit-day-btn:hover, .edit-break-btn:hover {
+    background: #FFF2EC;
+    color: #D3836B;
+}
+
+.break-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.add-break-btn {
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px dashed #DCAE96;
+    padding: 0.5rem;
+    border-radius: 40px;
+    color: #D3836B;
+    cursor: pointer;
+    width: 100%;
+    transition: 0.2s;
+}
+
+.add-break-btn:hover {
+    background: #FFF2EC;
+    border-color: #D3836B;
+}
+
+.appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.appointment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #F9F5F0;
+    border-radius: 20px;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.appointment-time {
+    font-weight: 600;
+    color: #D3836B;
+    min-width: 120px;
+}
+
+.appointment-client {
+    flex: 1;
+}
+
+.appointment-client strong {
+    display: block;
+    color: #4C2A1F;
+}
+
+.service-name {
+    font-size: 0.8rem;
+    color: #A08B7E;
+}
+
+.appointment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.2s;
+}
+
+.confirm-btn {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
+
+.confirm-btn:hover {
+    background: #4CAF50;
+    color: white;
+}
+
+.cancel-btn {
+    background: #FFEBEE;
+    color: #F44336;
+}
+
+.cancel-btn:hover {
+    background: #F44336;
+    color: white;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 28px;
+    max-width: 700px;
+    width: 90%;
+    padding: 2rem;
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+}
+
+.close-modal {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #A08B7E;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #D3836B;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #A08B7E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.8rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #D3836B;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #F0E0D6;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #F0E0D6;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: #A08B7E;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cancel:hover {
+    border-color: #D3836B;
+    color: #D3836B;
+}
+
+.btn-save {
+    background: #D3836B;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-save:hover {
+    background: #bc6a52;
+    transform: translateY(-2px);
+}
+
+/* Категории услуг */
+.category-group {
+    margin-bottom: 2rem;
+}
+
+.category-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #D3836B;
+    display: inline-block;
+}
+
+.category-title i {
+    color: #D3836B;
+    margin-right: 0.5rem;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 0.8rem;
+}
+
+.service-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.service-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.service-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 0.2rem;
+}
+
+.service-info p {
+    font-size: 0.75rem;
+    color: #7A5A4A;
+}
+
+.service-price {
+    font-weight: 600;
+    color: #D3836B;
+    font-size: 1rem;
+}
+/* Расписание - слоты */
+.date-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.date-nav-btn {
+    background: white;
+    border: 1px solid #F0E0D6;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    color: #D3836B;
+    transition: 0.2s;
+}
+
+.date-nav-btn:hover {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
+
+.current-date {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #4C2A1F;
+    min-width: 200px;
+    text-align: center;
+}
+
+.slots-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.slot-header {
+    display: grid;
+    grid-template-columns: 100px 100px 1fr 100px;
+    background: #F9F5F0;
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.slot-row {
+    display: grid;
+    grid-template-columns: 100px 100px 1fr 100px;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.slot-row:hover {
+    background: #FFF2EC;
+}
+
+.slot-time {
+    font-weight: 500;
+    color: #4C3A33;
+}
+
+.slot-status {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    width: fit-content;
+}
+
+.slot-status.available {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
+
+.slot-status.booked {
+    background: #FFEBEE;
+    color: #F44336;
+}
+
+.slot-status.break {
+    background: #FFF3E0;
+    color: #FF9800;
+}
+
+.slot-client {
+    font-size: 0.85rem;
+    color: #7A5A4A;
+    display: flex;
+    flex-direction: column;
+}
+
+.slot-client .client-name {
+    font-weight: 600;
+    color: #4C2A1F;
+}
+
+.slot-client .service-name {
+    font-size: 0.7rem;
+    color: #A08B7E;
+}
+
+.slot-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.edit-slot-btn, .delete-slot-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.3rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.edit-slot-btn {
+    color: #D3836B;
+}
+
+.edit-slot-btn:hover {
+    background: #D3836B;
+    color: white;
+}
+
+.delete-slot-btn {
+    color: #F44336;
+}
+
+.delete-slot-btn:hover {
+    background: #F44336;
+    color: white;
+}
+
+.add-break-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px dashed #DCAE96;
+    padding: 0.8rem;
+    border-radius: 40px;
+    color: #D3836B;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.add-break-btn:hover {
+    background: #FFF2EC;
+    border-color: #D3836B;
+}
+
+/* Модальные окна */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 28px;
+    max-width: 700px;
+    width: 90%;
+    padding: 2rem;
+    position: relative;
+}
+
+.modal-small {
+    max-width: 450px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+}
+
+.close-modal {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #A08B7E;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #D3836B;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #A08B7E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.8rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #D3836B;
+}
+
+.slot-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #F0E0D6;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #F0E0D6;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: #A08B7E;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cancel:hover {
+    border-color: #D3836B;
+    color: #D3836B;
+}
+
+.btn-save {
+    background: #D3836B;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-save:hover {
+    background: #bc6a52;
+    transform: translateY(-2px);
+}
+.schedule-week {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.day-schedule-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.day-header {
+    background: #F9F5F0;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #F0E0D6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.day-name {
+    font-weight: 600;
+    color: #4C2A1F;
+}
+
+.day-date {
+    font-size: 0.85rem;
+    color: #D3836B;
+}
+
+.slots-container {
+    padding: 0.5rem 0;
+}
+
+.empty-slots {
+    text-align: center;
+    padding: 1rem;
+    color: #A08B7E;
+    font-size: 0.85rem;
+}

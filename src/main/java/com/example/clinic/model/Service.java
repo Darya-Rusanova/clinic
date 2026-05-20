@@ -26,9 +26,6 @@ public class Service {
     private ServiceCategory category;
     @Column(name = "image_path")
     private String path;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "doctorservice",
-            joinColumns = @JoinColumn(name = "service_id"),
-            inverseJoinColumns = @JoinColumn(name = "doctor_id"))
-    List<Service> doctors = new ArrayList<>();
+    @ManyToMany(mappedBy = "services", fetch = FetchType.LAZY)
+    private List<Doctor> doctors = new ArrayList<>();
 }

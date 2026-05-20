@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ServiceRepository extends JpaRepository<Service, Integer> {
+    List<Service> findAllByCategory_Name(String name);
 }
