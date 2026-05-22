@@ -983,3 +983,275 @@ body {
     color: #A08B7E;
     font-size: 0.85rem;
 }
+
+.current-week {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #4C2A1F;
+    min-width: 220px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.5rem 1rem;
+    border-radius: 40px;
+}
+
+.date-nav-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: white;
+    border: 1px solid #F0E0D6;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    color: #D3836B;
+    transition: 0.2s;
+}
+
+.date-nav-btn:hover {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
+
+.date-selector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+#clientsSection {
+    padding: 0.5rem;
+}
+
+.status-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #F0E0D6;
+    padding-bottom: 0.5rem;
+}
+
+.status-tab {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #A08B7E;
+    transition: 0.2s;
+}
+
+.status-tab:hover {
+    color: #D3836B;
+}
+
+.status-tab.active {
+    background: #D3836B;
+    color: white;
+}
+
+.clients-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.client-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.client-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    background: #F9F5F0;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.client-avatar i {
+    font-size: 2.5rem;
+    color: #D3836B;
+}
+
+.client-info {
+    flex: 1;
+}
+
+.client-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 0.2rem;
+}
+
+.client-contact {
+    font-size: 0.75rem;
+    color: #A08B7E;
+}
+
+.client-status-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.client-status-badge.completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
+
+.client-status-badge.scheduled {
+    background: #FFF3E0;
+    color: #FF9800;
+}
+
+.client-status-badge.cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+}
+
+.client-appointments {
+    padding: 0.5rem 1.5rem;
+}
+
+.appointment-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.appointment-history-item:last-child {
+    border-bottom: none;
+}
+
+.appointment-date {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #4C3A33;
+    min-width: 140px;
+}
+
+.appointment-service {
+    flex: 1;
+    font-size: 0.85rem;
+    color: #7A5A4A;
+}
+
+.appointment-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.appointment-status.completed {
+    color: #4CAF50;
+}
+
+.appointment-status.scheduled {
+    color: #FF9800;
+}
+
+.appointment-status.cancelled {
+    color: #F44336;
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+.appointment-status.completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.appointment-status.scheduled {
+    background: #FFF3E0;
+    color: #FF9800;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.appointment-status.cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+    padding: 0.2rem 0.8rem;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Статусные бейджи клиентов */
+.client-status-badge.completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.client-status-badge.scheduled {
+    background: #FFF3E0;
+    color: #FF9800;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.client-status-badge.cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Кнопки фильтров */
+.status-tab {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #A08B7E;
+    transition: 0.2s;
+}
+
+.status-tab:hover {
+    background: #FFF2EC;
+    color: #D3836B;
+}
+
+.status-tab.active {
+    background: #D3836B;
+    color: white;
+}

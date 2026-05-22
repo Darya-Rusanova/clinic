@@ -5,6 +5,7 @@ import com.example.clinic.dto.SlotStatus;
 import com.example.clinic.model.Appointment;
 import com.example.clinic.model.Break;
 import com.example.clinic.model.Schedule;
+import com.example.clinic.model.Status;
 import com.example.clinic.repository.AppointmentRepository;
 import com.example.clinic.repository.BreakRepository;
 import com.example.clinic.repository.ScheduleRepository;
@@ -66,8 +67,10 @@ public class ScheduleService {
             }
         }
         for (Appointment app : appointments) {
+            if (app.getStatus() == Status.CANCELLED || app.getStatus() == Status.COMPLETED) {
+                continue;
+            }
             LocalTime time = app.getDateTime().toLocalTime();
-
             result.stream()
                     .filter(slot -> slot.getStartTime().equals(time))
                     .findFirst()

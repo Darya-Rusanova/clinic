@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="services">
+  <h2 class="section-title">Мои услуги</h2>
+  <div class="category-group" th:each="entry:${servicesByCategory}">
+    <h3 class="category-title" th:text="${entry.key}"></h3>
+    <div class="services-grid">
+      <div class="service-item" th:each="service : ${entry.value}">
+        <div class="service-info">
+          <h4 th:text="${service.name}"></h4>
+          <p th:text="${#strings.substringBefore(service.description, '.')}"></p>
+        </div>
+        <span class="service-price" th:text="${service.price} + ' ₽'"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:fragment="schedule">
+  <h2 class="section-title">Моё расписание</h2>
+  <div class="date-selector">
+    <button class="date-nav-btn" data-offset="-1">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <div class="current-week">
+      <span id="weekRange"></span>
+    </div>
+    <button class="date-nav-btn" data-offset="1">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+  <div id="scheduleContainer" class="schedule-week">
+    <!-- сюда загрузится расписание -->
+    <div class="loading">Загрузка...</div>
+  </div>
+</div>
+
+<div th:fragment="clients">
+  <h2 class="section-title">Мои клиенты</h2>
+  <div class="status-tabs">
+    <button class="status-tab active" data-filter="all">Все (<span id="allCount">0</span>)</button>
+    <button class="status-tab" data-filter="SCHEDULED">Предстоящие (<span id="scheduledCount">0</span>)</button>
+    <button class="status-tab" data-filter="COMPLETED">Завершённые (<span id="completedCount">0</span>)</button>
+    <button class="status-tab" data-filter="CANCELLED">Отменённые (<span id="cancelledCount">0</span>)</button>
+  </div>
+  <div id="clientsListContainer" class="clients-list"></div>
+</div>
+
+</body>
+</html>

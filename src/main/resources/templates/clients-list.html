@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="clients-list">
+    <span id="allCount" th:text="${allCount}" style="display:none"></span>
+    <span id="scheduledCount" th:text="${scheduledCount}" style="display:none"></span>
+    <span id="completedCount" th:text="${completedCount}" style="display:none"></span>
+    <span id="cancelledCount" th:text="${cancelledCount}" style="display:none"></span>
+
+    <div class="clients-list">
+        <div th:each="entry : ${clientsMap}" class="client-card">
+            <div class="client-header">
+                <div class="client-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="client-info">
+                    <h4 class="client-name" th:text="${entry.key.user.name}"></h4>
+                    <p class="client-contact" th:text="${entry.key.user.phone} + ' • ' + ${entry.key.user.email}"></p>
+                </div>
+            </div>
+            <div class="client-appointments">
+                <div th:each="app : ${entry.value}" class="appointment-history-item">
+                    <div class="appointment-date" th:text="${#temporals.format(app.dateTime, 'dd.MM.yyyy HH:mm')}"></div>
+                    <div class="appointment-service" th:text="${app.service.name}"></div>
+                    <div class="appointment-status"
+                         th:class="'appointment-status ' + (${app.status.name() == 'COMPLETED'} ? 'completed' : (${app.status.name() == 'SCHEDULED'} ? 'scheduled' : 'cancelled'))">
+                        <span th:if="${app.status.name() == 'COMPLETED'}"> Завершено</span>
+                        <span th:if="${app.status.name() == 'SCHEDULED'}"> Предстоит</span>
+                        <span th:if="${app.status.name() == 'CANCELLED'}"> Отменено</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${clientsMap.isEmpty()}" class="no-clients">
+            <p>Нет клиентов</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

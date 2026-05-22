@@ -16,9 +16,10 @@
       <ul class="nav-menu">
         <li><a href="#" id="servicesLink">Услуги</a></li>
         <li><a href="#" id="scheduleLink">Расписание</a></li>
+        <li><a href="#" id="clientsLink">Клиенты</a></li>
         <li class="user-menu" id="userMenu">
                     <span class="user-name" id="userNameBtn">
-                        <i class="fas fa-user-md" th:text="${doctor.user.firstName} + ' ' + ${doctor.user.lastName}"></i> <i class="fas fa-chevron-down"></i>
+                        <i class="fas fa-user-md"></i> <span th:text="${doctor.user.firstName} + ' ' + ${doctor.user.lastName}"></span> <i class="fas fa-chevron-down"></i>
                     </span>
           <div class="user-dropdown" id="userDropdown">
             <a href="#" id="settingsBtn"><i class="fas fa-cog"></i> Настройки профиля</a>
@@ -32,7 +33,6 @@
 
 <main class="dashboard">
   <div class="dashboard-container">
-    <!-- Левая колонка - карточка профиля -->
     <aside class="profile-sidebar">
       <div class="profile-card">
         <div class="profile-avatar">
@@ -42,9 +42,9 @@
         <p class="profile-specialization" th:text="${doctor.user.patronymic}"></p>
 
         <div class="profile-details">
-          <div class="profile-detail" >
-            <i class="fas fa-venus" th:if="${doctor.user.gender}"></i>
-            <i class="fas fa-mars" th:unless="${doctor.user.gender}"></i>
+          <div class="profile-detail">
+            <i th:if="${doctor.user.gender}" class="fas fa-venus"></i>
+            <i th:unless="${doctor.user.gender}" class="fas fa-mars"></i>
             <span th:text="${doctor.user.gender} ? 'Женский' : 'Мужской'"></span>
           </div>
           <div class="profile-detail">
@@ -57,7 +57,7 @@
           </div>
           <div class="profile-detail">
             <i class="fas fa-stethoscope"></i>
-            <span th:text="'Стаж: ' + ${doctor.experienceYears} + ' лет' "></span>
+            <span th:text="'Стаж: ' + ${doctor.experienceYears} + ' лет'"></span>
           </div>
         </div>
 
@@ -67,135 +67,62 @@
       </div>
     </aside>
 
-    <!-- Правая колонка - контент -->
     <div class="main-content">
-      <!-- Секция Услуги -->
       <div id="servicesSection" class="content-section active">
-        <h2 class="section-title">Мои услуги</h2>
-        <div class="category-group" th:each="entry:${servicesByCategory}">
-          <h3 class="category-title" th:text="${entry.key}">
-          </h3>
-          <div class="services-grid">
-            <div class="service-item" th:each="service : ${entry.value}">
-              <div class="service-info">
-                <h4 th:text="${service.name}"></h4>
-                <p th:text="${#strings.substringBefore(service.description, '.')}"></p>
-              </div>
-              <span class="service-price" th:text="${service.price} + ' ₽'"></span>
-            </div>
-          </div>
-        </div>
+        <th:block th:replace="~{doctor-fragments :: services}"></th:block>
       </div>
-
       <div id="scheduleSection" class="content-section">
-        <h2 class="section-title">Моё расписание</h2>
-
-        <!-- Выбор недели -->
-        <div class="date-selector">
-          <a th:href="@{/doctor/{id}(id=${doctor.userId}, weekOffset=${weekOffset - 1})}" class="date-nav-btn">
-            <i class="fas fa-chevron-left"></i>
-          </a>
-          <div class="current-week">
-            <span th:text="${#temporals.format(weekStart, 'dd')} + ' - ' + ${#temporals.format(weekEnd, 'dd MMMM yyyy')}"></span>
-          </div>
-          <a th:href="@{/doctor/{id}(id=${doctor.userId}, weekOffset=${weekOffset + 1})}" class="date-nav-btn">
-            <i class="fas fa-chevron-right"></i>
-          </a>
-        </div>
-
-        <!-- Только дни, которые есть в расписании врача -->
-        <div class="schedule-week">
-          <div th:each="dayEntry : ${slots}" class="day-schedule-card">
-            <div class="day-header">
-                <span class="day-name" th:text="${dayEntry.key == 1 ? 'Понедельник' :
-                                                   dayEntry.key == 2 ? 'Вторник' :
-                                                   dayEntry.key == 3 ? 'Среда' :
-                                                   dayEntry.key == 4 ? 'Четверг' :
-                                                   dayEntry.key == 5 ? 'Пятница' :
-                                                   dayEntry.key == 6 ? 'Суббота' : 'Воскресенье'}"></span>
-              <span class="day-date" th:text="${#temporals.format(weekStart.plusDays(dayEntry.key - 1), 'dd.MM')}"></span>
-            </div>
-            <div class="slots-container">
-              <div th:each="slot : ${dayEntry.value}" class="slot-row">
-                <div class="slot-time" th:text="${#temporals.format(slot.startTime, 'HH:mm')} + ' - ' + ${#temporals.format(slot.endTime, 'HH:mm')}"></div>
-                <div>
-                        <span th:class="'slot-status ' + ${slot.status.name().toLowerCase()}"
-                              th:text="${slot.status.name() == 'AVAILABLE' ? 'Доступно' : (slot.status.name() == 'BOOKED' ? 'Занято' : 'Перерыв')}"></span>
-                </div>
-                <div class="slot-client">
-                  <span th:if="${slot.status.name() == 'BOOKED'}" th:text="${slot.clientName} + ' - ' + ${slot.serviceName}"></span>
-                  <span th:unless="${slot.status.name() == 'BOOKED'}"></span>
-                </div>
-              </div>
-              <div th:if="${dayEntry.value.isEmpty()}" class="empty-slots">
-                <p>Нет расписания</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button class="add-break-btn"><i class="fas fa-plus"></i> Добавить перерыв</button>
+        <th:block th:replace="~{doctor-fragments :: schedule}"></th:block>
+      </div>
+      <div id="clientsSection" class="content-section">
+        <th:block th:replace="~{doctor-fragments :: clients}"></th:block>
       </div>
     </div>
   </div>
 </main>
-<!-- Модальное окно настроек профиля -->
+
 <div id="settingsModal" class="modal">
   <div class="modal-content">
     <div class="modal-header">
       <h3>Настройки профиля</h3>
       <span class="close-modal">&times;</span>
     </div>
-
     <form id="profileForm">
       <div class="form-row">
         <div class="form-group">
           <label>Фамилия</label>
-          <input type="text" id="lastName" value="Владимиров">
+          <input type="text" id="lastName" th:value="${doctor.user.lastName}">
         </div>
         <div class="form-group">
           <label>Имя</label>
-          <input type="text" id="firstName" value="Алексей">
+          <input type="text" id="firstName" th:value="${doctor.user.firstName}">
         </div>
         <div class="form-group">
           <label>Отчество</label>
-          <input type="text" id="patronymic" value="Сергеевич">
+          <input type="text" id="patronymic" th:value="${doctor.user.patronymic}">
         </div>
       </div>
-
       <div class="form-row">
-        <div class="form-group">
-          <label>Дата рождения</label>
-          <input type="date" id="birthdate" value="1988-03-15">
-        </div>
-        <div class="form-group">
-          <label>Пол</label>
-          <select id="gender">
-            <option value="female">Женский</option>
-            <option value="male" selected>Мужской</option>
-          </select>
-        </div>
         <div class="form-group">
           <label>Телефон</label>
-          <input type="tel" id="phone" value="+7 (912) 345-67-89">
+          <input type="tel" id="phone" th:value="${doctor.user.phone}">
         </div>
-      </div>
-
-      <div class="form-row">
         <div class="form-group">
           <label>Email</label>
-          <input type="email" id="email" value="alexey@clinic.ru">
-        </div>
-        <div class="form-group">
-          <label>Специализация</label>
-          <input type="text" id="specialization" value="Врач-дерматовенеролог">
+          <input type="email" id="email" th:value="${doctor.user.email}">
         </div>
         <div class="form-group">
           <label>Опыт (лет)</label>
-          <input type="number" id="experience" value="12">
+          <input type="number" id="experience" th:value="${doctor.experienceYears}">
         </div>
       </div>
-
+      <div class="form-group">
+        <label>Пол</label>
+        <select id="gender">
+          <option th:value="true" th:selected="${doctor.user.gender}">Женский</option>
+          <option th:value="false" th:selected="${!doctor.user.gender}">Мужской</option>
+        </select>
+      </div>
       <div class="form-buttons">
         <button type="button" class="btn-cancel" id="cancelBtn">Отмена</button>
         <button type="submit" class="btn-save">Сохранить изменения</button>
