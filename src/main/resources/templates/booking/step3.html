@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Запись на процедуру - Шаг 3</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+<div class="booking-container">
+  <div class="booking-progress">
+    <div class="step">1. Выбор услуги</div>
+    <div class="step">2. Выбор времени</div>
+    <div class="step active">3. Подтверждение</div>
+  </div>
+
+  <div class="booking-form">
+    <h2>Подтверждение записи</h2>
+
+    <div class="confirm-info">
+      <div class="confirm-item">
+        <span class="label">Услуга:</span>
+        <span class="value" th:text="${service.name}"></span>
+      </div>
+      <div class="confirm-item">
+        <span class="label">Врач:</span>
+        <span class="value" th:text="${doctor.user.name}"></span>
+      </div>
+      <div class="confirm-item">
+        <span class="label">Дата и время:</span>
+        <span class="value" th:text="${#temporals.format(dateTime, 'dd.MM.yyyy HH:mm')}"></span>
+      </div>
+      <div class="confirm-item">
+        <span class="label">Стоимость:</span>
+        <span class="value" th:text="${service.price} + ' ₽'"></span>
+      </div>
+      <div class="confirm-item">
+        <span class="label">Длительность:</span>
+        <span class="value" th:text="${service.duration} + ' мин'"></span>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <a href="/booking/step2" class="btn-back">← Назад</a>
+      <form method="post" action="/booking/confirm" style="display: inline">
+        <input type="hidden" name="serviceId" th:value="${serviceId}">
+        <input type="hidden" name="doctorId" th:value="${doctorId}">
+        <input type="hidden" name="clientId" th:value="${clientId}">
+        <input type="hidden" name="dateTime" th:value="${dateTime}">
+        <button type="submit" class="btn-confirm">Подтвердить запись</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

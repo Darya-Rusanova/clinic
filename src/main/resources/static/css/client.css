@@ -127,216 +127,7 @@ body {
     color: #D3836B;
 }
 
-/* Секция записей */
-.appointments-section {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6rem 2rem 4rem;
-}
-
-.appointments-container {
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    font-weight: 400;
-    font-family: 'Cormorant Garamond', serif;
-    color: #4C2A1F;
-    margin-bottom: 2rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    position: relative;
-    padding-bottom: 1rem;
-    margin-top: 80px;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 2px;
-    background: #D3836B;
-}
-
-/* Пустой список записей */
-.appointments-empty {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 28px;
-    padding: 3rem 2rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-}
-
-.appointments-empty i {
-    font-size: 4rem;
-    color: #D3836B;
-    margin-bottom: 1rem;
-}
-
-.appointments-empty h3 {
-    font-size: 1.3rem;
-    color: #4C2A1F;
-    margin-bottom: 0.5rem;
-}
-
-.appointments-empty p {
-    color: #7A5A4A;
-    margin-bottom: 1.5rem;
-}
-
-.btn-book {
-    display: inline-block;
-    background-color: #D3836B;
-    color: white;
-    text-decoration: none;
-    padding: 0.7rem 1.8rem;
-    border-radius: 40px;
-    transition: all 0.25s;
-}
-
-.btn-book:hover {
-    background-color: #bc6a52;
-    transform: translateY(-2px);
-}
-
-/* Модальное окно */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal.show {
-    display: flex;
-}
-
-.modal-content {
-    background: white;
-    border-radius: 28px;
-    max-width: 700px;
-    width: 90%;
-    padding: 2rem;
-    position: relative;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #F0E0D6;
-}
-
-.modal-header h3 {
-    font-size: 1.5rem;
-    font-family: 'Cormorant Garamond', serif;
-    color: #4C2A1F;
-}
-
-.close-modal {
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: #A08B7E;
-    transition: color 0.2s;
-}
-
-.close-modal:hover {
-    color: #D3836B;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.form-group label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #A08B7E;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.form-group input,
-.form-group select {
-    padding: 0.8rem;
-    border: 1px solid #F0E0D6;
-    border-radius: 16px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    transition: border 0.2s;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-    outline: none;
-    border-color: #D3836B;
-}
-
-.form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #F0E0D6;
-}
-
-.btn-cancel {
-    background: transparent;
-    border: 1px solid #F0E0D6;
-    padding: 0.7rem 1.5rem;
-    border-radius: 40px;
-    color: #A08B7E;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-cancel:hover {
-    border-color: #D3836B;
-    color: #D3836B;
-}
-
-.btn-save {
-    background: #D3836B;
-    border: none;
-    padding: 0.7rem 1.5rem;
-    border-radius: 40px;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-save:hover {
-    background: #bc6a52;
-    transform: translateY(-2px);
-}
+/* Дашборд */
 .dashboard {
     min-height: 100vh;
     padding: 6rem 2rem 4rem;
@@ -350,7 +141,7 @@ body {
     align-items: flex-start;
 }
 
-/* Левая колонка - карточка профиля (закреплена) */
+/* Левая колонка - карточка профиля */
 .profile-sidebar {
     flex: 0 0 320px;
     position: sticky;
@@ -431,6 +222,234 @@ body {
     flex: 1;
 }
 
+/* Хедер записей с кнопкой */
+.appointments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.appointments-header .section-title {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: #D3836B;
+}
+
+/* Кнопка новой записи */
+.btn-new-appointment {
+    text-decoration: none;
+    background: #D3836B;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.btn-new-appointment:hover {
+    background: #bc6a52;
+    transform: translateY(-2px);
+}
+
+/* Фильтры */
+.status-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #F0E0D6;
+    padding-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.status-tab {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #A08B7E;
+    transition: 0.2s;
+}
+
+.status-tab:hover {
+    background: #FFF2EC;
+    color: #D3836B;
+}
+
+.status-tab.active {
+    background: #D3836B;
+    color: white;
+}
+
+/* Список записей */
+.appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Карточка записи */
+.appointment-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(240, 224, 214, 0.5);
+}
+
+.appointment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    border-color: #D3836B;
+}
+
+/* Время записи */
+.appointment-time {
+    font-weight: 600;
+    color: #D3836B;
+    min-width: 120px;
+    font-size: 0.9rem;
+    background: #FFF2EC;
+    padding: 0.3rem 1rem;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.appointment-time i {
+    margin-right: 0.3rem;
+    font-size: 0.8rem;
+}
+
+/* Информация о записи */
+.appointment-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.appointment-info strong {
+    display: block;
+    font-size: 1rem;
+    color: #4C2A1F;
+    margin-bottom: 0.2rem;
+}
+
+.appointment-details {
+    font-size: 0.8rem;
+    color: #A08B7E;
+    line-height: 1.4;
+}
+
+/* Статус записи */
+.appointment-status {
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 110px;
+    justify-content: center;
+}
+
+.appointment-status.scheduled {
+    background: #FFF3E0;
+    color: #FF9800;
+}
+
+.appointment-status.completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
+
+.appointment-status.cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+}
+
+/* Кнопки действий */
+.appointment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-edit-appointment, .btn-cancel-appointment {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+}
+
+.btn-edit-appointment {
+    color: #D3836B;
+    background: #FFF2EC;
+}
+
+.btn-edit-appointment:hover {
+    background: #D3836B;
+    color: white;
+    transform: scale(1.05);
+}
+
+.btn-cancel-appointment {
+    color: #F44336;
+    background: #FFEBEE;
+}
+
+.btn-cancel-appointment:hover {
+    background: #F44336;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Пустое состояние */
 .appointments-empty {
     text-align: center;
     background: rgba(255, 255, 255, 0.95);
@@ -456,3 +475,214 @@ body {
     margin-bottom: 1.5rem;
 }
 
+.btn-book {
+    display: inline-block;
+    background-color: #D3836B;
+    color: white;
+    text-decoration: none;
+    padding: 0.7rem 1.8rem;
+    border-radius: 40px;
+    transition: all 0.25s;
+}
+
+.btn-book:hover {
+    background-color: #bc6a52;
+    transform: translateY(-2px);
+}
+
+/* Загрузка */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #A08B7E;
+}
+
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 28px;
+    max-width: 700px;
+    width: 90%;
+    padding: 2rem;
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+}
+
+.close-modal {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: #A08B7E;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: #D3836B;
+}
+
+/* Форма */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #A08B7E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.8rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: border 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #D3836B;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #F0E0D6;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid #F0E0D6;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: #A08B7E;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-cancel:hover {
+    border-color: #D3836B;
+    color: #D3836B;
+}
+
+.btn-save {
+    background: #D3836B;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 40px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-save:hover {
+    background: #bc6a52;
+    transform: translateY(-2px);
+}
+
+/* Уведомления */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 9999;
+    animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.success {
+    background: #4CAF50;
+}
+
+.notification.error {
+    background: #F44336;
+}
+
+.notification.info {
+    background: #D3836B;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+.modal-small {
+    max-width: 450px;
+}
+
+.modal-body {
+    text-align: center;
+    padding: 0.5rem 0;
+}
+
+.modal-body i {
+    font-size: 3rem;
+    color: #F44336;
+    margin-bottom: 1rem;
+}

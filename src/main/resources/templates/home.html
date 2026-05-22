@@ -19,7 +19,7 @@
                 <li><a href="#services" class="nav-link">Наши услуги</a></li>
                 <li><a href="#doctors" class="nav-link">Наши врачи</a></li>
                 <li><a href="#about" class="nav-link">О нас</a></li>
-                <li><a href="#booking" class="btn-book">Записаться</a></li>
+                <li><a th:href="@{/booking}" class="btn-book">Записаться</a></li>
             </ul>
         </nav>
     </div>
@@ -31,7 +31,7 @@
             <h6 class="hero-suptitle">г. Иркутск</h6>
             <h1 class="hero-title">Профессиональные косметологические услуги</h1>
             <h6 class="hero-suptitle">Широкий спектр услуг от опытных специалистов в области косметологии, физиотерапии и маникюра.</h6>
-            <a href="#booking" class="btn-hero">Записаться на услугу</a>
+            <a th:href="@{/booking}" class="btn-hero">Записаться на услугу</a>
         </div>
 
         <div class="advantages-grid">
@@ -70,7 +70,7 @@
                             <p class="service-description" th:text="${service.description}"></p>
                             <div class="service-footer">
                                 <div class="service-price" th:text="${service.price} + ' ₽'"></div>
-                                <a class="btn-book">Записаться</a>
+                                <a th:href="@{/booking(serviceId=${service.id})}" class="btn-book">Записаться</a>
                             </div>
                         </div>
                     </div>
@@ -106,9 +106,9 @@
                     </p>
                 </div>
 
-                <button class="btn-book">
+                <a th:href="@{/booking(doctorId=${doctor.userId})}" class="btn-book">
                     Записаться на приём
-                </button>
+                </a>
 
                 <button class="doctor-details-btn" th:data-id="${doctor.userId}">
                     Подробнее ▼

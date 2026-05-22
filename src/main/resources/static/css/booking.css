@@ -1,0 +1,457 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-image: url("/images/bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Контейнер записи */
+.booking-container {
+    max-width: 900px;
+    margin: 100px auto 50px;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Прогресс-бар */
+.booking-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #F0E0D6;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    color: #A08B7E;
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.step.active {
+    color: #D3836B;
+    font-weight: 600;
+}
+
+.step.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: #D3836B;
+}
+
+/* Заголовок */
+.booking-form h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    color: #4C2A1F;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+}
+
+/* Фильтры */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filters select {
+    padding: 0.7rem 1rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 40px;
+    background: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #4C3A33;
+    cursor: pointer;
+    min-width: 180px;
+}
+
+.filters select:focus {
+    outline: none;
+    border-color: #D3836B;
+}
+
+/* Сетка услуг */
+.services-grid, .slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+/* Карточка услуги */
+.service-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.2rem;
+    border: 1px solid #F0E0D6;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.service-card:hover {
+    border-color: #D3836B;
+    box-shadow: 0 4px 12px rgba(211, 131, 107, 0.15);
+    transform: translateY(-2px);
+}
+
+.service-card.selected {
+    border-color: #D3836B;
+    background: #FFF2EC;
+    box-shadow: 0 4px 12px rgba(211, 131, 107, 0.2);
+}
+
+.service-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4C2A1F;
+    margin-bottom: 0.5rem;
+}
+
+.service-info p {
+    font-size: 0.8rem;
+    color: #7A5A4A;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+}
+
+.service-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: #D3836B;
+}
+
+.service-meta span {
+    background: #FFF2EC;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+}
+
+.btn-select-service {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.5rem;
+    background: #D3836B;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.2s;
+}
+
+.btn-select-service:hover {
+    background: #bc6a52;
+    transform: scale(1.02);
+}
+
+/* Выбранная информация */
+.selected-info {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.info-card {
+    background: #FFF2EC;
+    padding: 0.8rem 1.5rem;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    color: #4C2A1F;
+}
+
+.info-card strong {
+    color: #D3836B;
+    margin-right: 0.5rem;
+}
+
+/* Выбор даты */
+.date-selector {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.date-selector input {
+    padding: 0.8rem 1rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 40px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: #4C3A33;
+    cursor: pointer;
+}
+
+.date-selector input:focus {
+    outline: none;
+    border-color: #D3836B;
+}
+
+/* Кнопки слотов */
+.slot-btn {
+    padding: 0.8rem;
+    background: #FFF2EC;
+    border: 1px solid #F0E0D6;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #4C3A33;
+    transition: all 0.2s;
+}
+
+.slot-btn:hover {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+    transform: translateY(-2px);
+}
+
+.slot-btn.selected {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
+
+.slot-btn.booked, .slot-btn.break {
+    background: #F5F5F5;
+    color: #A08B7E;
+    cursor: not-allowed;
+}
+
+.slot-btn.booked:hover, .slot-btn.break:hover {
+    transform: none;
+    background: #F5F5F5;
+    color: #A08B7E;
+}
+
+.no-slots {
+    text-align: center;
+    padding: 2rem;
+    color: #A08B7E;
+    background: #F9F5F0;
+    border-radius: 20px;
+}
+
+/* Информация подтверждения */
+.confirm-info {
+    background: #F9F5F0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.confirm-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #F0E0D6;
+}
+
+.confirm-item:last-child {
+    border-bottom: none;
+}
+
+.confirm-item .label {
+    font-weight: 500;
+    color: #A08B7E;
+}
+
+.confirm-item .value {
+    font-weight: 600;
+    color: #4C2A1F;
+}
+
+/* Навигация */
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #F0E0D6;
+}
+
+.btn-next, .btn-confirm {
+    background: #D3836B;
+    color: white;
+    border: none;
+    padding: 0.7rem 2rem;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.btn-next:hover, .btn-confirm:hover {
+    background: #bc6a52;
+    transform: translateY(-2px);
+}
+
+.btn-next:disabled {
+    background: #F0E0D6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-back {
+    background: transparent;
+    border: 1px solid #F0E0D6;
+    padding: 0.7rem 2rem;
+    border-radius: 40px;
+    color: #A08B7E;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-back:hover {
+    border-color: #D3836B;
+    color: #D3836B;
+}
+
+/* Успех */
+.success-content {
+    text-align: center;
+    padding: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #4CAF50;
+    margin-bottom: 1rem;
+}
+
+.success-content h2 {
+    color: #4C2A1F;
+    margin-bottom: 1rem;
+}
+
+.success-content p {
+    color: #7A5A4A;
+    margin-bottom: 0.5rem;
+}
+
+.success-content .btn-next {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 1rem;
+    margin-right: 1rem;
+}
+
+/* Ошибка */
+.error {
+    text-align: center;
+    padding: 2rem;
+    color: #F44336;
+}
+
+/* Модальное окно выбора врача */
+.doctor-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.doctor-modal-content {
+    background: white;
+    border-radius: 28px;
+    padding: 2rem;
+    min-width: 320px;
+    text-align: center;
+}
+
+.doctor-modal-content h3 {
+    font-size: 1.3rem;
+    color: #4C2A1F;
+    margin-bottom: 1rem;
+}
+
+.doctor-option {
+    display: block;
+    width: 100%;
+    padding: 0.7rem;
+    margin: 0.5rem 0;
+    background: #FFF2EC;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.doctor-option:hover {
+    background: #D3836B;
+    color: white;
+}
+
+.doctor-option-cancel {
+    display: block;
+    width: 100%;
+    padding: 0.7rem;
+    margin-top: 1rem;
+    background: transparent;
+    border: 1px solid #F0E0D6;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #A08B7E;
+    transition: 0.2s;
+}
+
+.doctor-option-cancel:hover {
+    border-color: #D3836B;
+    color: #D3836B;
+}
+
+/* Страница ошибки */
+.error-content {
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-icon {
+    font-size: 4rem;
+    color: #F44336;
+    margin-bottom: 1rem;
+}
+
+.error-content h2 {
+    color: #4C2A1F;
+    margin-bottom: 1rem;
+}
+
+.error-content p {
+    color: #7A5A4A;
+    margin-bottom: 2rem;
+}

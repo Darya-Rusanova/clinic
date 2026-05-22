@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Запись на процедуру - Шаг 2</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+<div class="booking-container">
+  <div class="booking-progress">
+    <div class="step">1. Выбор услуги</div>
+    <div class="step active">2. Выбор времени</div>
+    <div class="step">3. Подтверждение</div>
+  </div>
+
+  <div class="booking-form">
+    <h2>Выберите дату и время</h2>
+
+    <div class="selected-info">
+      <div class="info-card">
+        <strong th:text="${service.name}"></strong>
+        <span th:text="${service.price} + ' ₽'"></span>
+      </div>
+      <div class="info-card">
+        Врач: <strong th:text="${doctor.user.name}"></strong>
+      </div>
+    </div>
+
+    <input type="hidden" id="serviceId" th:value="${serviceId}">
+    <input type="hidden" id="doctorId" th:value="${doctorId}">
+
+    <div class="date-selector">
+      <input type="date" id="datePicker">
+    </div>
+
+    <div id="slotsContainer" class="slots-grid"></div>
+
+    <div class="navigation">
+      <a href="/booking" class="btn-back">← Назад</a>
+      <button id="nextBtn" class="btn-next" disabled>Далее →</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/booking.js"></script>
+</body>
+</html>

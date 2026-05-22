@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Ошибка записи</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+<div class="booking-container">
+  <div class="error-content">
+    <i class="fas fa-exclamation-triangle error-icon"></i>
+    <h2>Ошибка при создании записи</h2>
+    <p th:text="${error}">Произошла ошибка. Попробуйте позже.</p>
+    <div class="navigation">
+      <a href="/booking" class="btn-back">← Вернуться к выбору услуги</a>
+      <a href="/" class="btn-next">На главную</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

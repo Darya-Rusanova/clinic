@@ -70,17 +70,45 @@
 
     <!-- Правая колонка - записи -->
     <div class="appointments-content">
-      <h2 class="section-title">Мои записи</h2>
+      <div class="appointments-header">
+        <h2 class="section-title">Мои записи</h2>
+        <a th:href="@{/booking}" class="btn-new-appointment">
+          <i class="fas fa-plus"></i> Записаться на процедуру
+        </a>
+      </div>
 
-      <div class="appointments-empty">
-        <i class="fas fa-calendar-alt"></i>
-        <h3>У вас пока нет записей</h3>
-        <p>Запишитесь на процедуру через главную страницу</p>
-        <a href="/" class="btn-book">Записаться</a>
+      <div class="status-tabs">
+        <button class="status-tab active" data-filter="all">Все (<span id="allCount">0</span>)</button>
+        <button class="status-tab" data-filter="SCHEDULED">Предстоящие (<span id="scheduledCount">0</span>)</button>
+        <button class="status-tab" data-filter="COMPLETED">Завершённые (<span id="completedCount">0</span>)</button>
+        <button class="status-tab" data-filter="CANCELLED">Отменённые (<span id="cancelledCount">0</span>)</button>
+      </div>
+
+      <div id="appointmentsContainer" class="appointments-list">
+        <div class="loading">Загрузка...</div>
       </div>
     </div>
   </div>
 </main>
+
+<!-- Модальное окно подтверждения отмены -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content modal-small">
+    <div class="modal-header">
+      <h3>Подтверждение отмены</h3>
+      <span class="close-modal close-confirm-modal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #F44336; margin-bottom: 1rem; display: block; text-align: center;"></i>
+      <p style="text-align: center; margin-bottom: 1.5rem;">Вы уверены, что хотите отменить запись?</p>
+      <p style="text-align: center; color: #A08B7E; font-size: 0.85rem;">Это действие нельзя отменить.</p>
+    </div>
+    <div class="form-buttons" style="justify-content: center;">
+      <button type="button" class="btn-cancel close-confirm-modal">Нет, вернуться</button>
+      <button type="button" id="confirmCancelBtn" class="btn-save" style="background: #F44336;">Да, отменить</button>
+    </div>
+  </div>
+</div>
 
 <!-- Модальное окно настроек профиля -->
 <div id="settingsModal" class="modal">

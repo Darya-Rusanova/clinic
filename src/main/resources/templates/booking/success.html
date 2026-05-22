@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Запись успешно создана</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/booking.css">
+</head>
+<body>
+<div class="booking-container">
+  <div class="success-content">
+    <i class="fas fa-check-circle success-icon"></i>
+    <h2>Запись успешно создана!</h2>
+    <p>Вы записаны на процедуру <strong th:text="${appointment.service.name}"></strong></p>
+    <p>Дата и время: <strong th:text="${#temporals.format(appointment.dateTime, 'dd.MM.yyyy HH:mm')}"></strong></p>
+    <p>Врач: <strong th:text="${appointment.doctor.user.name}"></strong></p>
+    <a href="/client/1" class="btn-next">Перейти в личный кабинет</a>
+    <a href="/" class="btn-back">На главную</a>
+  </div>
+</div>
+</body>
+</html>

@@ -29,6 +29,36 @@ public class ScheduleService {
     BreakRepository breakRepository;
     @Autowired
     AppointmentRepository appointmentRepository;
+
+    public List<LocalTime> getFreeSlots(Integer doctorId, LocalDate date, Integer duration){
+        int dayOfWeek = date.getDayOfWeek().getValue();
+        Schedule schedule = scheduleRepository.findByDoctor_UserIdAndDayOfWeek(doctorId,dayOfWeek).orElse(null);
+        if (schedule == null) return List.of();
+
+        List<Break> breaks = breakRepository.findAllBySchedule(schedule);
+        List<Appointment> appointments = appointmentRepository.findByDoctorIdAndDate(doctorId,date);
+
+        List<SlotDto> allSlots = buildSlots(schedule,breaks,appointments);
+        List<LocalTime> free = new ArrayList<>();
+
+        int count = (int) Math.ceil((double) duration /60);
+        for (int i = 0; i < allSlots.size() - count; i++) {
+            boolean isAvailable = true;
+            for (int j = 0; j < count; j++) {
+                SlotDto slot = allSlots.get(i+j);
+                if (slot.getStatus() != SlotStatus.AVAILABLE){
+                    isAvailable = false;
+                    break;
+                }
+            }
+            if (isAvailable){
+                free.add(allSlots.get(i).getStartTime());
+            }
+        }
+
+        free.stream().forEach(System.out::println);
+        return free;
+    }
     public Map<Integer, List<SlotDto>> weeklySlots(Integer doctorId, Integer weekOffset){
         LocalDate start = LocalDate.now().with(DayOfWeek.MONDAY).plusWeeks(weekOffset);
         LocalDate end = start.plusDays(6);
@@ -53,34 +83,47 @@ public class ScheduleService {
         return slots;
     }
     private List<SlotDto> buildSlots(Schedule schedule, List<Break> breaks, List<Appointment> appointments){
-        int duration = 60;
-        List<LocalTime> slots = generateSlots(schedule.getStartTime(),schedule.getEndTime(),duration);
+        int slotDuration = 60;
+        List<LocalTime> slots = generateSlots(schedule.getStartTime(), schedule.getEndTime(), slotDuration);
 
         List<SlotDto> result = new ArrayList<>();
 
         for (LocalTime time : slots) {
-            result.add(new SlotDto(time,time.plusMinutes(duration), SlotStatus.AVAILABLE,null,null,null));
+            result.add(new SlotDto(time, time.plusMinutes(slotDuration), SlotStatus.AVAILABLE, null, null, null));
         }
+
         for (SlotDto slot : result) {
             if (isBreak(slot.getStartTime(), breaks)) {
                 slot.setStatus(SlotStatus.BREAK);
             }
         }
+
         for (Appointment app : appointments) {
             if (app.getStatus() == Status.CANCELLED || app.getStatus() == Status.COMPLETED) {
                 continue;
             }
-            LocalTime time = app.getDateTime().toLocalTime();
-            result.stream()
-                    .filter(slot -> slot.getStartTime().equals(time))
-                    .findFirst()
-                    .ifPresent(slot -> {
-                        slot.setStatus(SlotStatus.BOOKED);
-                        slot.setClientName(app.getClient().getUser().getName());
-                        slot.setServiceName(app.getService().getName());
-                    });
+            LocalTime startTime = app.getDateTime().toLocalTime();
+            int serviceDuration = app.getService().getDuration();
+            int occupiedSlots = (int) Math.ceil((double) serviceDuration / slotDuration);;
+
+            for (int i = 0; i < occupiedSlots; i++) {
+                LocalTime currentSlotTime = startTime.plusMinutes(i * slotDuration);
+                int finalI = i;
+                result.stream()
+                        .filter(slot -> slot.getStartTime().equals(currentSlotTime))
+                        .findFirst()
+                        .ifPresent(slot -> {
+                            slot.setStatus(SlotStatus.BOOKED);
+                            if (finalI == 0) {
+                                slot.setClientName(app.getClient().getUser().getName());
+                                slot.setServiceName(app.getService().getName());
+                            } else {
+                                slot.setClientName("↳ " + app.getClient().getUser().getName());
+                                slot.setServiceName("(продолжение " + app.getService().getName() + ")");
+                            }
+                        });
+            }
         }
-        result.stream().forEach(System.out::println);
         return result;
     }
 

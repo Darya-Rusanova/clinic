@@ -11,14 +11,8 @@ import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment,Integer> {
     List<Appointment> findAllByDoctor_UserId(Integer userId);
-    @Query("SELECT a FROM Appointment a " +
-            "JOIN FETCH a.client c " +
-            "JOIN FETCH c.user " +
-            "JOIN FETCH a.service s " +
-            "WHERE a.doctor.userId = :doctorId AND DATE(a.dateTime) = :date")
-    List<Appointment> findByDoctorIdAndDate(@Param("doctorId") Integer doctorId,
-                                            @Param("date") LocalDate date);
 
+    List<Appointment> findAllByClient_UserId(Integer userId);
     @Query("SELECT a FROM Appointment a " +
             "JOIN FETCH a.client c " +
             "JOIN FETCH c.user " +
@@ -28,4 +22,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment,Integer
     List<Appointment> findByDoctorIdAndDateBetween(@Param("doctorId") Integer doctorId,
                                                    @Param("start") LocalDate start,
                                                    @Param("end") LocalDate end);
+
+    @Query("SELECT a FROM Appointment a " +
+            "JOIN FETCH a.client c " +
+            "JOIN FETCH c.user " +
+            "JOIN FETCH a.service " +
+            "WHERE a.doctor.userId = :doctorId " +
+            "AND DATE(a.dateTime) = :date")
+    List<Appointment> findByDoctorIdAndDate(@Param("doctorId") Integer doctorId, @Param("date") LocalDate date);
 }
