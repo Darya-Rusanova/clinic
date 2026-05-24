@@ -33,15 +33,37 @@ public class AppointmentController {
                 appInfo.put("time", app.getTime().toString().substring(0, 5));
                 appInfo.put("status", app.getStatus().name());
 
-                Map<String,Object> service = new HashMap<>();
-                service.put("name",app.getService().getName());
-                service.put("duration", app.getService().getDuration());
-                service.put("price",app.getService().getPrice());
+                Map<String, Object> service = new HashMap<>();
+                try {
+                    if (app.getService() != null) {
+                        service.put("name", app.getService().getName());
+                        service.put("duration", app.getService().getDuration());
+                        service.put("price", app.getService().getPrice());
+                    } else {
+                        service.put("name", "Услуга удалена");
+                        service.put("duration", 0);
+                        service.put("price", 0);
+                    }
+                } catch (Exception e) {
+                    service.put("name", "Услуга удалена");
+                    service.put("duration", 0);
+                    service.put("price", 0);
+                }
                 appInfo.put("service", service);
 
-                Map<String,String> doctor = new HashMap<>();
-                doctor.put("name",app.getDoctor().getUser().getName());
-                doctor.put("email",app.getDoctor().getUser().getEmail());
+                Map<String, String> doctor = new HashMap<>();
+                try {
+                    if (app.getDoctor() != null && app.getDoctor().getUser() != null) {
+                        doctor.put("name", app.getDoctor().getUser().getName());
+                        doctor.put("email", app.getDoctor().getUser().getEmail());
+                    } else {
+                        doctor.put("name", "Врач больше не работает");
+                        doctor.put("email", "");
+                    }
+                } catch (Exception e) {
+                    doctor.put("name", "Врач больше не работает");
+                    doctor.put("email", "");
+                }
                 appInfo.put("doctor", doctor);
                 appointments.put(appId, appInfo);
             }

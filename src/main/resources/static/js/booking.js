@@ -2,6 +2,8 @@
 const categoryFilter = document.getElementById('categoryFilter');
 const doctorFilter = document.getElementById('doctorFilter');
 const servicesList = document.getElementById('servicesList');
+const urlParams = new URLSearchParams(window.location.search);
+const preSelectedClientId = urlParams.get('clientId');
 const nextBtn = document.getElementById('nextBtn');
 
 let selectedServiceId = null;
@@ -24,8 +26,8 @@ function loadServices() {
                         <h4>${escapeHtml(service.name)}</h4>
                         <p>${escapeHtml(service.description || '')}</p>
                         <div class="service-meta">
-                            <span>⏱ ${service.duration} мин</span>
-                            <span>💰 ${service.price} ₽</span>
+                            <span> ${service.duration} мин</span>
+                            <span> ${service.price} ₽</span>
                         </div>
                     </div>
                     <button class="btn-select-service">Выбрать</button>
@@ -49,7 +51,6 @@ function attachServiceHandlers() {
                 fetch(`/api/services/${selectedServiceId}/doctors`)
                     .then(response => response.json())
                     .then(doctors => {
-                        console.log('Получены врачи:', doctors);
                         if (doctors.length === 1) {
                             selectedDoctorId = doctors[0].userId;
                             nextBtn.disabled = false;
@@ -122,6 +123,7 @@ if (nextBtn) {
             form.innerHTML = `
                 <input type="hidden" name="serviceId" value="${selectedServiceId}">
                 <input type="hidden" name="doctorId" value="${selectedDoctorId}">
+                ${preSelectedClientId ? `<input type="hidden" name="clientId" value="${preSelectedClientId}">` : ''}
             `;
             document.body.appendChild(form);
             form.submit();
@@ -136,8 +138,7 @@ const datePicker = document.getElementById('datePicker');
 const slotsContainer = document.getElementById('slotsContainer');
 let selectedSlot = null;
 
-// Параметры URL
-const urlParams = new URLSearchParams(window.location.search);
+
 const editMode = urlParams.get('edit');
 const preSelectedDate = urlParams.get('date');
 const preSelectedTime = urlParams.get('time');
@@ -151,7 +152,6 @@ if (datePicker) {
 
     datePicker.min = minDate;
 
-    // Если режим редактирования - устанавливаем сохранённую дату
     if (editMode && preSelectedDate) {
         datePicker.value = preSelectedDate;
     } else {
@@ -185,7 +185,6 @@ function loadSlots() {
 
             attachSlotHandlers();
 
-            // Если режим редактирования - выбираем сохранённое время
             if (editMode && preSelectedTime) {
                 setTimeout(() => {
                     const slotBtn = document.querySelector(`.slot-btn[data-slot="${preSelectedTime}"]`);
@@ -219,21 +218,33 @@ if (step2NextBtn && slotsContainer) {
             const serviceId = document.getElementById('serviceId').value;
             const doctorId = document.getElementById('doctorId').value;
             const date = datePicker.value;
-            const clientId = 4;
+            const clientId = document.getElementById('clientId')?.value || preSelectedClientId;
+            const appointmentId = appointmentIdFromUrl;
 
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = appointmentIdFromUrl ? '/booking/step3?edit=true&appointmentId=' + appointmentIdFromUrl : '/booking/step3';
-            form.innerHTML = `
-                <input type="hidden" name="serviceId" value="${serviceId}">
-                <input type="hidden" name="doctorId" value="${doctorId}">
-                <input type="hidden" name="date" value="${date}">
-                <input type="hidden" name="time" value="${selectedSlot}">
-                <input type="hidden" name="clientId" value="${clientId}">
-                ${appointmentIdFromUrl ? `<input type="hidden" name="appointmentId" value="${appointmentIdFromUrl}">` : ''}
-            `;
-            document.body.appendChild(form);
-            form.submit();
+            const data = {
+                serviceId: parseInt(serviceId),
+                doctorId: parseInt(doctorId),
+                clientId: parseInt(clientId),
+                date: date,
+                time: selectedSlot,
+                appointmentId: appointmentId ? parseInt(appointmentId) : null
+            };
+
+            fetch('/booking/step3', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    window.location.href = result.redirectUrl;
+                } else {
+                    alert(result.error);
+                }
+            });
         }
     });
 }

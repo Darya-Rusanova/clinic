@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/booking")
@@ -54,12 +56,14 @@ public class BookingController {
     @GetMapping
     public String step1(@RequestParam(required = false) Integer serviceId,
                         @RequestParam(required = false) Integer doctorId,
+                        @RequestParam(required = false) Integer clientId,
                         Model model) {
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("doctors", doctorRepository.findAll());
 
         if (serviceId != null) model.addAttribute("preSelectedServiceId", serviceId);
         if (doctorId != null) model.addAttribute("preSelectedDoctorId", doctorId);
+        if (clientId != null) model.addAttribute("preSelectedClientId", clientId);
 
         return "booking/step1";
     }
@@ -67,9 +71,18 @@ public class BookingController {
     @PostMapping("/select")
     public String selectServiceAndDoctor(@RequestParam Integer serviceId,
                                          @RequestParam Integer doctorId,
+                                         @RequestParam(required = false) Integer clientId,
                                          Model model) {
         model.addAttribute("selectedServiceId", serviceId);
         model.addAttribute("selectedDoctorId", doctorId);
+        if (clientId != null) {
+            model.addAttribute("clientId", clientId);
+        } else {
+            Integer existingClientId = (Integer) model.getAttribute("clientId");
+            if (existingClientId != null) {
+                model.addAttribute("clientId", existingClientId);
+            }
+        }
         return "redirect:/booking/step2";
     }
 
@@ -93,21 +106,50 @@ public class BookingController {
     }
 
     @PostMapping("/step3")
-    public String step3Post(@RequestParam(required = false) Integer appointmentId,
-                            @RequestParam Integer serviceId,
-                            @RequestParam Integer doctorId,
-                            @RequestParam String date,
-                            @RequestParam String time,
-                            @RequestParam Integer clientId,
-                            Model model) {
-        model.addAttribute("selectedServiceId", serviceId);
-        model.addAttribute("selectedDoctorId", doctorId);
-        model.addAttribute("selectedDate", date);
-        model.addAttribute("selectedTime", time);
-        model.addAttribute("clientId", clientId);
+    @ResponseBody
+    public Map<String, Object> step3Json(@RequestBody Map<String, Object> request,
+                                         Model model) {
+        Map<String, Object> response = new HashMap<>();
 
-        if (appointmentId != null) {
-            model.addAttribute("editAppointmentId", appointmentId);
+        try {
+            Integer serviceId = (Integer) request.get("serviceId");
+            Integer doctorId = (Integer) request.get("doctorId");
+            Integer clientId = (Integer) request.get("clientId");
+            String date = (String) request.get("date");
+            String time = (String) request.get("time");
+            Integer appointmentId = (Integer) request.get("appointmentId");
+
+            model.addAttribute("selectedServiceId", serviceId);
+            model.addAttribute("selectedDoctorId", doctorId);
+            model.addAttribute("selectedDate", date);
+            model.addAttribute("selectedTime", time);
+            model.addAttribute("clientId", clientId);
+
+            if (appointmentId != null && appointmentId > 0) {
+                model.addAttribute("editAppointmentId", appointmentId);
+            }
+
+            response.put("success", true);
+            response.put("redirectUrl", "/booking/step3");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+
+        return response;
+    }
+
+    @GetMapping("/step3")
+    public String showStep3(Model model) {
+        Integer serviceId = (Integer) model.getAttribute("selectedServiceId");
+        Integer doctorId = (Integer) model.getAttribute("selectedDoctorId");
+        String date = (String) model.getAttribute("selectedDate");
+        String time = (String) model.getAttribute("selectedTime");
+        Integer clientId = (Integer) model.getAttribute("clientId");
+
+        if (serviceId == null || doctorId == null || date == null || time == null) {
+            return "redirect:/booking";
         }
 
         Service service = serviceRepository.findById(serviceId).orElse(null);
@@ -120,34 +162,50 @@ public class BookingController {
         model.addAttribute("serviceId", serviceId);
         model.addAttribute("doctorId", doctorId);
         model.addAttribute("clientId", clientId);
-        model.addAttribute("editMode", appointmentId != null);
+        model.addAttribute("editMode", model.getAttribute("editAppointmentId") != null);
+
         return "booking/step3";
     }
 
     @PostMapping("/confirm")
-    public String confirm(@RequestParam Integer serviceId,
-                          @RequestParam Integer doctorId,
-                          @RequestParam Integer clientId,
-                          @RequestParam String dateTime,
-                          Model model,
-                          SessionStatus sessionStatus) {
+    @ResponseBody
+    public Map<String, Object> confirmJson(Model model, SessionStatus sessionStatus) {
+        Map<String, Object> response = new HashMap<>();
         try {
             Integer editId = (Integer) model.getAttribute("editAppointmentId");
-            Appointment appointment;
+            Integer serviceId = (Integer) model.getAttribute("selectedServiceId");
+            Integer doctorId = (Integer) model.getAttribute("selectedDoctorId");
+            Integer clientId = (Integer) model.getAttribute("clientId");
+            String date = (String) model.getAttribute("selectedDate");
+            String time = (String) model.getAttribute("selectedTime");
+            LocalDateTime dateTime = LocalDateTime.parse(date + "T" + time);
 
+            Appointment appointment;
             if (editId != null) {
-                appointment = bookingService.updateAppointment(editId, doctorId, serviceId, clientId, LocalDateTime.parse(dateTime));
+                appointment = bookingService.updateAppointment(editId, doctorId, serviceId, clientId, dateTime);
             } else {
-                appointment = bookingService.createAppointment(doctorId, serviceId, clientId, LocalDateTime.parse(dateTime));
+                appointment = bookingService.createAppointment(doctorId, serviceId, clientId, dateTime);
             }
 
-            model.addAttribute("appointment", appointment);
             sessionStatus.setComplete();
-            return "booking/success";
+            response.put("success", true);
+            response.put("redirectUrl", "/booking/success?id=" + appointment.getId());
+
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "booking/error";
+            response.put("success", false);
+            response.put("error", e.getMessage());
         }
+
+        return response;
+    }
+
+    @GetMapping("/success")
+    public String successPage(@RequestParam(required = false) Integer id, Model model) {
+        if (id != null) {
+            Appointment appointment = appointmentRepository.findById(id).orElse(null);
+            model.addAttribute("appointment", appointment);
+        }
+        return "booking/success";
     }
 
     @GetMapping("/edit/{id}")
@@ -161,6 +219,8 @@ public class BookingController {
         model.addAttribute("selectedTime", appointment.getDateTime().toLocalTime().toString());
         model.addAttribute("clientId", appointment.getClient().getUserId());
         model.addAttribute("editAppointmentId", appointment.getId());
+        System.out.println("clientId из записи: " + appointment.getClient().getUserId());
+
 
         return "redirect:/booking/step2";
     }

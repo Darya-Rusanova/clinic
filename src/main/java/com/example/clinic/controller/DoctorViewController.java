@@ -28,8 +28,9 @@ public class DoctorViewController {
             Doctor doctor = doctorOptional.get();
             List<String> categories = doctor.getCategories();
             Map<String, List<Service>> servicesByCategory = new LinkedHashMap<>();
+            List<Service> allServices = doctor.getServices();
             for (String category : categories) {
-                List<Service> services = serviceRepository.findAllByCategory_Name(category);
+                List<Service> services = allServices.stream().filter(service -> service.getCategory().getName()==category).toList();
                 servicesByCategory.put(category, services);
             }
             model.addAttribute("doctor", doctor);

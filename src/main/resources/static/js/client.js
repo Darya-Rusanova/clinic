@@ -109,8 +109,6 @@ function escapeHtml(str) {
     });
 }
 
-
-
 // Обработчики фильтров
 document.querySelectorAll('.status-tab').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -176,7 +174,6 @@ if (modal) {
     });
 }
 
-// Загружаем записи при загрузке страницы
 loadAppointments('all');
 // ========== МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ОТМЕНЫ ==========
 let pendingCancelId = null;

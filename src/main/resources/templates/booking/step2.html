@@ -29,6 +29,7 @@
 
     <input type="hidden" id="serviceId" th:value="${serviceId}">
     <input type="hidden" id="doctorId" th:value="${doctorId}">
+    <input type="hidden" id="clientId" th:value="${clientId}">
 
     <div class="date-selector">
       <input type="date" id="datePicker">
@@ -37,7 +38,7 @@
     <div id="slotsContainer" class="slots-grid"></div>
 
     <div class="navigation">
-      <a href="/booking" class="btn-back">← Назад</a>
+      <a th:href="@{/booking(serviceId=${serviceId}, doctorId=${doctorId})}" class="btn-back">← Назад</a>
       <button id="nextBtn" class="btn-next" disabled>Далее →</button>
     </div>
   </div>

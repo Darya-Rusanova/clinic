@@ -39,7 +39,15 @@ public class ClientFilterController {
             Map<String, String> appData = new HashMap<>();
             appData.put("date", app.getDateTime().toLocalDate().toString());
             appData.put("time", app.getDateTime().toLocalTime().toString().substring(0, 5));
-            appData.put("service", app.getService().getName());
+            try {
+                if (app.getService() != null) {
+                    appData.put("service", app.getService().getName());
+                } else {
+                    appData.put("service", "Услуга удалена");
+                }
+            } catch (Exception e) {
+                appData.put("service", "Услуга удалена");
+            }
             appData.put("status", app.getStatus().name());
 
             if (filter.equals("all") || app.getStatus().name().equals(filter)) {

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Записи клиента - Панель администратора</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header class="header" id="header">
+    <div class="container">
+        <a href="/admin" class="logo">Профи <span>Care</span> <span class="admin-badge">Админ</span></a>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/admin/clients" class="active">Клиенты</a></li>
+                <li><a href="/admin/services">Услуги</a></li>
+                <li><a href="/admin/categories">Категории</a></li>
+                <li><a href="/admin/doctors">Врачи</a></li>
+                <li class="user-menu" id="userMenu">
+                    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="dashboard">
+    <div class="dashboard-container">
+        <div class="full-content">
+            <div class="section-title">
+                <h2>Записи клиента: <span id="clientName">Загрузка...</span></h2>
+                <a href="/admin/clients" class="btn-back"><i class="fas fa-arrow-left"></i> Назад к клиентам</a>
+            </div>
+
+            <div class="filters-bar">
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">Все записи</option>
+                    <option value="SCHEDULED">Предстоящие</option>
+                    <option value="COMPLETED">Завершённые</option>
+                    <option value="CANCELLED">Отменённые</option>
+                </select>
+                <a th:href="@{/booking(clientId=${clientId})}" class="btn-add" style="margin-left: auto; cursor: pointer;">
+                    <i class="fas fa-plus"></i> Записать клиента
+                </a>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Дата и время</th>
+                        <th>Услуга</th>
+                        <th>Врач</th>
+                        <th>Статус</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                    <tr><td colspan="5" style="text-align: center">Загрузка...<\/td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<!-- Модальное окно подтверждения отмены -->
+<div id="cancelModal" class="modal">
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h3>Подтверждение отмены</h3>
+            <span class="close-modal close-cancel-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #F44336; margin-bottom: 1rem; display: block; text-align: center;"></i>
+            <p style="text-align: center;">Вы уверены, что хотите отменить запись?</p>
+        </div>
+        <div class="form-buttons" style="justify-content: center;">
+            <button type="button" class="btn-cancel close-cancel-modal">Нет</button>
+            <button type="button" id="confirmCancelBtn" class="btn-save" style="background: #F44336;">Да, отменить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const clientId = window.location.pathname.split('/')[3];
+    const appointmentsBody = document.getElementById('appointmentsTableBody');
+    const clientNameSpan = document.getElementById('clientName');
+    const statusFilter = document.getElementById('statusFilter');
+    let pendingCancelId = null;
+
+    // Загрузка информации о клиенте
+    fetch(`/admin/api/clients/${clientId}`)
+        .then(response => response.json())
+        .then(client => {
+            clientNameSpan.textContent = client.name;
+            document.getElementById('clientId').value = client.id;
+        })
+        .catch(error => console.error('Ошибка загрузки клиента:', error));
+
+    // Загрузка записей
+    function loadAppointments() {
+        const status = statusFilter?.value || 'all';
+        fetch(`/api/client/${clientId}/appointments?filter=${status}`)
+            .then(response => response.json())
+            .then(data => {
+                const appointments = Object.values(data.appointments);
+                if (appointments.length === 0) {
+                    appointmentsBody.innerHTML = '<tr><td colspan="5" style="text-align: center">Нет записей</td></tr>';
+                    return;
+                }
+                appointmentsBody.innerHTML = appointments.map(app => `
+                    <tr>
+                        <td>${formatDateTime(app.date, app.time)}</td>
+                        <td>${escapeHtml(app.service.name)}</td>
+                        <td>${escapeHtml(app.doctor.name)}</td>
+                        <td><span class="status ${app.status.toLowerCase()}">${getStatusText(app.status)}</span></td>
+                        <td>
+                            ${app.status === 'SCHEDULED' ? `
+                                <a href="/booking/edit/${app.id}" class="action-btn edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="action-btn delete" data-id="${app.id}"><i class="fas fa-trash-alt"></i></button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+
+                attachCancelHandlers();
+                attachEditHandlers();
+            })
+            .catch(error => {
+                console.error('Ошибка загрузки записей:', error);
+                appointmentsBody.innerHTML = '<tr><td colspan="5" style="text-align: center">Ошибка загрузки</td></tr>';
+            });
+    }
+
+    function attachCancelHandlers() {
+        document.querySelectorAll('.action-btn.delete').forEach(btn => {
+            btn.addEventListener('click', () => {
+                pendingCancelId = btn.getAttribute('data-id');
+                document.getElementById('cancelModal').classList.add('show');
+            });
+        });
+    }
+
+    function attachEditHandlers() {
+        document.querySelectorAll('.action-btn.edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                const doctorId = btn.getAttribute('data-doctor-id');
+                const serviceId = btn.getAttribute('data-service-id');
+                const date = btn.getAttribute('data-date');
+                const time = btn.getAttribute('data-time');
+                openEditModal(id, doctorId, serviceId, date, time);
+            });
+        });
+    }
+
+    function openEditModal(id, doctorId, serviceId, date, time) {
+        document.getElementById('serviceId').value = serviceId;
+        document.getElementById('doctorId').value = doctorId;
+        document.getElementById('dateTime').value = `${date}T${time}`;
+        document.getElementById('appointmentForm').dataset.editId = id;
+        document.getElementById('appointmentModal').classList.add('show');
+    }
+
+    function getStatusText(status) {
+        switch(status) {
+            case 'SCHEDULED': return 'Предстоит';
+            case 'COMPLETED': return 'Завершено';
+            case 'CANCELLED': return 'Отменено';
+            default: return status;
+        }
+    }
+
+    function formatDateTime(date, time) {
+        return `${date} ${time}`;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // Загрузка услуг и врачей для формы
+    function loadServicesAndDoctors() {
+        fetch('/api/services')
+            .then(response => response.json())
+            .then(services => {
+                const serviceSelect = document.getElementById('serviceId');
+                serviceSelect.innerHTML = '<option value="">-- Выберите услугу --</option>' +
+                    services.map(s => `<option value="${s.id}">${escapeHtml(s.name)} - ${s.price} ₽</option>`).join('');
+            })
+            .catch(error => console.error('Ошибка загрузки услуг:', error));
+
+        fetch('/api/doctors')
+            .then(response => response.json())
+            .then(doctors => {
+                const doctorSelect = document.getElementById('doctorId');
+                doctorSelect.innerHTML = '<option value="">-- Выберите врача --</option>' +
+                    doctors.map(d => `<option value="${d.id}">${escapeHtml(d.name)}</option>`).join('');
+            })
+            .catch(error => console.error('Ошибка загрузки врачей:', error));
+    }
+
+    // Отмена записи
+    document.getElementById('confirmCancelBtn')?.addEventListener('click', () => {
+        if (pendingCancelId) {
+            fetch(`/api/appointments/${pendingCancelId}/cancel`, { method: 'DELETE' })
+                .then(() => {
+                    document.getElementById('cancelModal').classList.remove('show');
+                    loadAppointments();
+                })
+                .catch(error => console.error('Ошибка отмены:', error));
+        }
+    });
+
+
+    // Закрытие модалок
+    document.querySelectorAll('.close-modal-btn, .close-cancel-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('appointmentModal').classList.remove('show');
+            document.getElementById('cancelModal').classList.remove('show');
+            delete document.getElementById('appointmentForm').dataset.editId;
+        });
+    });
+
+    // Закрытие по клику вне модалки
+    window.addEventListener('click', (e) => {
+        const modal = document.getElementById('appointmentModal');
+        const cancelModal = document.getElementById('cancelModal');
+        if (e.target === modal) modal.classList.remove('show');
+        if (e.target === cancelModal) cancelModal.classList.remove('show');
+    });
+
+    statusFilter?.addEventListener('change', loadAppointments);
+    loadServicesAndDoctors();
+    loadAppointments();
+</script>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

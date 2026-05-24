@@ -42,15 +42,33 @@
 
     <div class="navigation">
       <a href="/booking/step2" class="btn-back">← Назад</a>
-      <form method="post" action="/booking/confirm" style="display: inline">
-        <input type="hidden" name="serviceId" th:value="${serviceId}">
-        <input type="hidden" name="doctorId" th:value="${doctorId}">
-        <input type="hidden" name="clientId" th:value="${clientId}">
-        <input type="hidden" name="dateTime" th:value="${dateTime}">
-        <button type="submit" class="btn-confirm">Подтвердить запись</button>
-      </form>
+      <button id="confirmBtn" class="btn-confirm">Подтвердить запись</button>
     </div>
   </div>
 </div>
+
+<script>
+  document.getElementById('confirmBtn').addEventListener('click', function() {
+    fetch('/booking/confirm', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        window.location.href = result.redirectUrl;
+      } else {
+        alert(result.error);
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+      alert('Произошла ошибка при подтверждении записи');
+    });
+  });
+</script>
 </body>
 </html>

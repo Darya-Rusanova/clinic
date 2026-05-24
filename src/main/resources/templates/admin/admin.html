@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель администратора - Профи Care</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container">
+    <a href="/admin" class="logo">Профи <span>Care</span> <span class="admin-badge">Админ</span></a>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="/admin" class="active">Главная</a></li>
+        <li><a href="/admin/clients">Клиенты</a></li>
+        <li><a href="/admin/services">Услуги</a></li>
+        <li><a href="/admin/categories">Категории</a></li>
+        <li><a href="/admin/doctors">Врачи</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard">
+  <div class="dashboard-container">
+    <!-- Боковая панель -->
+    <aside class="admin-sidebar">
+      <div class="admin-card">
+        <div class="admin-avatar">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h3 class="admin-name">Екатерина Петрова</h3>
+        <p class="admin-role">Главный администратор</p>
+        <p class="admin-email">admin@profi-care.ru</p>
+        <p class="admin-phone">+7 (999) 123-45-67</p>
+        <div class="admin-stats">
+          <div class="admin-stat">
+            <span class="stat-value">3 года</span>
+            <span class="stat-label">В системе</span>
+          </div>
+          <div class="admin-stat">
+            <span class="stat-value">156</span>
+            <span class="stat-label">Клиентов</span>
+          </div>
+          <div class="admin-stat">
+            <span class="stat-value">12</span>
+            <span class="stat-label">Врачей</span>
+          </div>
+        </div>
+        <a href="/admin/profile" class="profile-edit-btn">
+          <i class="fas fa-pen"></i> Редактировать профиль
+        </a>
+      </div>
+
+      <div class="menu-card">
+        <h4>Быстрая навигация</h4>
+        <ul class="quick-menu">
+          <li><a href="/admin/clients/add"><i class="fas fa-user-plus"></i> Добавить клиента</a></li>
+          <li><a href="/admin/services/add"><i class="fas fa-plus-circle"></i> Добавить услугу</a></li>
+          <li><a href="/admin/doctors/add"><i class="fas fa-user-md"></i> Добавить врача</a></li>
+          <li><a href="/admin/appointments"><i class="fas fa-calendar-plus"></i> Все записи</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Основной контент -->
+    <div class="main-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <i class="fas fa-users"></i>
+          <div class="stat-info">
+            <h3>Клиенты</h3>
+            <p class="stat-number">156</p>
+            <span class="stat-change">+12 за месяц</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-stethoscope"></i>
+          <div class="stat-info">
+            <h3>Врачи</h3>
+            <p class="stat-number">12</p>
+            <span class="stat-change">+2 за месяц</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-syringe"></i>
+          <div class="stat-info">
+            <h3>Услуги</h3>
+            <p class="stat-number">34</p>
+            <span class="stat-change">+5 за месяц</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="fas fa-calendar-check"></i>
+          <div class="stat-info">
+            <h3>Записи сегодня</h3>
+            <p class="stat-number">18</p>
+            <span class="stat-change">+3 ко вчера</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="recent-section">
+        <div class="section-header">
+          <h3>Последние записи</h3>
+          <a href="/admin/appointments" class="view-all">Все записи →</a>
+        </div>
+        <table class="recent-table">
+          <thead>
+          <tr>
+            <th>Дата</th>
+            <th>Клиент</th>
+            <th>Услуга</th>
+            <th>Врач</th>
+            <th>Статус</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>23.05.2026 10:00</td>
+            <td>Иванова Анна</td>
+            <td>Ботокс</td>
+            <td>Владимиров А.</td>
+            <td><span class="status scheduled">Предстоит</span></td>
+          </tr>
+          <tr>
+            <td>23.05.2026 11:00</td>
+            <td>Петрова Елена</td>
+            <td>Филлеры</td>
+            <td>Петрова Е.</td>
+            <td><span class="status scheduled">Предстоит</span></td>
+          </tr>
+          <tr>
+            <td>22.05.2026 14:00</td>
+            <td>Смирнов Михаил</td>
+            <td>Мезотерапия</td>
+            <td>Владимиров А.</td>
+            <td><span class="status completed">Завершено</span></td>
+          </tr>
+          <tr>
+            <td>22.05.2026 09:00</td>
+            <td>Козлова Ольга</td>
+            <td>Чистка лица</td>
+            <td>Соколова М.</td>
+            <td><span class="status cancelled">Отменено</span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
