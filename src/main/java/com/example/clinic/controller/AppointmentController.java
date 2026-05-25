@@ -2,30 +2,30 @@ package com.example.clinic.controller;
 
 import com.example.clinic.model.Appointment;
 import com.example.clinic.model.Status;
-import com.example.clinic.repository.AppointmentRepository;
+import com.example.clinic.service.AppointmentService;
 import com.example.clinic.service.BookingService;
-import jakarta.servlet.ServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
 public class AppointmentController {
+
     @Autowired
-    AppointmentRepository appointmentRepository;
+    private AppointmentService appointmentService;
+
     @Autowired
-    BookingService bookingService;
+    private BookingService bookingService;
+
     @GetMapping("/api/client/{id}/appointments")
-    public Map<String,Object> getJsonAppointments(@PathVariable Integer id,
-                                                  @RequestParam(defaultValue = "all") String filter){
-        List<Appointment> appointmentList = appointmentRepository.findAllByClient_UserId(id);
+    public Map<String, Object> getJsonAppointments(@PathVariable Integer id,
+                                                   @RequestParam(defaultValue = "all") String filter) {
+        List<Appointment> appointmentList = appointmentService.getClientAppointmentsWithDetails(id);
 
         Map<Integer, Map<String, Object>> appointments = new LinkedHashMap<>();
 
-        for(Appointment app: appointmentList){
-            Integer appId = app.getId();
+        for (Appointment app : appointmentList) {
             if (filter.equals("all") || app.getStatus().name().equals(filter)) {
                 Map<String, Object> appInfo = new HashMap<>();
                 appInfo.put("id", app.getId());
@@ -65,24 +65,22 @@ public class AppointmentController {
                     doctor.put("email", "");
                 }
                 appInfo.put("doctor", doctor);
-                appointments.put(appId, appInfo);
+                appointments.put(app.getId(), appInfo);
             }
         }
-        Map<String,Object> response = new HashMap<>();
-        long scheduled = appointmentList.stream().filter(app -> app.getStatus() == Status.SCHEDULED).count();
-        long cancelled = appointmentList.stream().filter(app -> app.getStatus() == Status.CANCELLED).count();
-        long completed = appointmentList.stream().filter(app -> app.getStatus() == Status.COMPLETED).count();
 
+        Map<String, Object> response = new HashMap<>();
         response.put("appointments", appointments);
-        response.put("allCount",appointmentList.size());
-        response.put("scheduledCount",scheduled);
-        response.put("cancelledCount",cancelled);
-        response.put("completedCount",completed);
+        response.put("allCount", appointmentList.size());
+        response.put("scheduledCount", appointmentList.stream().filter(a -> a.getStatus() == Status.SCHEDULED).count());
+        response.put("cancelledCount", appointmentList.stream().filter(a -> a.getStatus() == Status.CANCELLED).count());
+        response.put("completedCount", appointmentList.stream().filter(a -> a.getStatus() == Status.COMPLETED).count());
 
         return response;
     }
+
     @DeleteMapping("/api/appointments/{id}/cancel")
     public void cancelAppointment(@PathVariable Integer id) {
-        bookingService.cancelledAppointment(id);
+        appointmentService.cancelAppointment(id);
     }
 }

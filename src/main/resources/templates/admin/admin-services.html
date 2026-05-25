@@ -131,17 +131,55 @@
           });
   }
 
-  // Подтверждение удаления
-  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-  if (confirmDeleteBtn) {
-      confirmDeleteBtn.addEventListener('click', () => {
-          if (pendingDeleteId) {
-              window.location.href = `/admin/services/delete?id=${pendingDeleteId}`;
-          }
-          deleteModal.classList.remove('show');
-          pendingDeleteId = null;
-      });
-  }
+// Подтверждение удаления
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', () => {
+        if (pendingDeleteId) {
+            fetch(`/admin/services/delete?id=${pendingDeleteId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    deleteModal.classList.remove('show');
+                    loadServices();
+                    pendingDeleteId = null;
+                    showNotification('Услуга успешно удалена', 'success');
+                } else {
+                    showNotification(result.error || 'Ошибка при удалении', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                showNotification('Ошибка сервера', 'error');
+            });
+        } else {
+            deleteModal.classList.remove('show');
+        }
+    });
+}
+
+// Добавь функцию уведомлений
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        color: white;
+        z-index: 9999;
+        animation: fadeInOut 3s ease;
+    `;
+    notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#F44336';
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
 
   // Закрытие модалки
   function closeDeleteModal() {

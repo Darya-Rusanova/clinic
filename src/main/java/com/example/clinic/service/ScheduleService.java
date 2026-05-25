@@ -2,23 +2,19 @@ package com.example.clinic.service;
 
 import com.example.clinic.dto.SlotDto;
 import com.example.clinic.dto.SlotStatus;
-import com.example.clinic.model.Appointment;
-import com.example.clinic.model.Break;
-import com.example.clinic.model.Schedule;
-import com.example.clinic.model.Status;
+import com.example.clinic.model.*;
 import com.example.clinic.repository.AppointmentRepository;
 import com.example.clinic.repository.BreakRepository;
+import com.example.clinic.repository.DoctorRepository;
 import com.example.clinic.repository.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +25,8 @@ public class ScheduleService {
     BreakRepository breakRepository;
     @Autowired
     AppointmentRepository appointmentRepository;
+    @Autowired
+    DoctorRepository doctorRepository;
 
     public List<LocalTime> getFreeSlots(Integer doctorId, LocalDate date, Integer duration){
         int dayOfWeek = date.getDayOfWeek().getValue();
@@ -59,6 +57,7 @@ public class ScheduleService {
         free.stream().forEach(System.out::println);
         return free;
     }
+
     public Map<Integer, List<SlotDto>> weeklySlots(Integer doctorId, Integer weekOffset){
         LocalDate start = LocalDate.now().with(DayOfWeek.MONDAY).plusWeeks(weekOffset);
         LocalDate end = start.plusDays(6);
@@ -82,6 +81,7 @@ public class ScheduleService {
         }
         return slots;
     }
+
     private List<SlotDto> buildSlots(Schedule schedule, List<Break> breaks, List<Appointment> appointments){
         int slotDuration = 60;
         List<LocalTime> slots = generateSlots(schedule.getStartTime(), schedule.getEndTime(), slotDuration);
@@ -156,5 +156,131 @@ public class ScheduleService {
             current = current.plusMinutes(duration);
         }
         return times;
+    }
+
+    public Map<String, Object> getDoctorSchedule(Integer doctorId) {
+        Map<String, Object> result = new LinkedHashMap<>();
+
+        for (int day = 1; day <= 7; day++) {
+            Schedule schedule = scheduleRepository.findByDoctor_UserIdAndDayOfWeek(doctorId, day).orElse(null);
+
+            Map<String, Object> dayData = new HashMap<>();
+
+            if (schedule == null) {
+                dayData.put("isDayOff", true);
+                dayData.put("startTime", null);
+                dayData.put("endTime", null);
+                dayData.put("breaks", List.of());
+            } else {
+                dayData.put("isDayOff", false);
+                dayData.put("startTime", schedule.getStartTime().toString());
+                dayData.put("endTime", schedule.getEndTime().toString());
+
+                List<Break> breaks = breakRepository.findAllBySchedule(schedule);
+                List<Map<String, String>> breaksList = new ArrayList<>();
+                for (Break b : breaks) {
+                    Map<String, String> breakMap = new HashMap<>();
+                    breakMap.put("startTime", b.getStartTime().toString());
+                    breakMap.put("endTime", b.getEndTime().toString());
+                    breaksList.add(breakMap);
+                }
+                dayData.put("breaks", breaksList);
+            }
+
+            result.put(String.valueOf(day), dayData);
+        }
+
+        return result;
+    }
+
+    public Map<Integer, Integer> getAppointmentsCountByDay(Integer doctorId) {
+        List<Appointment> appointments = appointmentRepository.findAllByDoctor_UserId(doctorId);
+        Map<Integer, Integer> countByDay = new HashMap<>();
+
+        for (Appointment app : appointments) {
+            if (app.getStatus() == Status.SCHEDULED) {
+                int dayOfWeek = app.getDateTime().getDayOfWeek().getValue();
+                countByDay.put(dayOfWeek, countByDay.getOrDefault(dayOfWeek, 0) + 1);
+            }
+        }
+
+        System.out.println("Appointments count by day for doctor " + doctorId + ": " + countByDay);
+        return countByDay;
+    }
+
+    @Transactional
+    public void saveDoctorSchedule(Integer doctorId, Map<String, Object> scheduleData) {
+        Doctor doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new RuntimeException("Врач не найден"));
+
+        // Получаем дни с АКТУАЛЬНЫМИ записями
+        Map<Integer, Integer> activeAppointmentsCount = getAppointmentsCountByDay(doctorId);
+
+        // 1. Удаляем расписание только для дней БЕЗ активных записей
+        List<Schedule> existingSchedules = scheduleRepository.findAllByDoctor_UserId(doctorId);
+        for (Schedule s : existingSchedules) {
+            int dayOfWeek = s.getDayOfWeek();
+            if (activeAppointmentsCount.getOrDefault(dayOfWeek, 0) == 0) {
+                // Нет активных записей - можно удалять
+                List<Break> breaksToDelete = breakRepository.findAllBySchedule(s);
+                if (!breaksToDelete.isEmpty()) {
+                    breakRepository.deleteAll(breaksToDelete);
+                }
+                scheduleRepository.delete(s);
+            }
+        }
+        scheduleRepository.flush();
+        breakRepository.flush();
+
+        // 2. Сохраняем новые данные только для дней БЕЗ активных записей
+        for (Map.Entry<String, Object> entry : scheduleData.entrySet()) {
+            int dayOfWeek = Integer.parseInt(entry.getKey());
+
+            // Пропускаем дни с активными записями
+            if (activeAppointmentsCount.getOrDefault(dayOfWeek, 0) > 0) {
+                System.out.println("Day " + dayOfWeek + " has " + activeAppointmentsCount.get(dayOfWeek) + " active appointments - skipping save");
+                continue;
+            }
+
+            Map<String, Object> dayData = (Map<String, Object>) entry.getValue();
+            Boolean isDayOff = (Boolean) dayData.getOrDefault("isDayOff", false);
+
+            if (Boolean.TRUE.equals(isDayOff)) {
+                // Выходной - ничего не сохраняем
+                continue;
+            }
+
+            String startTimeStr = (String) dayData.get("startTime");
+            String endTimeStr = (String) dayData.get("endTime");
+
+            if (startTimeStr == null || endTimeStr == null) {
+                continue;
+            }
+
+            Schedule schedule = new Schedule();
+            schedule.setDoctor(doctor);
+            schedule.setDayOfWeek(dayOfWeek);
+            schedule.setStartTime(LocalTime.parse(startTimeStr));
+            schedule.setEndTime(LocalTime.parse(endTimeStr));
+            schedule = scheduleRepository.save(schedule);
+
+            @SuppressWarnings("unchecked")
+            List<Map<String, String>> newBreaks = (List<Map<String, String>>) dayData.get("breaks");
+
+            if (newBreaks != null) {
+                for (Map<String, String> breakData : newBreaks) {
+                    String breakStart = breakData.get("startTime");
+                    String breakEnd = breakData.get("endTime");
+                    if (breakStart != null && breakEnd != null &&
+                            !breakStart.isEmpty() && !breakEnd.isEmpty()) {
+                        Break breakTime = new Break();
+                        breakTime.setSchedule(schedule);
+                        breakTime.setStartTime(LocalTime.parse(breakStart));
+                        breakTime.setEndTime(LocalTime.parse(breakEnd));
+                        breakRepository.save(breakTime);
+                    }
+                }
+            }
+        }
     }
 }

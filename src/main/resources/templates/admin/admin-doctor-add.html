@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Добавление врача - Панель администратора</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container">
+    <a href="/admin" class="logo">Профи <span>Care</span> <span class="admin-badge">Админ</span></a>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="/admin/clients">Клиенты</a></li>
+        <li><a href="/admin/services">Услуги</a></li>
+        <li><a href="/admin/categories">Категории</a></li>
+        <li><a href="/admin/doctors" class="active">Врачи</a></li>
+        <li class="user-menu" id="userMenu">
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard">
+  <div class="dashboard-container">
+    <div class="full-content">
+      <div class="section-title">
+        <h2>Добавление врача</h2>
+        <a href="/admin/doctors" class="btn-back"><i class="fas fa-arrow-left"></i> Назад к списку</a>
+      </div>
+
+      <div class="form-container">
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <form method="post" action="/admin/doctors/add" class="admin-form" id="doctorForm" enctype="multipart/form-data">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Фамилия *</label>
+              <input type="text" name="lastName" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Имя *</label>
+              <input type="text" name="firstName" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Отчество</label>
+              <input type="text" name="patronymic" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Телефон *</label>
+              <input type="tel" name="phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Пароль *</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Подтверждение пароля *</label>
+              <input type="password" name="confirmPassword" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Стаж (лет) *</label>
+              <input type="number" name="experienceYears" class="form-control" required min="0">
+            </div>
+            <div class="form-group">
+              <label>Пол</label>
+              <select name="gender" class="form-control">
+                <option value="true">Женский</option>
+                <option value="false">Мужской</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>О себе (биография)</label>
+            <textarea name="bio" class="form-control" rows="3"></textarea>
+          </div>
+
+          <!-- Загрузка фото -->
+          <div class="form-group">
+            <label>Фото врача</label>
+            <div class="image-upload-area" id="imageUploadArea">
+              <input type="hidden" name="imagePath" id="imagePath">
+              <div id="imagePreview" class="image-preview" style="display: none;">
+                <img id="previewImg" src="" alt="Preview">
+                <button type="button" class="remove-image" onclick="removeImage('image')"><i class="fas fa-times"></i></button>
+              </div>
+              <div id="imagePlaceholder" class="upload-placeholder" onclick="document.getElementById('imageFile').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Загрузить фото</p>
+                <span class="upload-hint">PNG, JPG, JPEG до 5MB</span>
+              </div>
+              <input type="file" id="imageFile" accept="image/*" style="display: none">
+            </div>
+          </div>
+
+          <!-- Загрузка лицензии -->
+          <div class="form-group">
+            <label>Лицензия</label>
+            <div class="image-upload-area" id="licenseUploadArea">
+              <input type="hidden" name="licensePath" id="licensePath">
+              <div id="licensePreview" class="image-preview" style="display: none;">
+                <img id="licensePreviewImg" src="" alt="License Preview">
+                <button type="button" class="remove-image" onclick="removeImage('license')"><i class="fas fa-times"></i></button>
+              </div>
+              <div id="licensePlaceholder" class="upload-placeholder" onclick="document.getElementById('licenseFile').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Загрузить лицензию</p>
+                <span class="upload-hint">PNG, JPG, PDF до 5MB</span>
+              </div>
+              <input type="file" id="licenseFile" accept="image/*,application/pdf" style="display: none">
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <a href="/admin/doctors" class="btn-cancel">Отмена</a>
+            <button type="submit" class="btn-save">Зарегистрировать врача</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Загрузка изображений
+  function setupImageUpload(fileInputId, previewId, placeholderId, hiddenInputId, previewImgId, uploadAreaId, removeType) {
+      const fileInput = document.getElementById(fileInputId);
+      const uploadArea = document.getElementById(uploadAreaId);
+
+      if (!fileInput) return;
+
+      fileInput.addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const placeholder = document.getElementById(placeholderId);
+          if (placeholder) {
+              placeholder.innerHTML = '<i class="fas fa-spinner fa-pulse"></i><p>Загрузка...</p>';
+          }
+
+          fetch('/admin/api/upload-image', {
+              method: 'POST',
+              body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  document.getElementById(hiddenInputId).value = data.url;
+
+                  const oldPlaceholder = document.getElementById(placeholderId);
+                  if (oldPlaceholder) oldPlaceholder.remove();
+
+                  const oldPreview = document.getElementById(previewId);
+                  if (oldPreview) oldPreview.remove();
+
+                  const newPreview = document.createElement('div');
+                  newPreview.id = previewId;
+                  newPreview.className = 'image-preview';
+                  newPreview.innerHTML = `
+                      <img src="${data.url}" alt="Preview">
+                      <button type="button" class="remove-image" onclick="removeImage('${removeType}')"><i class="fas fa-times"></i></button>
+                  `;
+                  uploadArea.appendChild(newPreview);
+              } else {
+                  alert('Ошибка загрузки');
+                  location.reload();
+              }
+          })
+          .catch(error => {
+              console.error('Ошибка:', error);
+              alert('Ошибка загрузки');
+              location.reload();
+          });
+      });
+  }
+
+  function removeImage(type) {
+      if (type === 'image') {
+          document.getElementById('imagePath').value = '';
+          const preview = document.getElementById('imagePreview');
+          if (preview) preview.remove();
+
+          const uploadArea = document.getElementById('imageUploadArea');
+          const newPlaceholder = document.createElement('div');
+          newPlaceholder.id = 'imagePlaceholder';
+          newPlaceholder.className = 'upload-placeholder';
+          newPlaceholder.onclick = () => document.getElementById('imageFile').click();
+          newPlaceholder.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Загрузить фото</p><span class="upload-hint">PNG, JPG, JPEG до 5MB</span>';
+          uploadArea.appendChild(newPlaceholder);
+          document.getElementById('imageFile').value = '';
+      } else if (type === 'license') {
+          document.getElementById('licensePath').value = '';
+          const preview = document.getElementById('licensePreview');
+          if (preview) preview.remove();
+
+          const uploadArea = document.getElementById('licenseUploadArea');
+          const newPlaceholder = document.createElement('div');
+          newPlaceholder.id = 'licensePlaceholder';
+          newPlaceholder.className = 'upload-placeholder';
+          newPlaceholder.onclick = () => document.getElementById('licenseFile').click();
+          newPlaceholder.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Загрузить лицензию</p><span class="upload-hint">PNG, JPG, PDF до 5MB</span>';
+          uploadArea.appendChild(newPlaceholder);
+          document.getElementById('licenseFile').value = '';
+      }
+  }
+
+  window.removeImage = removeImage;
+
+  setupImageUpload('imageFile', 'imagePreview', 'imagePlaceholder', 'imagePath', 'previewImg', 'imageUploadArea', 'image');
+  setupImageUpload('licenseFile', 'licensePreview', 'licensePlaceholder', 'licensePath', 'licensePreviewImg', 'licenseUploadArea', 'license');
+</script>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>

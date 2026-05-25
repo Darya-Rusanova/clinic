@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Расписание врача - Панель администратора</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="/css/admin-schedule.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container">
+    <a href="/admin" class="logo">Профи <span>Care</span> <span class="admin-badge">Админ</span></a>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="/admin/clients">Клиенты</a></li>
+        <li><a href="/admin/services">Услуги</a></li>
+        <li><a href="/admin/categories">Категории</a></li>
+        <li><a href="/admin/doctors" class="active">Врачи</a></li>
+        <li class="user-menu"><a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard">
+  <div class="dashboard-container">
+    <div class="full-content">
+      <div class="section-title">
+        <h2>Расписание врача: <span id="doctorName">Загрузка...</span></h2>
+        <a href="/admin/doctors" class="btn-back"><i class="fas fa-arrow-left"></i> Назад к врачам</a>
+      </div>
+
+      <div class="schedule-container">
+        <div id="scheduleContent" class="schedule-grid"></div>
+
+        <div class="actions">
+          <button id="saveScheduleBtn" class="btn-save-schedule">Сохранить расписание</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="/js/admin-schedule.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

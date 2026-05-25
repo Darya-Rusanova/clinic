@@ -5,16 +5,13 @@ import com.example.clinic.dto.ServiceDto;
 import com.example.clinic.model.Appointment;
 import com.example.clinic.model.Doctor;
 import com.example.clinic.model.Service;
-import com.example.clinic.repository.AppointmentRepository;
-import com.example.clinic.repository.ServiceRepository;
 import com.example.clinic.service.BookingService;
 import com.example.clinic.service.ScheduleService;
-import jakarta.transaction.Transactional;
+import com.example.clinic.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -24,31 +21,34 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class BookingApiController {
-    @Autowired
-    ServiceRepository serviceRepository;
-    @Autowired
-    ScheduleService scheduleService;
-    @Autowired
-    BookingService bookingService;
 
     @Autowired
-    private AppointmentRepository appointmentRepository;
+    private ServiceService serviceService;
+
+    @Autowired
+    private ScheduleService scheduleService;
+
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping("/services")
     public List<ServiceDto> getFilterServices(@RequestParam(required = false) Integer doctorId,
-                                              @RequestParam(required = false) Integer categoryId){
-        List<Service> services = serviceRepository.findAll();
+                                              @RequestParam(required = false) Integer categoryId) {
+        List<Service> services = serviceService.getAllServices();
 
-        if (doctorId != null){
+        if (doctorId != null) {
             services = services.stream()
-                    .filter(service -> service.getDoctors()
-                            .stream()
+                    .filter(service -> service.getDoctors().stream()
                             .anyMatch(doctor -> doctor.getUserId().equals(doctorId)))
                     .toList();
         }
-        if(categoryId != null){
-            services = services.stream().filter(service -> service.getCategory().getId().equals(categoryId)).toList();
+        if (categoryId != null) {
+            services = services.stream()
+                    .filter(service -> service.getCategory() != null &&
+                            service.getCategory().getId().equals(categoryId))
+                    .toList();
         }
+
         return services.stream().map(s -> {
             ServiceDto dto = new ServiceDto();
             dto.setId(s.getId());
@@ -61,11 +61,12 @@ public class BookingApiController {
                 dto.setCategoryName(s.getCategory().getName());
             }
             return dto;
-        }).toList();
+        }).collect(Collectors.toList());
     }
+
     @GetMapping("/services/{id}/doctors")
-    public List<DoctorDto> getDoctorsByService(@PathVariable Integer id){
-        Service service = serviceRepository.findById(id).orElse(null);
+    public List<DoctorDto> getDoctorsByService(@PathVariable Integer id) {
+        Service service = serviceService.getServiceById(id);
         if (service == null) return List.of();
         return service.getDoctors().stream().map(d -> {
             DoctorDto dto = new DoctorDto();
@@ -78,43 +79,11 @@ public class BookingApiController {
 
     @GetMapping("/slots")
     public List<String> getFreeSlots(@RequestParam Integer doctorId,
-                                                  @RequestParam Integer serviceId,
-                                                  @RequestParam LocalDate date){
-        Service service = serviceRepository.findById(serviceId).orElse(null);
+                                     @RequestParam Integer serviceId,
+                                     @RequestParam LocalDate date) {
+        Service service = serviceService.getServiceById(serviceId);
         if (service == null) return List.of();
-        List<LocalTime> slots = scheduleService.getFreeSlots(doctorId,date,service.getDuration());
-        return slots.stream().map(slot -> slot.toString().substring(0,5)).toList();
-    }
-
-    @GetMapping("/appointment/{id}")
-    public Map<String, Object> getAppointment(@PathVariable Integer id){
-        Appointment appointment = appointmentRepository.findById(id).orElse(null);
-        if(appointment == null) return Map.of();
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", id);
-        response.put("doctorId", appointment.getDoctor().getUserId());
-        response.put("clientId",appointment.getClient().getUserId());
-        response.put("serviceId", appointment.getService().getId());
-        response.put("dateTime", appointment.getDateTime().toString());
-        return response;
-    }
-
-    @PostMapping("/appointment/update")
-    public Map<String, Object> updateAppointment(@RequestParam Integer appointmentId,
-                                                 @RequestParam Integer doctorId,
-                                                 @RequestParam Integer serviceId,
-                                                 @RequestParam Integer clientId,
-                                                 @RequestParam String dateTime) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            Appointment appointment = bookingService.updateAppointment(appointmentId, doctorId, serviceId, clientId, LocalDateTime.parse(dateTime));
-            response.put("success", true);
-            response.put("appointmentId", appointment.getId());
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("error", e.getMessage());
-        }
-        return response;
+        List<LocalTime> slots = scheduleService.getFreeSlots(doctorId, date, service.getDuration());
+        return slots.stream().map(slot -> slot.toString().substring(0, 5)).toList();
     }
 }

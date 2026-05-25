@@ -3,7 +3,7 @@ package com.example.clinic.controller;
 import com.example.clinic.model.Appointment;
 import com.example.clinic.model.Client;
 import com.example.clinic.model.Status;
-import com.example.clinic.repository.AppointmentRepository;
+import com.example.clinic.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +14,14 @@ import java.util.*;
 
 @RestController
 public class ClientFilterController {
+
     @Autowired
-    private AppointmentRepository appointmentRepository;
+    private AppointmentService appointmentService;
+
     @GetMapping("/api/doctor/{id}/clients")
     public Map<String, Object> getClientsJson(@PathVariable Integer id,
                                               @RequestParam(defaultValue = "all") String filter) {
-        List<Appointment> allAppointments = appointmentRepository.findAllByDoctor_UserId(id);
+        List<Appointment> allAppointments = appointmentService.getDoctorAppointments(id);
 
         Map<Integer, Map<String, Object>> clientsMap = new LinkedHashMap<>();
 

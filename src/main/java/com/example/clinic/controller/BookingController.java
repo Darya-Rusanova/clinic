@@ -3,11 +3,7 @@ package com.example.clinic.controller;
 import com.example.clinic.model.Appointment;
 import com.example.clinic.model.Doctor;
 import com.example.clinic.model.Service;
-import com.example.clinic.repository.AppointmentRepository;
-import com.example.clinic.repository.CategoryRepository;
-import com.example.clinic.repository.DoctorRepository;
-import com.example.clinic.repository.ServiceRepository;
-import com.example.clinic.service.BookingService;
+import com.example.clinic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,16 +20,19 @@ import java.util.Map;
 public class BookingController {
 
     @Autowired
-    DoctorRepository doctorRepository;
-    @Autowired
-    ServiceRepository serviceRepository;
-    @Autowired
-    CategoryRepository categoryRepository;
-    @Autowired
-    BookingService bookingService;
+    private DoctorService doctorService;
 
     @Autowired
-    private AppointmentRepository appointmentRepository;
+    private ServiceService serviceService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private BookingService bookingService;
+
+    @Autowired
+    private AppointmentService appointmentService;
 
     @ModelAttribute("selectedServiceId")
     public Integer selectedServiceId() { return null; }
@@ -58,8 +57,8 @@ public class BookingController {
                         @RequestParam(required = false) Integer doctorId,
                         @RequestParam(required = false) Integer clientId,
                         Model model) {
-        model.addAttribute("categories", categoryRepository.findAll());
-        model.addAttribute("doctors", doctorRepository.findAll());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("doctors", doctorService.getAllDoctors());
 
         if (serviceId != null) model.addAttribute("preSelectedServiceId", serviceId);
         if (doctorId != null) model.addAttribute("preSelectedDoctorId", doctorId);
@@ -95,8 +94,8 @@ public class BookingController {
             return "redirect:/booking";
         }
 
-        Service service = serviceRepository.findById(serviceId).orElse(null);
-        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        Service service = serviceService.getServiceById(serviceId);
+        Doctor doctor = doctorService.getDoctorById(doctorId);
 
         model.addAttribute("service", service);
         model.addAttribute("doctor", doctor);
@@ -152,8 +151,8 @@ public class BookingController {
             return "redirect:/booking";
         }
 
-        Service service = serviceRepository.findById(serviceId).orElse(null);
-        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        Service service = serviceService.getServiceById(serviceId);
+        Doctor doctor = doctorService.getDoctorById(doctorId);
         LocalDateTime dateTime = LocalDateTime.parse(date + "T" + time);
 
         model.addAttribute("service", service);
@@ -202,7 +201,7 @@ public class BookingController {
     @GetMapping("/success")
     public String successPage(@RequestParam(required = false) Integer id, Model model) {
         if (id != null) {
-            Appointment appointment = appointmentRepository.findById(id).orElse(null);
+            Appointment appointment = appointmentService.getAppointmentById(id);
             model.addAttribute("appointment", appointment);
         }
         return "booking/success";
@@ -210,7 +209,7 @@ public class BookingController {
 
     @GetMapping("/edit/{id}")
     public String editAppointment(@PathVariable Integer id, Model model) {
-        Appointment appointment = appointmentRepository.findById(id).orElse(null);
+        Appointment appointment = appointmentService.getAppointmentById(id);
         if (appointment == null) return "redirect:/";
 
         model.addAttribute("selectedServiceId", appointment.getService().getId());
@@ -219,8 +218,6 @@ public class BookingController {
         model.addAttribute("selectedTime", appointment.getDateTime().toLocalTime().toString());
         model.addAttribute("clientId", appointment.getClient().getUserId());
         model.addAttribute("editAppointmentId", appointment.getId());
-        System.out.println("clientId из записи: " + appointment.getClient().getUserId());
-
 
         return "redirect:/booking/step2";
     }

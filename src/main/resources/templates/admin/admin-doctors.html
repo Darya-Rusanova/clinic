@@ -338,7 +338,9 @@
                       <td>${doctor.experienceYear || 0} лет</td>
                       <td>${doctor.services || 0}</td>
                       <td>
-                          <a href="/admin" class="action-btn view"><i class="fas fa-calendar-alt"></i></a>
+                          <a href="/admin/doctors/${doctor.id}/schedule" class="action-btn schedule">
+                              <i class="fas fa-calendar-alt"></i>
+                          </a>
                           <button class="action-btn edit-doctor" data-id="${doctor.id}"
                                   data-name="${escapeHtml(doctor.name)}"
                                   data-lastname="${escapeHtml(doctor.lastName || '')}"

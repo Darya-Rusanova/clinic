@@ -541,14 +541,14 @@ body {
 }
 
 .action-btn.schedule {
-    background: #FFF2EC;
-    color: #D3836B;
+    background: #E8F5E9;
+    color: #4CAF50;
 }
 
 .action-btn.schedule:hover {
-    background: #D3836B;
+    background: #4CAF50;
     color: white;
-    cursor:pointer;
+    cursor: pointer;
 }
 
 .action-btn.break {
