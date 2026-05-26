@@ -18,9 +18,27 @@
         <li><a href="/#services">Услуги</a></li>
         <li><a href="/#doctors">Врачи</a></li>
         <li><a href="/#about">О нас</a></li>
+        <li class="notifications-menu" id="notificationsMenu">
+          <div class="notification-bell" id="notificationBell">
+            <i class="fas fa-bell"></i>
+            <span class="notification-dot" id="notificationDot" style="display: none;"></span>
+          </div>
+          <div class="notifications-dropdown" id="notificationsDropdown">
+            <div class="notifications-header">
+              <h4>Уведомления</h4>
+              <button id="markAllReadBtn" class="mark-read-btn">Прочитать все</button>
+            </div>
+            <div id="notificationsList" class="notifications-list">
+              <div class="notifications-loading">Загрузка...</div>
+            </div>
+            <div class="notifications-footer">
+              <button id="loadMoreNotifications" class="load-more-btn" style="display: none;">Загрузить еще</button>
+            </div>
+          </div>
+        </li>
         <li class="user-menu" id="userMenu">
                     <span class="user-name" id="userNameBtn">
-                        <i class="fas fa-user-circle" th:text="${client.user.firstName} + ' ' + ${client.user.lastName}" ></i> <i class="fas fa-chevron-down"></i>
+                        <i class="fas fa-user-circle"></i> <span th:text="${client.user.firstName} + ' ' + ${client.user.lastName}"></span> <i class="fas fa-chevron-down"></i>
                     </span>
           <div class="user-dropdown" id="userDropdown">
             <a href="#" id="settingsBtn"><i class="fas fa-cog"></i> Настройки профиля</a>
@@ -47,7 +65,7 @@
             <i class="fas fa-calendar-alt"></i>
             <span id="profileBirthdate" th:text="${client.birthDate}"></span>
           </div>
-          <div class="profile-detail" >
+          <div class="profile-detail">
             <i class="fas fa-venus" th:if="${client.user.gender}"></i>
             <i class="fas fa-mars" th:unless="${client.user.gender}"></i>
             <span id="profileGender" th:text="${client.user.gender} ? 'Женский' : 'Мужской'"></span>
@@ -84,9 +102,20 @@
         <button class="status-tab" data-filter="CANCELLED">Отменённые (<span id="cancelledCount">0</span>)</button>
       </div>
 
+      <!-- Сортировка -->
+      <div class="sorting-bar">
+        <span class="sort-label">Сортировать по:</span>
+        <button class="sort-btn" data-sort="dateTime">Дате <i class="fas fa-arrow-down sort-icon"></i></button>
+        <button class="sort-btn" data-sort="service.name">Услуге <i class="fas fa-sort sort-icon"></i></button>
+        <button class="sort-btn" data-sort="doctor.user.name">Врачу <i class="fas fa-sort sort-icon"></i></button>
+      </div>
+
       <div id="appointmentsContainer" class="appointments-list">
         <div class="loading">Загрузка...</div>
       </div>
+
+      <!-- Пагинация -->
+      <div id="paginationContainer" class="pagination-container"></div>
     </div>
   </div>
 </main>
@@ -160,6 +189,23 @@
         <div class="form-group">
           <label> </label>
           <div style="visibility: hidden;">placeholder</div>
+        </div>
+      </div>
+      <div class="password-section">
+        <h4 style="margin: 1rem 0 0.5rem 0; padding-top: 0.5rem; border-top: 1px solid #F0E0D6;">Смена пароля</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Старый пароль</label>
+            <input type="password" id="oldPassword" name="oldPassword" placeholder="Введите старый пароль">
+          </div>
+          <div class="form-group">
+            <label>Новый пароль</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="Введите новый пароль">
+          </div>
+          <div class="form-group">
+            <label>Подтверждение пароля</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Подтвердите новый пароль">
+          </div>
         </div>
       </div>
 

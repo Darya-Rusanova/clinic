@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ошибка - Профи Care</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #FFF5F0 0%, #FFE8E0 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .error-container {
+        text-align: center;
+        padding: 2rem;
+        max-width: 550px;
+    }
+
+    .error-icon {
+        font-size: 5rem;
+        color: #D3836B;
+        margin-bottom: 1rem;
+    }
+
+    .error-title {
+        font-size: 1.8rem;
+        color: #2C1810;
+        margin-bottom: 1rem;
+    }
+
+    .error-message {
+        color: #A08B7E;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .error-details {
+        background: #FFF2EC;
+        padding: 1rem;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+        text-align: left;
+        font-size: 0.85rem;
+        color: #D3836B;
+        word-break: break-word;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.8rem 1.8rem;
+        border-radius: 40px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: #D3836B;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #C07058;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #D3836B;
+        border: 1px solid #D3836B;
+    }
+
+    .btn-secondary:hover {
+        background: #FFF2EC;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .error-title { font-size: 1.4rem; }
+        .btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="error-container">
+  <div class="error-icon">
+    <i class="fas fa-bug"></i>
+  </div>
+  <h1 class="error-title">Произошла ошибка</h1>
+  <p class="error-message" th:text="${error} ?: 'Извините, произошла непредвиденная ошибка.'"></p>
+  <div class="error-details" th:if="${timestamp}">
+    <i class="fas fa-clock"></i> Время: <span th:text="${timestamp}"></span><br>
+    <i class="fas fa-link"></i> Путь: <span th:text="${path}"></span><br>
+    <i class="fas fa-code-branch"></i> Статус: <span th:text="${status}"></span>
+  </div>
+  <div class="buttons">
+    <a href="/" class="btn btn-primary">
+      <i class="fas fa-home"></i> На главную
+    </a>
+    <a href="javascript:history.back()" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Вернуться
+    </a>
+  </div>
+</div>
+</body>
+</html>

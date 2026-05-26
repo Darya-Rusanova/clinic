@@ -1,10 +1,6 @@
 package com.example.clinic.service;
 
-import com.example.clinic.model.Doctor;
-import com.example.clinic.model.Service;
-import com.example.clinic.model.ServiceCategory;
-import com.example.clinic.model.Status;
-import com.example.clinic.model.Appointment;
+import com.example.clinic.model.*;
 import com.example.clinic.repository.AppointmentRepository;
 import com.example.clinic.repository.DoctorRepository;
 import com.example.clinic.repository.ServiceRepository;
@@ -32,6 +28,9 @@ public class ServiceService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public List<Service> getAllServices() {
         return serviceRepository.findAll();
@@ -122,22 +121,27 @@ public class ServiceService {
     }
     @Transactional
     public void deleteService(Integer id) {
-        // 1. Отменяем записи
         List<Appointment> appointments = appointmentRepository.findAllByServiceId(id);
         for (Appointment appointment : appointments) {
             appointment.setStatus(Status.CANCELLED);
             appointmentRepository.save(appointment);
+
+            notificationService.createNotification(
+                    appointment.getClient().getUserId(),
+                    "Запись отменена",
+                    "Ваша запись на " + appointment.getService().getName() +
+                            " к врачу " + appointment.getDoctor().getUser().getName() +
+                            " на " + appointment.getDateTime().toLocalDate() + " была отменена.",
+                    NotificationType.APPOINTMENT_CANCELLED
+            );
         }
 
-        // 2. Удаляем связи с врачами (очищаем коллекцию)
         Service service = getServiceById(id);
         if (service != null) {
-            // Очищаем коллекцию врачей у услуги
             service.getDoctors().clear();
-            serviceRepository.save(service); // Сохраняем изменения
+            serviceRepository.save(service);
         }
 
-        // 3. Удаляем услугу через deleteById
         serviceRepository.deleteById(id);
     }
 

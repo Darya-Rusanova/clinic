@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.*;
 
 @Controller
-public class DoctorViewController {
+public class DoctorController {
 
     @Autowired
     private DoctorService doctorService;

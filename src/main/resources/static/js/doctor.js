@@ -1,4 +1,5 @@
-// Переключение вкладок
+
+// ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
 const servicesLink = document.getElementById('servicesLink');
 const scheduleLink = document.getElementById('scheduleLink');
 const clientsLink = document.getElementById('clientsLink');
@@ -25,35 +26,48 @@ function showTab(tabId) {
     }
 }
 
-servicesLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showTab('services');
-});
+if (servicesLink) {
+    servicesLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showTab('services');
+    });
+}
 
-scheduleLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showTab('schedule');
-});
+if (scheduleLink) {
+    scheduleLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showTab('schedule');
+    });
+}
 
-clientsLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showTab('clients');
-});
+if (clientsLink) {
+    clientsLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        showTab('clients');
+    });
+}
 
-
+// ========== КЛИЕНТЫ ==========
 function loadClients(filter) {
     const doctorId = window.location.pathname.split('/')[2];
 
     fetch(`/api/doctor/${doctorId}/clients?filter=${filter}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById('allCount').innerText = data.allCount;
-            document.getElementById('scheduledCount').innerText = data.scheduledCount;
-            document.getElementById('completedCount').innerText = data.completedCount;
-            document.getElementById('cancelledCount').innerText = data.cancelledCount;
+            const allCountSpan = document.getElementById('allCount');
+            const scheduledCountSpan = document.getElementById('scheduledCount');
+            const completedCountSpan = document.getElementById('completedCount');
+            const cancelledCountSpan = document.getElementById('cancelledCount');
+
+            if (allCountSpan) allCountSpan.innerText = data.allCount;
+            if (scheduledCountSpan) scheduledCountSpan.innerText = data.scheduledCount;
+            if (completedCountSpan) completedCountSpan.innerText = data.completedCount;
+            if (cancelledCountSpan) cancelledCountSpan.innerText = data.cancelledCount;
 
             const container = document.getElementById('clientsListContainer');
-            container.innerHTML = renderClients(data.clients);
+            if (container) {
+                container.innerHTML = renderClients(data.clients);
+            }
 
             document.querySelectorAll('.status-tab').forEach(btn => {
                 btn.classList.remove('active');
@@ -61,10 +75,15 @@ function loadClients(filter) {
                     btn.classList.add('active');
                 }
             });
+
+            attachCompleteHandlers();
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            document.getElementById('clientsListContainer').innerHTML = '<div class="no-clients">Ошибка загрузки</div>';
+            const container = document.getElementById('clientsListContainer');
+            if (container) {
+                container.innerHTML = '<div class="no-clients">Ошибка загрузки</div>';
+            }
         });
 }
 
@@ -106,9 +125,14 @@ function renderClients(clients) {
                 </div>
                 <div class="client-appointments">
                     ${client.appointments.map(app => `
-                        <div class="appointment-history-item">
+                        <div class="appointment-history-item" data-appointment-id="${app.id || ''}">
                             <div class="appointment-date">${app.date} ${app.time}</div>
                             <div class="appointment-service">${escapeHtml(app.service)}</div>
+                            ${app.status === 'SCHEDULED' ? `
+                                <button class="btn-complete-appointment" data-appointment-id="${app.id}" data-client-name="${escapeHtml(client.name)}" data-service="${escapeHtml(app.service)}">
+                                    <i class="fas fa-check-circle"></i> Завершить
+                                </button>
+                            ` : ''}
                             <div class="appointment-status ${app.status.toLowerCase()}">
                                 ${app.status === 'COMPLETED' ? ' Завершено' :
                                   app.status === 'SCHEDULED' ? ' Предстоит' : ' Отменено'}
@@ -122,49 +146,71 @@ function renderClients(clients) {
     return html;
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
+// ========== ЗАВЕРШЕНИЕ ПРИЕМА ==========
+let pendingAppointmentId = null;
+
+function attachCompleteHandlers() {
+    document.querySelectorAll('.btn-complete-appointment').forEach(btn => {
+        btn.removeEventListener('click', handleCompleteClick);
+        btn.addEventListener('click', handleCompleteClick);
     });
 }
 
-document.addEventListener('click', function(e) {
-    const filterBtn = e.target.closest('.status-tab');
-    if (filterBtn && filterBtn.getAttribute('data-filter')) {
-        e.preventDefault();
-        const filter = filterBtn.getAttribute('data-filter');
-        loadClients(filter);
-    }
-});
+function handleCompleteClick(e) {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const appointmentId = btn.getAttribute('data-appointment-id');
+    const clientName = btn.getAttribute('data-client-name');
+    const serviceName = btn.getAttribute('data-service');
 
-const userMenu = document.getElementById('userMenu');
-const userDropdown = document.getElementById('userDropdown');
+    pendingAppointmentId = appointmentId;
 
-if (userMenu) {
-    userMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-        userDropdown.classList.toggle('show');
+    const clientNameSpan = document.getElementById('completeClientName');
+    const serviceNameSpan = document.getElementById('completeServiceName');
+
+    if (clientNameSpan) clientNameSpan.innerText = clientName;
+    if (serviceNameSpan) serviceNameSpan.innerText = serviceName;
+
+    const modal = document.getElementById('completeAppointmentModal');
+    if (modal) modal.classList.add('show');
+}
+
+function completeAppointment() {
+    if (!pendingAppointmentId) return;
+
+    fetch(`/api/doctor/appointments/${pendingAppointmentId}/complete`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showNotification('Прием успешно завершен', 'success');
+            closeCompleteModal();
+            const activeFilter = document.querySelector('.status-tab.active');
+            const filter = activeFilter ? activeFilter.getAttribute('data-filter') : 'all';
+            loadClients(filter);
+        } else {
+            showNotification(result.error || 'Ошибка при завершении приема', 'error');
+            closeCompleteModal();
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        showNotification('Ошибка сервера', 'error');
+        closeCompleteModal();
     });
 }
 
-document.addEventListener('click', () => {
-    if (userDropdown) userDropdown.classList.remove('show');
-});
+function closeCompleteModal() {
+    const modal = document.getElementById('completeAppointmentModal');
+    if (modal) modal.classList.remove('show');
+    pendingAppointmentId = null;
+}
 
-const header = document.getElementById('header');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
-
-// Загрузка расписания
+// ========== РАСПИСАНИЕ ==========
 let currentWeekOffset = 0;
 
 function loadSchedule(offset) {
@@ -174,15 +220,22 @@ function loadSchedule(offset) {
     fetch(`/api/doctor/${doctorId}/schedule?weekOffset=${offset}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById('weekRange').innerText =
-                formatDate(data.weekStart) + ' - ' + formatDate(data.weekEnd);
+            const weekRangeSpan = document.getElementById('weekRange');
+            if (weekRangeSpan) {
+                weekRangeSpan.innerText = formatDate(data.weekStart) + ' - ' + formatDate(data.weekEnd);
+            }
 
             const container = document.getElementById('scheduleContainer');
-            container.innerHTML = renderSchedule(data.weekSchedule);
+            if (container) {
+                container.innerHTML = renderSchedule(data.weekSchedule);
+            }
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            document.getElementById('scheduleContainer').innerHTML = '<div class="empty-slots">Ошибка загрузки</div>';
+            const container = document.getElementById('scheduleContainer');
+            if (container) {
+                container.innerHTML = '<div class="empty-slots">Ошибка загрузки</div>';
+            }
         });
 }
 
@@ -204,12 +257,12 @@ function renderSchedule(weekSchedule) {
             for (const slot of day.slots) {
                 html += `
                     <div class="slot-row">
-                        <div class="slot-time">${slot.startTime.substring(0, 5)} - ${slot.endTime.substring(0, 5)}</div>
+                        <div class="slot-time">${slot.startTime ? slot.startTime.substring(0, 5) : ''} - ${slot.endTime ? slot.endTime.substring(0, 5) : ''}</div>
                         <div>
-                            <span class="slot-status ${slot.status.toLowerCase()}">${slot.statusText}</span>
+                            <span class="slot-status ${slot.status ? slot.status.toLowerCase() : ''}">${slot.statusText || slot.status || ''}</span>
                         </div>
                         <div class="slot-client">
-                            ${slot.clientName ? `${slot.clientName} - ${slot.serviceName}` : ''}
+                            ${slot.clientName ? escapeHtml(slot.clientName) + ' - ' + escapeHtml(slot.serviceName) : ''}
                         </div>
                     </div>
                 `;
@@ -221,33 +274,63 @@ function renderSchedule(weekSchedule) {
             </div>
         `;
     }
-
-    html += '<button class="add-break-btn" id="addBreakBtn"><i class="fas fa-plus"></i> Добавить перерыв</button>';
     return html;
 }
 
 function formatDate(dateStr) {
+    if (!dateStr) return '';
     const date = new Date(dateStr);
     return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
 }
 
-document.addEventListener('click', function(e) {
-    const navBtn = e.target.closest('.date-nav-btn');
-    if (navBtn && navBtn.getAttribute('data-offset')) {
-        e.preventDefault();
-        const offset = parseInt(navBtn.getAttribute('data-offset'));
-        loadSchedule(currentWeekOffset + offset);
-    }
+// ========== ВЫПАДАЮЩЕЕ МЕНЮ ==========
+const userMenu = document.getElementById('userMenu');
+const userDropdown = document.getElementById('userDropdown');
+
+if (userMenu) {
+    userMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (userDropdown) userDropdown.classList.toggle('show');
+    });
+}
+
+document.addEventListener('click', () => {
+    if (userDropdown) userDropdown.classList.remove('show');
 });
 
+// ========== СКРОЛЛ ХЕДЕРА ==========
+const header = document.getElementById('header');
+if (header) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+}
+
+// ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ==========
 const modal = document.getElementById('settingsModal');
 const settingsBtns = document.querySelectorAll('#settingsBtn, #settingsBtnSidebar');
 const closeModal = document.querySelector('#settingsModal .close-modal');
 const cancelBtn = document.getElementById('cancelBtn');
+const profileForm = document.getElementById('profileForm');
+
+function loadProfileData() {
+    const oldPasswordInput = document.getElementById('oldPassword');
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    if (oldPasswordInput) oldPasswordInput.value = '';
+    if (newPasswordInput) newPasswordInput.value = '';
+    if (confirmPasswordInput) confirmPasswordInput.value = '';
+}
 
 if (settingsBtns) {
     settingsBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            loadProfileData();
             if (modal) modal.classList.add('show');
         });
     });
@@ -268,5 +351,148 @@ if (cancelBtn) {
 if (modal) {
     window.addEventListener('click', (e) => {
         if (e.target === modal) modal.classList.remove('show');
+    });
+}
+
+// ========== СОХРАНЕНИЕ ПРОФИЛЯ ==========
+if (profileForm) {
+    profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const doctorId = window.location.pathname.split('/')[2];
+
+        const lastNameInput = document.getElementById('lastName');
+        const firstNameInput = document.getElementById('firstName');
+        const patronymicInput = document.getElementById('patronymic');
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+        const genderSelect = document.getElementById('gender');
+        const experienceInput = document.getElementById('experience');
+        const oldPasswordInput = document.getElementById('oldPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        const data = {
+            lastName: lastNameInput ? lastNameInput.value : '',
+            firstName: firstNameInput ? firstNameInput.value : '',
+            patronymic: patronymicInput ? patronymicInput.value : '',
+            phone: phoneInput ? phoneInput.value : '',
+            email: emailInput ? emailInput.value : '',
+            gender: genderSelect ? genderSelect.value === 'true' : true,
+            experience: experienceInput ? parseInt(experienceInput.value) : 0,
+            oldPassword: oldPasswordInput ? oldPasswordInput.value : '',
+            newPassword: newPasswordInput ? newPasswordInput.value : '',
+            confirmPassword: confirmPasswordInput ? confirmPasswordInput.value : ''
+        };
+
+        const submitBtn = profileForm.querySelector('button[type="submit"]');
+        let originalText = '';
+        if (submitBtn) {
+            originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Сохранение...';
+            submitBtn.disabled = true;
+        }
+
+        fetch(`/api/doctor/${doctorId}/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showNotification('Профиль успешно обновлен', 'success');
+                if (modal) modal.classList.remove('show');
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                showNotification(result.error || 'Ошибка при сохранении', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            showNotification('Ошибка сервера', 'error');
+        })
+        .finally(() => {
+            if (submitBtn) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    });
+}
+
+// ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
+document.addEventListener('click', function(e) {
+    const filterBtn = e.target.closest('.status-tab');
+    if (filterBtn && filterBtn.getAttribute('data-filter')) {
+        e.preventDefault();
+        const filter = filterBtn.getAttribute('data-filter');
+        loadClients(filter);
+    }
+});
+
+document.addEventListener('click', function(e) {
+    const navBtn = e.target.closest('.date-nav-btn');
+    if (navBtn && navBtn.getAttribute('data-offset')) {
+        e.preventDefault();
+        const offset = parseInt(navBtn.getAttribute('data-offset'));
+        loadSchedule(currentWeekOffset + offset);
+    }
+});
+
+// ========== МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ==========
+document.addEventListener('DOMContentLoaded', () => {
+    const confirmBtn = document.getElementById('confirmCompleteBtn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', completeAppointment);
+    }
+
+    const closeButtons = document.querySelectorAll('.close-complete-modal');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', closeCompleteModal);
+    });
+
+    const completeModal = document.getElementById('completeAppointmentModal');
+    if (completeModal) {
+        window.addEventListener('click', (e) => {
+            if (e.target === completeModal) closeCompleteModal();
+        });
+    }
+});
+
+// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+function showNotification(message, type) {
+    const oldNotifications = document.querySelectorAll('.notification');
+    oldNotifications.forEach(n => n.remove());
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        color: white;
+        z-index: 9999;
+        animation: fadeInOut 3s ease;
+        background-color: ${type === 'success' ? '#4CAF50' : '#F44336'};
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
     });
 }

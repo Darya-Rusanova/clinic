@@ -79,6 +79,8 @@ public class AuthService {
         User savedUser = userRepository.save(user);
 
         Doctor doctor = new Doctor();
+
+
         doctor.setUser(savedUser);
         doctor.setExperienceYears(experienceYears);
         doctor.setBio(bio);

@@ -19,6 +19,10 @@
         <li><a href="/admin/services">Услуги</a></li>
         <li><a href="/admin/categories">Категории</a></li>
         <li><a href="/admin/doctors">Врачи</a></li>
+        <li><a href="/admin/reports">Отчеты</a></li>
+        <li class="user-menu" id="userMenu">
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </li>
       </ul>
     </nav>
   </div>
@@ -32,27 +36,10 @@
         <div class="admin-avatar">
           <i class="fas fa-user-shield"></i>
         </div>
-        <h3 class="admin-name">Екатерина Петрова</h3>
+        <h3 class="admin-name" th:text="${admin.name}"></h3>
         <p class="admin-role">Главный администратор</p>
-        <p class="admin-email">admin@profi-care.ru</p>
-        <p class="admin-phone">+7 (999) 123-45-67</p>
-        <div class="admin-stats">
-          <div class="admin-stat">
-            <span class="stat-value">3 года</span>
-            <span class="stat-label">В системе</span>
-          </div>
-          <div class="admin-stat">
-            <span class="stat-value">156</span>
-            <span class="stat-label">Клиентов</span>
-          </div>
-          <div class="admin-stat">
-            <span class="stat-value">12</span>
-            <span class="stat-label">Врачей</span>
-          </div>
-        </div>
-        <a href="/admin/profile" class="profile-edit-btn">
-          <i class="fas fa-pen"></i> Редактировать профиль
-        </a>
+        <p class="admin-email" th:text="${admin.email}"></p>
+        <p class="admin-phone" th:text="${admin.phone}"></p>
       </div>
 
       <div class="menu-card">
@@ -73,45 +60,41 @@
           <i class="fas fa-users"></i>
           <div class="stat-info">
             <h3>Клиенты</h3>
-            <p class="stat-number">156</p>
-            <span class="stat-change">+12 за месяц</span>
+            <p class="stat-number" th:text="${totalClients}">0</p>
           </div>
         </div>
         <div class="stat-card">
           <i class="fas fa-stethoscope"></i>
           <div class="stat-info">
             <h3>Врачи</h3>
-            <p class="stat-number">12</p>
-            <span class="stat-change">+2 за месяц</span>
+            <p class="stat-number" th:text="${totalDoctors}">0</p>
           </div>
         </div>
         <div class="stat-card">
           <i class="fas fa-syringe"></i>
           <div class="stat-info">
             <h3>Услуги</h3>
-            <p class="stat-number">34</p>
-            <span class="stat-change">+5 за месяц</span>
+            <p class="stat-number" th:text="${totalServices}">0</p>
           </div>
         </div>
         <div class="stat-card">
           <i class="fas fa-calendar-check"></i>
           <div class="stat-info">
             <h3>Записи сегодня</h3>
-            <p class="stat-number">18</p>
-            <span class="stat-change">+3 ко вчера</span>
+            <p class="stat-number" th:text="${todayAppointmentsCount}">0</p>
           </div>
         </div>
       </div>
 
       <div class="recent-section">
         <div class="section-header">
-          <h3>Последние записи</h3>
+          <h3>Ближайшие записи</h3>
           <a href="/admin/appointments" class="view-all">Все записи →</a>
         </div>
         <table class="recent-table">
           <thead>
           <tr>
-            <th>Дата</th>
+            <th>Дата и время</th>
             <th>Клиент</th>
             <th>Услуга</th>
             <th>Врач</th>
@@ -119,33 +102,19 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td>23.05.2026 10:00</td>
-            <td>Иванова Анна</td>
-            <td>Ботокс</td>
-            <td>Владимиров А.</td>
-            <td><span class="status scheduled">Предстоит</span></td>
+          <tr th:each="app : ${recentAppointments}">
+            <td th:text="${#temporals.format(app.dateTime, 'dd.MM.yyyy HH:mm')}">—</td>
+            <td th:text="${app.client.user.name}">—</td>
+            <td th:text="${app.service.name}">—</td>
+            <td th:text="${app.doctor.user.name}">—</td>
+            <td>
+                <span th:class="'status ' + ${app.status.name().toLowerCase()}"
+                      th:text="${app.status.name() == 'SCHEDULED' ? 'Предстоит' : (app.status.name() == 'COMPLETED' ? 'Завершено' : 'Отменено')}">
+                </span>
+            </td>
           </tr>
-          <tr>
-            <td>23.05.2026 11:00</td>
-            <td>Петрова Елена</td>
-            <td>Филлеры</td>
-            <td>Петрова Е.</td>
-            <td><span class="status scheduled">Предстоит</span></td>
-          </tr>
-          <tr>
-            <td>22.05.2026 14:00</td>
-            <td>Смирнов Михаил</td>
-            <td>Мезотерапия</td>
-            <td>Владимиров А.</td>
-            <td><span class="status completed">Завершено</span></td>
-          </tr>
-          <tr>
-            <td>22.05.2026 09:00</td>
-            <td>Козлова Ольга</td>
-            <td>Чистка лица</td>
-            <td>Соколова М.</td>
-            <td><span class="status cancelled">Отменено</span></td>
+          <tr th:if="${recentAppointments.isEmpty()}">
+            <td colspan="5" style="text-align: center">Нет ближайших записей</td>
           </tr>
           </tbody>
         </table>

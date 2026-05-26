@@ -1,10 +1,14 @@
 package com.example.clinic.controller;
 
 import com.example.clinic.model.Appointment;
+import com.example.clinic.model.Client;
 import com.example.clinic.model.Doctor;
 import com.example.clinic.model.Service;
 import com.example.clinic.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,8 @@ public class BookingController {
 
     @Autowired
     private AppointmentService appointmentService;
+    @Autowired
+    ClientService clientService;
 
     @ModelAttribute("selectedServiceId")
     public Integer selectedServiceId() { return null; }
@@ -62,7 +68,23 @@ public class BookingController {
 
         if (serviceId != null) model.addAttribute("preSelectedServiceId", serviceId);
         if (doctorId != null) model.addAttribute("preSelectedDoctorId", doctorId);
-        if (clientId != null) model.addAttribute("preSelectedClientId", clientId);
+
+        // Если clientId не передан, пробуем получить из сессии или из авторизации
+        if (clientId != null) {
+            model.addAttribute("preSelectedClientId", clientId);
+            model.addAttribute("clientId", clientId);
+        } else {
+            // Попробуем получить клиента из SecurityContext
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+                String email = auth.getName();
+                Client client = clientService.getClientByEmail(email);
+                if (client != null) {
+                    model.addAttribute("preSelectedClientId", client.getUserId());
+                    model.addAttribute("clientId", client.getUserId());
+                }
+            }
+        }
 
         return "booking/step1";
     }

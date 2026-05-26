@@ -1,9 +1,6 @@
 package com.example.clinic.service;
 
-import com.example.clinic.model.Appointment;
-import com.example.clinic.model.Client;
-import com.example.clinic.model.Doctor;
-import com.example.clinic.model.Status;
+import com.example.clinic.model.*;
 import com.example.clinic.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +21,8 @@ public class BookingService {
     ClientRepository clientRepository;
     @Autowired
     AppointmentRepository appointmentRepository;
+    @Autowired
+    NotificationService notificationService;
 
     public Appointment createAppointment(Integer doctorId, Integer serviceId, Integer clientId, LocalDateTime dateTime){
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
@@ -51,6 +50,15 @@ public class BookingService {
         if (appointment != null && appointment.getStatus() == Status.SCHEDULED) {
             appointment.setStatus(Status.CANCELLED);
             appointmentRepository.save(appointment);
+
+            notificationService.createNotification(
+                    appointment.getClient().getUserId(),
+                    "Запись отменена",
+                    "Ваша запись на " + appointment.getService().getName() +
+                            " к врачу " + appointment.getDoctor().getUser().getName() +
+                            " на " + appointment.getDateTime().toLocalDate() + " была отменена.",
+                    NotificationType.APPOINTMENT_CANCELLED
+            );
         }
     }
     public Appointment updateAppointment(Integer id, Integer doctorId, Integer serviceId, Integer clientId, LocalDateTime dateTime){

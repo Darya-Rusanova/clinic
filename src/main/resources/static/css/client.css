@@ -686,3 +686,397 @@ body {
     color: #F44336;
     margin-bottom: 1rem;
 }
+/* ===== СОРТИРОВКА ===== */
+.sorting-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 0.8rem 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50px;
+    flex-wrap: wrap;
+}
+
+.sort-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #A08B7E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sort-btn {
+    background: transparent;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 30px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #4C3A33;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.sort-btn:hover {
+    background: #FFF2EC;
+    color: #D3836B;
+}
+
+.sort-icon {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.sort-icon.active {
+    opacity: 1;
+    color: #D3836B;
+}
+
+.sort-icon.fa-arrow-down,
+.sort-icon.fa-arrow-up {
+    opacity: 1;
+    color: #D3836B;
+}
+/* Пагинация */
+    .pagination-container {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .page-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid #F0E0D6;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.85rem;
+    }
+
+    .page-btn:hover {
+        background: #FFF2EC;
+        border-color: #D3836B;
+    }
+
+    .page-btn.active {
+        background: #D3836B;
+        color: white;
+        border-color: #D3836B;
+    }
+
+    .page-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Сортировка */
+    .sort-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .sort-header:hover {
+        color: #D3836B;
+    }
+
+    .sort-icon {
+        font-size: 0.7rem;
+        opacity: 0.5;
+    }
+
+    .sort-icon.active {
+        opacity: 1;
+        color: #D3836B;
+    }
+
+    /* Уведомления */
+    .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        color: white;
+        z-index: 9999;
+        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .notification.success {
+        background: #4CAF50;
+    }
+
+    .notification.error {
+        background: #F44336;
+    }
+
+    .notification.info {
+        background: #D3836B;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    /* Загрузка */
+    .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #A08B7E;
+    }
+
+    .loading::after {
+        content: "...";
+        animation: dots 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+        0%, 20% { content: "."; }
+        40% { content: ".."; }
+        60%, 100% { content: "..."; }
+    }
+
+    /* Кнопка записи */
+    .btn-new-appointment {
+        background: #D3836B;
+        color: white;
+        border: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 40px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: 0.2s;
+        font-size: 0.85rem;
+    }
+
+    .btn-new-appointment:hover {
+        background: #bc6a52;
+        transform: translateY(-2px);
+    }
+    /* ========== УВЕДОМЛЕНИЯ ========== */
+    .notifications-menu {
+        position: relative;
+        margin-left: 1rem;
+    }
+
+    .notification-bell {
+        position: relative;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #A08B7E;
+        transition: color 0.2s;
+    }
+
+    .notification-bell:hover {
+        color: #D3836B;
+    }
+
+    .notification-dot {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+        width: 10px;
+        height: 10px;
+        background-color: #F44336;
+        border-radius: 50%;
+        border: 2px solid white;
+    }
+
+    .notifications-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 380px;
+        max-width: 90vw;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        z-index: 1000;
+        display: none;
+        margin-top: 10px;
+    }
+
+    .notifications-dropdown.show {
+        display: block;
+        animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .notifications-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #F0E0D6;
+    }
+
+    .notifications-header h4 {
+        margin: 0;
+        font-size: 1rem;
+        color: #2C1810;
+    }
+
+    .mark-read-btn {
+        background: none;
+        border: none;
+        color: #D3836B;
+        font-size: 0.75rem;
+        cursor: pointer;
+    }
+
+    .mark-read-btn:hover {
+        text-decoration: underline;
+    }
+
+    .notifications-list {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .notification-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid #F0E0D6;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .notification-item:hover {
+        background: #FFF9F7;
+    }
+
+    .notification-item.unread {
+        background: #FFF2EC;
+    }
+
+    .notification-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .notification-icon.info {
+        background: #E3F2FD;
+        color: #2196F3;
+    }
+
+    .notification-icon.success {
+        background: #E8F5E9;
+        color: #4CAF50;
+    }
+
+    .notification-icon.warning {
+        background: #FFF3E0;
+        color: #FF9800;
+    }
+
+    .notification-icon.appointment_reminder {
+        background: #E8F5E9;
+        color: #4CAF50;
+    }
+
+    .notification-icon.appointment_cancelled {
+        background: #FFEBEE;
+        color: #F44336;
+    }
+
+    .notification-icon.appointment_completed {
+        background: #E8F5E9;
+        color: #4CAF50;
+    }
+
+    .notification-content {
+        flex: 1;
+    }
+
+    .notification-title {
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+        color: #2C1810;
+    }
+
+    .notification-message {
+        font-size: 0.75rem;
+        color: #A08B7E;
+        margin-bottom: 0.25rem;
+    }
+
+    .notification-time {
+        font-size: 0.65rem;
+        color: #C0A898;
+    }
+
+    .notifications-empty {
+        text-align: center;
+        padding: 2rem;
+        color: #A08B7E;
+        font-size: 0.85rem;
+    }
+
+    .notifications-loading {
+        text-align: center;
+        padding: 2rem;
+        color: #A08B7E;
+    }
+
+    .notifications-footer {
+        padding: 0.5rem;
+        border-top: 1px solid #F0E0D6;
+        text-align: center;
+    }
+
+    .load-more-btn {
+        background: none;
+        border: none;
+        color: #D3836B;
+        font-size: 0.75rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .load-more-btn:hover {
+        text-decoration: underline;
+    }

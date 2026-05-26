@@ -1,35 +1,51 @@
 // Получаем ID клиента из URL
 const clientId = window.location.pathname.split('/')[2];
 
+// Параметры пагинации и сортировки
+let currentPage = 0;
+let pageSize = 5;
+let sortField = 'dateTime';
+let sortDirection = 'desc';
+let currentFilter = 'all';
+
 // Загрузка записей
-function loadAppointments(filter) {
-    fetch(`/api/client/${clientId}/appointments?filter=${filter}`)
+function loadAppointments() {
+    const container = document.getElementById('appointmentsContainer');
+    if (!container) return;
+    container.innerHTML = '<div class="loading">Загрузка...</div>';
+
+    fetch(`/api/client/${clientId}/appointments?filter=${currentFilter}&page=${currentPage}&size=${pageSize}&sort=${sortField}&direction=${sortDirection}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById('allCount').innerText = data.allCount;
-            document.getElementById('scheduledCount').innerText = data.scheduledCount;
-            document.getElementById('completedCount').innerText = data.completedCount;
-            document.getElementById('cancelledCount').innerText = data.cancelledCount;
-            
-            const container = document.getElementById('appointmentsContainer');
+            const allCountSpan = document.getElementById('allCount');
+            const scheduledCountSpan = document.getElementById('scheduledCount');
+            const completedCountSpan = document.getElementById('completedCount');
+            const cancelledCountSpan = document.getElementById('cancelledCount');
+
+            if (allCountSpan) allCountSpan.innerText = data.allCount;
+            if (scheduledCountSpan) scheduledCountSpan.innerText = data.scheduledCount;
+            if (completedCountSpan) completedCountSpan.innerText = data.completedCount;
+            if (cancelledCountSpan) cancelledCountSpan.innerText = data.cancelledCount;
+
             container.innerHTML = renderAppointments(data.appointments);
-            
+            renderPagination(data.currentPage, data.totalPages);
+
             document.querySelectorAll('.status-tab').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.getAttribute('data-filter') === filter) {
+                if (btn.getAttribute('data-filter') === currentFilter) {
                     btn.classList.add('active');
                 }
             });
+
+            updateSortIcons();
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            document.getElementById('appointmentsContainer').innerHTML = '<div class="appointments-empty"><i class="fas fa-calendar-alt"></i><h3>Ошибка загрузки</h3></div>';
+            container.innerHTML = '<div class="appointments-empty"><i class="fas fa-calendar-alt"></i><h3>Ошибка загрузки</h3></div>';
         });
 }
 
-function renderAppointments(appointmentsMap) {
-    const appointments = Object.values(appointmentsMap);
-    
+function renderAppointments(appointments) {
     if (!appointments || appointments.length === 0) {
         return `
             <div class="appointments-empty">
@@ -40,32 +56,36 @@ function renderAppointments(appointmentsMap) {
             </div>
         `;
     }
-    
+
     let html = '<div class="appointments-list">';
     for (const app of appointments) {
         let statusClass = '';
         let statusText = '';
-        let statusIcon = '';
         let showActions = false;
-        
+
         switch (app.status) {
             case 'SCHEDULED':
                 statusClass = 'scheduled';
-                statusText = 'Предстоит';
+                statusText = ' Предстоит';
                 showActions = true;
                 break;
             case 'COMPLETED':
                 statusClass = 'completed';
-                statusText = 'Завершено';
+                statusText = ' Завершено';
                 showActions = false;
                 break;
             case 'CANCELLED':
                 statusClass = 'cancelled';
-                statusText = 'Отменено';
+                statusText = ' Отменено';
                 showActions = false;
                 break;
         }
-        
+
+        const serviceName = app.service && app.service.name ? escapeHtml(app.service.name) : 'Услуга удалена';
+        const doctorName = app.doctor && app.doctor.name ? escapeHtml(app.doctor.name) : 'Врач больше не работает';
+        const servicePrice = app.service && app.service.price ? app.service.price : 0;
+        const serviceDuration = app.service && app.service.duration ? app.service.duration : 0;
+
         html += `
             <div class="appointment-item" data-id="${app.id}">
                 <div class="appointment-time">
@@ -73,14 +93,14 @@ function renderAppointments(appointmentsMap) {
                     <i class="far fa-clock"></i> ${app.time}
                 </div>
                 <div class="appointment-info">
-                    <strong>${escapeHtml(app.service.name)}</strong>
+                    <strong>${serviceName}</strong>
                     <div class="appointment-details">
-                        ️${escapeHtml(app.doctor.name)}<br>
-                        ${app.service.price} ₽ ${app.service.duration} мин
+                        ${doctorName}<br>
+                        ${servicePrice} ₽ ${serviceDuration} мин
                     </div>
                 </div>
                 <div class="appointment-status ${statusClass}">
-                    ${statusIcon} ${statusText}
+                    ${statusText}
                 </div>
                 ${showActions ? `
                     <div class="appointment-actions">
@@ -99,6 +119,80 @@ function renderAppointments(appointmentsMap) {
     return html;
 }
 
+function renderPagination(currentPage, totalPages) {
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (!paginationContainer) return;
+
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let html = '<div class="pagination">';
+    html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 0 ? 'disabled' : ''}>←</button>`;
+
+    let startPage = Math.max(0, currentPage - 2);
+    let endPage = Math.min(totalPages - 1, currentPage + 2);
+
+    if (startPage > 0) {
+        html += `<button class="page-btn" onclick="goToPage(0)">1</button>`;
+        if (startPage > 1) html += '<span class="page-dots">...</span>';
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i + 1}</button>`;
+    }
+
+    if (endPage < totalPages - 1) {
+        if (endPage < totalPages - 2) html += '<span class="page-dots">...</span>';
+        html += `<button class="page-btn" onclick="goToPage(${totalPages - 1})">${totalPages}</button>`;
+    }
+
+    html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages - 1 ? 'disabled' : ''}>→</button>`;
+    html += '</div>';
+
+    paginationContainer.innerHTML = html;
+}
+
+function goToPage(page) {
+    if (page < 0) return;
+    currentPage = page;
+    loadAppointments();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changeSort(field) {
+    if (sortField === field) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortField = field;
+        sortDirection = 'desc';
+    }
+    currentPage = 0;
+    loadAppointments();
+}
+
+function updateSortIcons() {
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+        const field = btn.getAttribute('data-sort');
+        const icon = btn.querySelector('.sort-icon');
+        if (!icon) return;
+        icon.classList.remove('fa-arrow-down', 'fa-arrow-up', 'fa-sort');
+
+        if (field === sortField) {
+            if (sortDirection === 'asc') {
+                icon.classList.add('fa-arrow-up');
+            } else {
+                icon.classList.add('fa-arrow-down');
+            }
+            icon.classList.add('active');
+        } else {
+            icon.classList.add('fa-sort');
+            icon.classList.remove('active');
+        }
+    });
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -112,8 +206,17 @@ function escapeHtml(str) {
 // Обработчики фильтров
 document.querySelectorAll('.status-tab').forEach(btn => {
     btn.addEventListener('click', function() {
-        const filter = this.getAttribute('data-filter');
-        loadAppointments(filter);
+        currentFilter = this.getAttribute('data-filter');
+        currentPage = 0;
+        loadAppointments();
+    });
+});
+
+// Обработчики сортировки
+document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const field = this.getAttribute('data-sort');
+        changeSort(field);
     });
 });
 
@@ -124,7 +227,7 @@ const userDropdown = document.getElementById('userDropdown');
 if (userMenu) {
     userMenu.addEventListener('click', (e) => {
         e.stopPropagation();
-        userDropdown.classList.toggle('show');
+        if (userDropdown) userDropdown.classList.toggle('show');
     });
 }
 
@@ -134,13 +237,15 @@ document.addEventListener('click', () => {
 
 // ========== СКРОЛЛ ХЕДЕРА ==========
 const header = document.getElementById('header');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
+if (header) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 10) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+}
 
 // ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ==========
 const modal = document.getElementById('settingsModal');
@@ -148,9 +253,20 @@ const settingsBtns = document.querySelectorAll('#settingsBtn, #settingsBtnSideba
 const closeModal = document.querySelector('#settingsModal .close-modal');
 const cancelBtn = document.getElementById('cancelBtn');
 
+function loadProfileData() {
+    const oldPasswordInput = document.getElementById('oldPassword');
+    const newPasswordInput = document.getElementById('newPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    if (oldPasswordInput) oldPasswordInput.value = '';
+    if (newPasswordInput) newPasswordInput.value = '';
+    if (confirmPasswordInput) confirmPasswordInput.value = '';
+}
+
 if (settingsBtns) {
     settingsBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            loadProfileData();
             if (modal) modal.classList.add('show');
         });
     });
@@ -174,7 +290,71 @@ if (modal) {
     });
 }
 
-loadAppointments('all');
+// ========== СОХРАНЕНИЕ ПРОФИЛЯ СО СМЕНОЙ ПАРОЛЯ ==========
+const profileForm = document.getElementById('profileForm');
+if (profileForm) {
+    profileForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const lastNameInput = document.getElementById('lastName');
+        const firstNameInput = document.getElementById('firstName');
+        const patronymicInput = document.getElementById('patronymic');
+        const phoneInput = document.getElementById('phone');
+        const emailInput = document.getElementById('email');
+        const genderSelect = document.getElementById('gender');
+        const birthdateInput = document.getElementById('birthdate');
+        const oldPasswordInput = document.getElementById('oldPassword');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        const data = {
+            lastName: lastNameInput ? lastNameInput.value : '',
+            firstName: firstNameInput ? firstNameInput.value : '',
+            patronymic: patronymicInput ? patronymicInput.value : '',
+            phone: phoneInput ? phoneInput.value : '',
+            email: emailInput ? emailInput.value : '',
+            gender: genderSelect ? genderSelect.value === 'true' : true,
+            birthDate: birthdateInput ? birthdateInput.value : '',
+            oldPassword: oldPasswordInput ? oldPasswordInput.value : '',
+            newPassword: newPasswordInput ? newPasswordInput.value : '',
+            confirmPassword: confirmPasswordInput ? confirmPasswordInput.value : ''
+        };
+
+        const submitBtn = profileForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn ? submitBtn.textContent : 'Сохранить';
+        if (submitBtn) {
+            submitBtn.textContent = 'Сохранение...';
+            submitBtn.disabled = true;
+        }
+
+        fetch(`/api/client/${clientId}/profile`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                if (modal) modal.classList.remove('show');
+                showNotification('Профиль успешно обновлён', 'success');
+                setTimeout(() => location.reload(), 500);
+            } else {
+                showNotification(result.error || 'Ошибка при сохранении', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            showNotification('Ошибка сервера', 'error');
+        })
+        .finally(() => {
+            if (submitBtn) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    });
+}
+
 // ========== МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ОТМЕНЫ ==========
 let pendingCancelId = null;
 
@@ -184,11 +364,11 @@ const closeConfirmModalBtns = document.querySelectorAll('.close-confirm-modal');
 
 function showConfirmModal(appointmentId) {
     pendingCancelId = appointmentId;
-    confirmModal.classList.add('show');
+    if (confirmModal) confirmModal.classList.add('show');
 }
 
 function hideConfirmModal() {
-    confirmModal.classList.remove('show');
+    if (confirmModal) confirmModal.classList.remove('show');
     pendingCancelId = null;
 }
 
@@ -205,18 +385,18 @@ closeConfirmModalBtns.forEach(btn => {
     btn.addEventListener('click', hideConfirmModal);
 });
 
-// Закрытие по клику вне модалки
 window.addEventListener('click', (e) => {
     if (e.target === confirmModal) {
         hideConfirmModal();
     }
 });
+
 // ========== ОТМЕНА ЗАПИСИ ==========
 document.addEventListener('click', function(e) {
-    const cancelBtn = e.target.closest('.btn-cancel-appointment');
-    if (cancelBtn) {
+    const cancelBtnEl = e.target.closest('.btn-cancel-appointment');
+    if (cancelBtnEl) {
         e.preventDefault();
-        const appointmentId = cancelBtn.getAttribute('data-id');
+        const appointmentId = cancelBtnEl.getAttribute('data-id');
         if (appointmentId && appointmentId !== 'undefined') {
             showConfirmModal(appointmentId);
         } else {
@@ -231,8 +411,7 @@ function cancelAppointment(appointmentId) {
     })
     .then(response => {
         if (response.ok) {
-            const activeFilter = document.querySelector('.status-tab.active').getAttribute('data-filter');
-            loadAppointments(activeFilter);
+            loadAppointments();
             showNotification('Запись успешно отменена', 'success');
         } else {
             showNotification('Ошибка при отмене записи', 'error');
@@ -243,7 +422,8 @@ function cancelAppointment(appointmentId) {
         showNotification('Ошибка сервера', 'error');
     });
 }
-// Обработчик редактирования записи
+
+// ========== РЕДАКТИРОВАНИЕ ЗАПИСИ ==========
 document.addEventListener('click', function(e) {
     const editBtn = e.target.closest('.btn-edit-appointment');
     if (editBtn) {
@@ -252,14 +432,170 @@ document.addEventListener('click', function(e) {
         window.location.href = `/booking/edit/${appointmentId}`;
     }
 });
+
 // ========== УВЕДОМЛЕНИЯ ==========
-function showNotification(message, type = 'info') {
+function showNotification(message, type) {
+    const oldNotifications = document.querySelectorAll('.notification');
+    oldNotifications.forEach(n => n.remove());
+
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        color: white;
+        z-index: 9999;
+        animation: fadeInOut 3s ease;
+        background-color: ${type === 'success' ? '#4CAF50' : '#F44336'};
+    `;
     document.body.appendChild(notification);
-
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
+    setTimeout(() => notification.remove(), 3000);
 }
+
+// ========== УВЕДОМЛЕНИЯ ==========
+let notifications = [];
+let unreadCount = 0;
+let currentNotificationPage = 0;
+let totalNotificationPages = 0;
+
+function loadNotifications(page = 0, append = false) {
+    fetch(`/api/client/${clientId}/notifications?page=${page}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!append) {
+                notifications = data.notifications;
+            } else {
+                notifications = [...notifications, ...data.notifications];
+            }
+            unreadCount = data.unreadCount;
+            currentNotificationPage = data.currentPage;
+            totalNotificationPages = data.totalPages;
+
+            updateBellIcon();
+            renderNotificationsList();
+
+            if (currentNotificationPage + 1 >= totalNotificationPages) {
+                document.getElementById('loadMoreNotifications').style.display = 'none';
+            } else {
+                document.getElementById('loadMoreNotifications').style.display = 'block';
+            }
+        })
+        .catch(error => console.error('Ошибка:', error));
+}
+
+function updateBellIcon() {
+    const dot = document.getElementById('notificationDot');
+    if (dot) {
+        dot.style.display = unreadCount > 0 ? 'block' : 'none';
+    }
+}
+
+function renderNotificationsList() {
+    const container = document.getElementById('notificationsList');
+    if (!container) return;
+
+    if (notifications.length === 0) {
+        container.innerHTML = '<div class="notifications-empty">Нет уведомлений</div>';
+        return;
+    }
+
+    container.innerHTML = notifications.map(n => `
+        <div class="notification-item ${!n.read ? 'unread' : ''}">
+            <div class="notification-icon ${n.type.toLowerCase()}">
+                <i class="${getIconByType(n.type)}"></i>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">${escapeHtml(n.title)}</div>
+                <div class="notification-message">${escapeHtml(n.message)}</div>
+                <div class="notification-time">${formatDate(n.createdAt)}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getIconByType(type) {
+    const icons = {
+        'INFO': 'fas fa-info-circle',
+        'SUCCESS': 'fas fa-check-circle',
+        'WARNING': 'fas fa-exclamation-triangle',
+        'APPOINTMENT_REMINDER': 'fas fa-calendar-day',
+        'APPOINTMENT_CANCELLED': 'fas fa-calendar-times',
+        'APPOINTMENT_COMPLETED': 'fas fa-check-double'
+    };
+    return icons[type] || 'fas fa-bell';
+}
+
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor((now - date) / 86400000);
+
+    if (diffDays === 0) return 'Сегодня';
+    if (diffDays === 1) return 'Вчера';
+    return date.toLocaleDateString('ru-RU');
+}
+
+function markAllNotificationsRead() {
+    fetch(`/api/client/${clientId}/notifications/read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            unreadCount = 0;
+            updateBellIcon();
+            notifications.forEach(n => n.read = true);
+            renderNotificationsList();
+        }
+    })
+    .catch(error => console.error('Ошибка:', error));
+}
+
+function loadMoreNotifications() {
+    if (currentNotificationPage + 1 < totalNotificationPages) {
+        loadNotifications(currentNotificationPage + 1, true);
+    }
+}
+
+// Инициализация уведомлений
+function initNotifications() {
+    const bell = document.getElementById('notificationBell');
+    const dropdown = document.getElementById('notificationsDropdown');
+    const markReadBtn = document.getElementById('markAllReadBtn');
+    const loadMoreBtn = document.getElementById('loadMoreNotifications');
+
+    if (bell) {
+        bell.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('show');
+            if (dropdown.classList.contains('show')) {
+                loadNotifications(0);
+            }
+        });
+    }
+
+    if (markReadBtn) {
+        markReadBtn.addEventListener('click', markAllNotificationsRead);
+    }
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', loadMoreNotifications);
+    }
+
+    document.addEventListener('click', () => {
+        if (dropdown) dropdown.classList.remove('show');
+    });
+
+    loadNotifications(0);
+}
+
+// Запуск
+document.addEventListener('DOMContentLoaded', () => {
+    initNotifications();
+    loadAppointments();
+});

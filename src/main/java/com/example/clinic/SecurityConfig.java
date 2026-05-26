@@ -1,6 +1,5 @@
 package com.example.clinic;
 
-import com.example.clinic.service.ClientService;
 import com.example.clinic.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -21,76 +19,32 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private ClientService clientService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Публичные страницы (доступны всем)
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/api/**").permitAll()
                         .requestMatchers("/login", "/register").permitAll()
-
-                        // Страница записи - доступна клиентам и админам
                         .requestMatchers("/booking/**").hasAnyRole("CLIENT", "ADMIN")
-
-                        // Админ панель (только ADMIN)
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-
-                        // Доктор панель (только DOCTOR)
                         .requestMatchers("/doctor/**").hasRole("DOCTOR")
-
-                        // Клиент панель (только CLIENT)
                         .requestMatchers("/client/**").hasRole("CLIENT")
-
-                        // Всё остальное требует авторизации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .successHandler(successHandler())
+                        .defaultSuccessUrl("/", true)  // Просто редирект на главную
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.disable());
 
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return (request, response, authentication) -> {
-            String redirectUrl = "/";
-
-            for (var authority : authentication.getAuthorities()) {
-                String role = authority.getAuthority();
-                if (role.equals("ROLE_ADMIN")) {
-                    redirectUrl = "/admin";
-                    break;
-                } else if (role.equals("ROLE_DOCTOR")) {
-                    redirectUrl = "/doctor";
-                    break;
-                } else if (role.equals("ROLE_CLIENT")) {
-                    String email = authentication.getName();
-                    Integer clientId = clientService.getClientIdByEmail(email);
-                    if (clientId != null) {
-                        redirectUrl = "/client/" + clientId;
-                    } else {
-                        redirectUrl = "/";
-                    }
-                    break;
-                }
-            }
-            response.sendRedirect(redirectUrl);
-        };
     }
 
     @Bean

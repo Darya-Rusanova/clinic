@@ -16,6 +16,10 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
+    public  User getUserByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     @Transactional
     public void updateUser(User user) {
         userRepository.save(user);

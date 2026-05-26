@@ -123,11 +123,50 @@
           <option th:value="false" th:selected="${!doctor.user.gender}">Мужской</option>
         </select>
       </div>
+
+      <div class="password-section">
+        <h4 style="margin: 1rem 0 0.5rem 0; padding-top: 0.5rem; border-top: 1px solid #F0E0D6;">Смена пароля</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Старый пароль</label>
+            <input type="password" id="oldPassword" name="oldPassword" placeholder="Введите старый пароль">
+          </div>
+          <div class="form-group">
+            <label>Новый пароль</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="Введите новый пароль">
+          </div>
+          <div class="form-group">
+            <label>Подтверждение пароля</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Подтвердите новый пароль">
+          </div>
+        </div>
+      </div>
       <div class="form-buttons">
         <button type="button" class="btn-cancel" id="cancelBtn">Отмена</button>
         <button type="submit" class="btn-save">Сохранить изменения</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div id="completeAppointmentModal" class="modal">
+  <div class="modal-content modal-small">
+    <div class="modal-header">
+      <h3>Подтверждение завершения приема</h3>
+      <span class="close-modal close-complete-modal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <i class="fas fa-check-circle" style="font-size: 3rem; color: #4CAF50; margin-bottom: 1rem; display: block; text-align: center;"></i>
+      <p style="text-align: center; margin-bottom: 0.5rem;">Завершить прием?</p>
+      <p style="text-align: center; color: #A08B7E; font-size: 0.85rem;" id="completeAppointmentInfo">
+        Клиент: <span id="completeClientName"></span><br>
+        Услуга: <span id="completeServiceName"></span>
+      </p>
+    </div>
+    <div class="form-buttons" style="justify-content: center;">
+      <button type="button" class="btn-cancel close-complete-modal">Отмена</button>
+      <button type="button" id="confirmCompleteBtn" class="btn-save" style="background: #4CAF50;">Завершить</button>
+    </div>
   </div>
 </div>
 

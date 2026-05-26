@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Все записи - Панель администратора</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <style>
+    .filters-bar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-group label {
+        font-size: 0.8rem;
+        color: #A08B7E;
+    }
+
+    .filter-select {
+        padding: 0.5rem 1rem;
+        border: 1px solid #F0E0D6;
+        border-radius: 30px;
+        background: white;
+        font-size: 0.85rem;
+        min-width: 150px;
+        cursor: pointer;
+    }
+
+    .sorting-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .sort-label {
+        font-size: 0.8rem;
+        color: #A08B7E;
+    }
+
+    .sort-btn {
+        background: transparent;
+        border: 1px solid #F0E0D6;
+        padding: 0.4rem 0.8rem;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .sort-btn:hover {
+        background: #FFF2EC;
+        border-color: #D3836B;
+    }
+
+    .sort-btn.active {
+        background: #D3836B;
+        color: white;
+        border-color: #D3836B;
+    }
+
+    .sort-icon {
+        font-size: 0.7rem;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .page-btn {
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #F0E0D6;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+        min-width: 36px;
+    }
+
+    .page-btn:hover {
+        background: #FFF2EC;
+        border-color: #D3836B;
+    }
+
+    .page-btn.active {
+        background: #D3836B;
+        color: white;
+        border-color: #D3836B;
+    }
+
+    .page-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .status {
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    .status.scheduled {
+        background: #FFF3E0;
+        color: #FF9800;
+    }
+
+    .status.completed {
+        background: #E8F5E9;
+        color: #4CAF50;
+    }
+
+    .status.cancelled {
+        background: #FFEBEE;
+        color: #F44336;
+    }
+  </style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container">
+    <a href="/admin" class="logo">Профи <span>Care</span> <span class="admin-badge">Админ</span></a>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="/admin">Главная</a></li>
+        <li><a href="/admin/clients">Клиенты</a></li>
+        <li><a href="/admin/services">Услуги</a></li>
+        <li><a href="/admin/categories">Категории</a></li>
+        <li><a href="/admin/doctors">Врачи</a></li>
+        <li><a href="/admin/reports">Отчеты</a></li>
+        <li class="user-menu" id="userMenu">
+          <a href="/logout"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="dashboard">
+  <div class="dashboard-container">
+    <div class="full-content">
+      <div class="section-title">
+        <h2>Все записи</h2>
+      </div>
+
+      <div class="filters-bar">
+        <div class="filter-group">
+          <label>Статус:</label>
+          <select id="statusFilter" class="filter-select">
+            <option value="all">Все</option>
+            <option value="SCHEDULED">Предстоящие</option>
+            <option value="COMPLETED">Завершённые</option>
+            <option value="CANCELLED">Отменённые</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="sorting-bar">
+        <span class="sort-label">Сортировать по:</span>
+        <button class="sort-btn" data-sort="dateTime">Дате <i class="fas fa-arrow-down sort-icon"></i></button>
+        <button class="sort-btn" data-sort="clientName">Клиенту <i class="fas fa-sort sort-icon"></i></button>
+        <button class="sort-btn" data-sort="doctorName">Врачу <i class="fas fa-sort sort-icon"></i></button>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+          <tr>
+            <th>Дата и время</th>
+            <th>Клиент</th>
+            <th>Услуга</th>
+            <th>Врач</th>
+            <th>Статус</th>
+          </tr>
+          </thead>
+          <tbody id="appointmentsBody">
+          <tr><td colspan="5" style="text-align: center">Загрузка...<\/td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="paginationContainer" class="pagination"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  let currentPage = 0;
+  let totalPages = 0;
+  let sortField = 'dateTime';
+  let sortDirection = 'desc';
+
+  function loadAppointments() {
+      const status = document.getElementById('statusFilter').value;
+
+      let url = `/admin/api/appointments?page=${currentPage}&size=10&status=${status}&sort=${sortField}&direction=${sortDirection}`;
+
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              renderAppointments(data.appointments);
+              renderPagination(data.currentPage, data.totalPages);
+              totalPages = data.totalPages;
+              updateSortIcons();
+          })
+          .catch(error => {
+              console.error('Ошибка:', error);
+              document.getElementById('appointmentsBody').innerHTML = '<tr><td colspan="5" style="text-align: center">Ошибка загрузки</td></tr>';
+          });
+  }
+
+  function renderAppointments(appointments) {
+      const tbody = document.getElementById('appointmentsBody');
+
+      if (!appointments || appointments.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center">Нет записей</td></tr>';
+          return;
+      }
+
+      tbody.innerHTML = appointments.map(app => `
+          <tr>
+              <td>${formatDateTime(app.dateTime)}</td>
+              <td>${escapeHtml(app.clientName)}</td>
+              <td>${escapeHtml(app.serviceName)}</td>
+              <td>${escapeHtml(app.doctorName)}</td>
+              <td><span class="status ${app.status.toLowerCase()}">${getStatusText(app.status)}</span></td>
+          </tr>
+      `).join('');
+  }
+
+  function renderPagination(currentPage, totalPages) {
+      const container = document.getElementById('paginationContainer');
+
+      if (totalPages <= 1) {
+          container.innerHTML = '';
+          return;
+      }
+
+      let html = '<div class="pagination">';
+      html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 0 ? 'disabled' : ''}>←</button>`;
+
+      let startPage = Math.max(0, currentPage - 2);
+      let endPage = Math.min(totalPages - 1, currentPage + 2);
+
+      if (startPage > 0) {
+          html += `<button class="page-btn" onclick="goToPage(0)">1</button>`;
+          if (startPage > 1) html += `<span class="page-dots">...</span>`;
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i + 1}</button>`;
+      }
+
+      if (endPage < totalPages - 1) {
+          if (endPage < totalPages - 2) html += `<span class="page-dots">...</span>`;
+          html += `<button class="page-btn" onclick="goToPage(${totalPages - 1})">${totalPages}</button>`;
+      }
+
+      html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages - 1 ? 'disabled' : ''}>→</button>`;
+      html += '</div>';
+
+      container.innerHTML = html;
+  }
+
+  function goToPage(page) {
+      if (page < 0 || page >= totalPages) return;
+      currentPage = page;
+      loadAppointments();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function changeSort(field) {
+      if (sortField === field) {
+          sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+          sortField = field;
+          sortDirection = 'desc';
+      }
+      currentPage = 0;
+      loadAppointments();
+  }
+
+  function updateSortIcons() {
+      document.querySelectorAll('.sort-btn').forEach(btn => {
+          const field = btn.getAttribute('data-sort');
+          const icon = btn.querySelector('.sort-icon');
+          icon.classList.remove('fa-arrow-down', 'fa-arrow-up', 'fa-sort');
+
+          if (field === sortField) {
+              if (sortDirection === 'asc') {
+                  icon.classList.add('fa-arrow-up');
+              } else {
+                  icon.classList.add('fa-arrow-down');
+              }
+              btn.classList.add('active');
+          } else {
+              icon.classList.add('fa-sort');
+              btn.classList.remove('active');
+          }
+      });
+  }
+
+  function formatDateTime(dateTimeStr) {
+      if (!dateTimeStr) return '';
+      const date = new Date(dateTimeStr);
+      return date.toLocaleString('ru-RU', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+      });
+  }
+
+  function getStatusText(status) {
+      switch(status) {
+          case 'SCHEDULED': return 'Предстоит';
+          case 'COMPLETED': return 'Завершено';
+          case 'CANCELLED': return 'Отменено';
+          default: return status;
+      }
+  }
+
+  function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/[&<>]/g, function(m) {
+          if (m === '&') return '&amp;';
+          if (m === '<') return '&lt;';
+          if (m === '>') return '&gt;';
+          return m;
+      });
+  }
+
+  // Динамическая фильтрация
+  document.getElementById('statusFilter').addEventListener('change', () => {
+      currentPage = 0;
+      loadAppointments();
+  });
+
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+          const field = btn.getAttribute('data-sort');
+          changeSort(field);
+      });
+  });
+
+  loadAppointments();
+</script>
+
+<script src="/js/admin.js"></script>
+</body>
+</html>
