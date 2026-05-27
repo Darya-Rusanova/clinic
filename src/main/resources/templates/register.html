@@ -19,55 +19,64 @@
       <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
     </div>
 
-    <form method="post" action="/register">
+    <form method="post" th:action="@{/register}" th:object="${registrationDto}">
       <div class="form-row">
         <div class="form-group">
           <label>Фамилия *</label>
-          <input type="text" name="lastName" class="form-control" required>
+          <input type="text" th:field="*{lastName}" class="form-control">
+          <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error-message"></span>
         </div>
         <div class="form-group">
           <label>Имя *</label>
-          <input type="text" name="firstName" class="form-control" required>
+          <input type="text" th:field="*{firstName}" class="form-control">
+          <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error-message"></span>
         </div>
         <div class="form-group">
           <label>Отчество</label>
-          <input type="text" name="patronymic" class="form-control">
+          <input type="text" th:field="*{patronymic}" class="form-control">
+          <span th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}" class="error-message"></span>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Телефон *</label>
-          <input type="tel" name="phone" class="form-control" required>
+          <input type="tel" th:field="*{phone}" class="form-control">
+          <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error-message"></span>
         </div>
         <div class="form-group">
           <label>Email *</label>
-          <input type="email" name="email" class="form-control" required>
+          <input type="email" th:field="*{email}" class="form-control">
+          <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></span>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Пароль *</label>
-          <input type="password" name="password" class="form-control" required>
+          <input type="password" th:field="*{password}" class="form-control">
+          <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></span>
         </div>
         <div class="form-group">
           <label>Подтверждение пароля *</label>
-          <input type="password" name="confirmPassword" class="form-control" required>
+          <input type="password" th:field="*{confirmPassword}" class="form-control">
+          <span th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error-message"></span>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Дата рождения</label>
-          <input type="date" name="birthDate" class="form-control">
+          <input type="date" th:field="*{birthDate}" class="form-control">
+          <span th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="error-message"></span>
         </div>
         <div class="form-group">
           <label>Пол</label>
-          <select name="gender" class="form-control">
-            <option value="true">Женский</option>
-            <option value="false">Мужской</option>
+          <select th:field="*{gender}" class="form-control">
+            <option th:value="true">Женский</option>
+            <option th:value="false">Мужской</option>
           </select>
+          <span th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="error-message"></span>
         </div>
       </div>
 

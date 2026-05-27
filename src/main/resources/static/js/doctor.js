@@ -1,5 +1,4 @@
 
-// ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
 const servicesLink = document.getElementById('servicesLink');
 const scheduleLink = document.getElementById('scheduleLink');
 const clientsLink = document.getElementById('clientsLink');
@@ -47,7 +46,6 @@ if (clientsLink) {
     });
 }
 
-// ========== КЛИЕНТЫ ==========
 function loadClients(filter) {
     const doctorId = window.location.pathname.split('/')[2];
 
@@ -146,7 +144,6 @@ function renderClients(clients) {
     return html;
 }
 
-// ========== ЗАВЕРШЕНИЕ ПРИЕМА ==========
 let pendingAppointmentId = null;
 
 function attachCompleteHandlers() {
@@ -210,7 +207,6 @@ function closeCompleteModal() {
     pendingAppointmentId = null;
 }
 
-// ========== РАСПИСАНИЕ ==========
 let currentWeekOffset = 0;
 
 function loadSchedule(offset) {
@@ -283,7 +279,6 @@ function formatDate(dateStr) {
     return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
 }
 
-// ========== ВЫПАДАЮЩЕЕ МЕНЮ ==========
 const userMenu = document.getElementById('userMenu');
 const userDropdown = document.getElementById('userDropdown');
 
@@ -298,7 +293,6 @@ document.addEventListener('click', () => {
     if (userDropdown) userDropdown.classList.remove('show');
 });
 
-// ========== СКРОЛЛ ХЕДЕРА ==========
 const header = document.getElementById('header');
 if (header) {
     window.addEventListener('scroll', () => {
@@ -310,7 +304,6 @@ if (header) {
     });
 }
 
-// ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ==========
 const modal = document.getElementById('settingsModal');
 const settingsBtns = document.querySelectorAll('#settingsBtn, #settingsBtnSidebar');
 const closeModal = document.querySelector('#settingsModal .close-modal');
@@ -354,7 +347,6 @@ if (modal) {
     });
 }
 
-// ========== СОХРАНЕНИЕ ПРОФИЛЯ ==========
 if (profileForm) {
     profileForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -425,7 +417,6 @@ if (profileForm) {
     });
 }
 
-// ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
 document.addEventListener('click', function(e) {
     const filterBtn = e.target.closest('.status-tab');
     if (filterBtn && filterBtn.getAttribute('data-filter')) {
@@ -444,7 +435,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// ========== МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ==========
 document.addEventListener('DOMContentLoaded', () => {
     const confirmBtn = document.getElementById('confirmCompleteBtn');
     if (confirmBtn) {
@@ -464,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
+
 function showNotification(message, type) {
     const oldNotifications = document.querySelectorAll('.notification');
     oldNotifications.forEach(n => n.remove());

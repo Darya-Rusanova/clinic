@@ -1,5 +1,6 @@
 package com.example.clinic.service;
 
+import com.example.clinic.dto.RegistrationDto;
 import com.example.clinic.model.Client;
 import com.example.clinic.model.Doctor;
 import com.example.clinic.model.Role;
@@ -12,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -35,29 +35,27 @@ public class AuthService {
     }
 
     @Transactional
-    public User registerClient(String lastName, String firstName, String patronymic,
-                               String phone, String email, String password,
-                               LocalDate birthDate, Boolean gender) {
-
-        String fullName = lastName + " " + firstName + (patronymic != null ? " " + patronymic : "");
-
+    public void registerClient(RegistrationDto dto) {
         User user = new User();
+
+        String fullName = dto.getLastName() + " " + dto.getFirstName();
+        if (dto.getPatronymic() != null && !dto.getPatronymic().isEmpty()) {
+            fullName += " " + dto.getPatronymic();
+        }
         user.setName(fullName);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPhone(dto.getPhone());
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setGender(dto.getGender());
         user.setRole(Role.CLIENT);
-        user.setGender(gender);
 
         User savedUser = userRepository.save(user);
 
         Client client = new Client();
         client.setUser(savedUser);
-        client.setBirthDate(birthDate);
+        client.setBirthDate(dto.getBirthDate());
 
         clientRepository.save(client);
-
-        return savedUser;
     }
 
     @Transactional

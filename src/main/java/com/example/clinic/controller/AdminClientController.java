@@ -63,8 +63,8 @@ public class AdminClientController {
             info.put("birthDate", client.getBirthDate());
 
             String[] name = client.getUser().getName().split(" ");
-            info.put("firstName", name.length > 0 ? name[0] : "");
-            info.put("lastName", name.length > 1 ? name[1] : "");
+            info.put("lastName", name.length > 0 ? name[0] : "");
+            info.put("firstName", name.length > 1 ? name[1] : "");
             info.put("patronymic", name.length > 2 ? name[2] : "");
             info.put("gender", client.getUser().isGender());
 

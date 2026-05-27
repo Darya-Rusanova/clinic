@@ -6,157 +6,7 @@
   <title>Отчеты - Панель администратора</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="/css/admin.css">
-  <style>
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.2rem;
-        text-align: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .stat-card .stat-value {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #D3836B;
-    }
-
-    .stat-card .stat-label {
-        color: #A08B7E;
-        font-size: 0.85rem;
-        margin-top: 0.3rem;
-    }
-
-    .filter-bar {
-        background: white;
-        padding: 1rem;
-        border-radius: 12px;
-        margin-bottom: 1.5rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        align-items: flex-end;
-    }
-
-    .filter-group {
-        flex: 1;
-        min-width: 150px;
-    }
-
-    .filter-group label {
-        display: block;
-        font-size: 0.75rem;
-        color: #A08B7E;
-        margin-bottom: 0.3rem;
-    }
-
-    .filter-group input, .filter-group select {
-        width: 100%;
-        padding: 0.6rem;
-        border: 1px solid #F0E0D6;
-        border-radius: 8px;
-    }
-
-    .export-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .btn-export {
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-excel {
-        background: #1D6F42;
-        color: white;
-    }
-
-    .btn-primary {
-        background: #D3836B;
-        color: white;
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .status {
-        padding: 0.3rem 0.7rem;
-        border-radius: 20px;
-        font-size: 0.7rem;
-        font-weight: 500;
-        display: inline-block;
-    }
-    .status.SCHEDULED { background: #FFF3E0; color: #FF9800; }
-    .status.COMPLETED { background: #E8F5E9; color: #4CAF50; }
-    .status.CANCELLED { background: #FFEBEE; color: #F44336; }
-
-    .data-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .data-table th, .data-table td {
-        padding: 0.9rem;
-        text-align: left;
-        border-bottom: 1px solid #F0E0D6;
-    }
-
-    .data-table th {
-        background: #FFF9F7;
-        font-weight: 600;
-        color: #2C1810;
-    }
-
-    .loading {
-        text-align: center;
-        padding: 3rem;
-        color: #A08B7E;
-    }
-
-    .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 0.5rem;
-        margin-top: 2rem;
-    }
-
-    .page-btn {
-        padding: 0.5rem 1rem;
-        border: 1px solid #F0E0D6;
-        background: white;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .page-btn.active {
-        background: #D3836B;
-        color: white;
-        border-color: #D3836B;
-    }
-
-    .page-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-
-    .page-dots {
-        padding: 0.5rem;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/admin-reports.css">
 </head>
 <body>
 
@@ -185,7 +35,6 @@
         <h2><i class="fas fa-chart-line"></i> Отчеты и аналитика</h2>
       </div>
 
-      <!-- Фильтры -->
       <div class="filter-bar">
         <div class="filter-group">
           <label>Дата с</label>
@@ -212,7 +61,6 @@
         </div>
       </div>
 
-      <!-- Статистика -->
       <div class="stats-grid" id="statsContainer">
         <div class="stat-card">
           <div class="stat-value" id="totalCount">0</div>
@@ -236,7 +84,6 @@
         </div>
       </div>
 
-      <!-- Таблица записей -->
       <div class="table-container">
         <table class="data-table">
           <thead>
@@ -257,186 +104,12 @@
         </table>
       </div>
 
-      <!-- Пагинация -->
       <div id="paginationContainer" class="pagination"></div>
     </div>
   </div>
 </main>
 
-<script>
-  let currentPage = 0;
-  let totalPages = 0;
-
-  function loadReportData() {
-      const startDate = document.getElementById('startDate').value;
-      const endDate = document.getElementById('endDate').value;
-      const status = document.getElementById('status').value;
-
-      let url = `/admin/reports/data?page=${currentPage}&size=10`;
-      if (startDate) url += `&startDate=${startDate}`;
-      if (endDate) url += `&endDate=${endDate}`;
-      if (status && status !== 'all') url += `&status=${status}`;
-
-      document.getElementById('reportsBody').innerHTML = '<tr><td colspan="8" class="loading"><i class="fas fa-spinner fa-pulse"></i> Загрузка...<\/td></tr>';
-
-      fetch(url)
-          .then(response => response.json())
-          .then(data => {
-              if (data.appointments && data.appointments.length > 0) {
-                  renderReports(data.appointments);
-              } else {
-                  document.getElementById('reportsBody').innerHTML = '<tr><td colspan="8" class="loading">Нет записей<\/td></tr>';
-              }
-
-              if (data.totalPages !== undefined) {
-                  totalPages = data.totalPages;
-                  renderPagination(data.currentPage || 0, data.totalPages);
-              }
-
-              if (data.statistics) {
-                  document.getElementById('totalCount').innerText = data.statistics.total || 0;
-                  document.getElementById('scheduledCount').innerText = data.statistics.scheduled || 0;
-                  document.getElementById('completedCount').innerText = data.statistics.completed || 0;
-                  document.getElementById('cancelledCount').innerText = data.statistics.cancelled || 0;
-                  document.getElementById('revenue').innerText = (data.statistics.totalRevenue || 0).toLocaleString() + ' ₽';
-              }
-          })
-          .catch(error => {
-              console.error('Ошибка:', error);
-              document.getElementById('reportsBody').innerHTML = '<tr><td colspan="8" class="loading">Ошибка загрузки<\/td></tr>';
-          });
-  }
-
-  function renderReports(appointments) {
-      const tbody = document.getElementById('reportsBody');
-      let html = '';
-
-      for (const app of appointments) {
-          let dateTimeStr = '';
-          if (app.dateTime) {
-              const date = new Date(app.dateTime);
-              dateTimeStr = date.toLocaleString('ru-RU', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-              });
-          }
-
-          let statusText = '';
-          let statusClass = '';
-          switch (app.status) {
-              case 'SCHEDULED': statusText = 'Предстоит'; statusClass = 'SCHEDULED'; break;
-              case 'COMPLETED': statusText = 'Завершено'; statusClass = 'COMPLETED'; break;
-              case 'CANCELLED': statusText = 'Отменено'; statusClass = 'CANCELLED'; break;
-              default: statusText = app.status || 'Неизвестно'; statusClass = '';
-          }
-
-          html += `
-              <tr>
-                  <td>${app.id || ''}</td>
-                  <td>${dateTimeStr}</td>
-                  <td>${escapeHtml(app.clientName || 'Клиент удалён')}</td>
-                  <td>${escapeHtml(app.clientPhone || '-')}</td>
-                  <td>${escapeHtml(app.doctorName || 'Доктор уволен')}</td>
-                  <td>${escapeHtml(app.serviceName || 'Услуга удалена')}</td>
-                  <td>${(app.price || 0).toLocaleString()} ₽</td>
-                  <td><span class="status ${statusClass}">${statusText}</span></td>
-              </tr>
-          `;
-      }
-      tbody.innerHTML = html;
-  }
-
-  function renderPagination(currentPage, totalPages) {
-      const container = document.getElementById('paginationContainer');
-      if (!container) return;
-
-      if (totalPages <= 1) {
-          container.innerHTML = '';
-          return;
-      }
-
-      let html = '';
-      html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})" ${currentPage === 0 ? 'disabled' : ''}>←</button>`;
-
-      let startPage = Math.max(0, currentPage - 2);
-      let endPage = Math.min(totalPages - 1, currentPage + 2);
-
-      if (startPage > 0) {
-          html += `<button class="page-btn" onclick="goToPage(0)">1</button>`;
-          if (startPage > 1) html += `<span class="page-dots">...</span>`;
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i + 1}</button>`;
-      }
-
-      if (endPage < totalPages - 1) {
-          if (endPage < totalPages - 2) html += `<span class="page-dots">...</span>`;
-          html += `<button class="page-btn" onclick="goToPage(${totalPages - 1})">${totalPages}</button>`;
-      }
-
-      html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages - 1 ? 'disabled' : ''}>→</button>`;
-      container.innerHTML = html;
-  }
-
-  function goToPage(page) {
-      if (page < 0 || page >= totalPages) return;
-      currentPage = page;
-      loadReportData();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function exportToExcel() {
-      const startDate = document.getElementById('startDate').value;
-      const endDate = document.getElementById('endDate').value;
-      const status = document.getElementById('status').value;
-
-      let url = `/admin/reports/export/excel?`;
-      if (startDate) url += `startDate=${startDate}&`;
-      if (endDate) url += `endDate=${endDate}&`;
-      if (status && status !== 'all') url += `status=${status}`;
-
-      window.location.href = url;
-  }
-
-  function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/[&<>]/g, function(m) {
-          if (m === '&') return '&amp;';
-          if (m === '<') return '&lt;';
-          if (m === '>') return '&gt;';
-          return m;
-      });
-  }
-
-  // Обработчики
-  document.getElementById('applyFilters').addEventListener('click', () => {
-      currentPage = 0;
-      loadReportData();
-  });
-
-  document.getElementById('exportExcel').addEventListener('click', exportToExcel);
-
-  // Устанавливаем даты по умолчанию
-  const today = new Date();
-  const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  document.getElementById('startDate').value = firstDayOfMonth.toISOString().split('T')[0];
-  document.getElementById('endDate').value = today.toISOString().split('T')[0];
-
-  // Загружаем данные
-  loadReportData();
-  window.addEventListener('scroll', function() {
-    var header = document.querySelector('.header');
-    if (window.scrollY > 10) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
-</script>
+<script src="/js/admin-reports.js"></script >
 <script src="/js/admin.js"></script>
 </body>
 </html>

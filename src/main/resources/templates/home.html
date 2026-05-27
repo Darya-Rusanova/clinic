@@ -136,21 +136,6 @@
                         <h4>О специалисте</h4>
                         <p th:text="${doctor.bio}">Биография врача...</p>
                     </div>
-
-                    <div th:if="${doctor.licensePath != null}" class="doctor-license">
-                        <h4>Лицензия и сертификаты</h4>
-                        <div class="license-info">
-                            <a th:href="${doctor.licensePath}" class="btn-download" download>
-                                Скачать ▼
-                            </a>
-                        </div>
-                        <p class="license-note">
-                            Нажмите "Скачать", чтобы просмотреть документ об образовании
-                        </p>
-                    </div>
-                    <div th:unless="${doctor.licensePath != null}" class="doctor-license">
-                        <p class="license-missing">Документы временно недоступны</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -186,55 +171,8 @@
         </div>
     </section>
 </main>
+
 <script src="/js/gallery.js"></script>
-<script>
-    document.querySelectorAll('.nav-link, .btn-book').forEach(link => {
-        link.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        });
-    });
-
-    const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 10) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
-</script>
-
-<script>
-    document.querySelectorAll('.doctor-details-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const doctorId = this.getAttribute('data-id');
-            const detailsDiv = document.getElementById('details-' + doctorId);
-            const isVisible = detailsDiv.style.display === 'block';
-
-            // Закрываем другие
-            document.querySelectorAll('.doctor-details').forEach(div => {
-                if (div.id !== 'details-' + doctorId) {
-                    div.style.display = 'none';
-                }
-            });
-
-            // Плавно открываем/закрываем
-            if (isVisible) {
-                detailsDiv.style.display = 'none';
-                this.textContent = 'Подробнее ▼';
-            } else {
-                detailsDiv.style.display = 'block';
-                this.textContent = 'Свернуть ▲';
-            }
-        });
-    });
-</script>
+<script src="/js/home.js"></script>
 </body>
 </html>

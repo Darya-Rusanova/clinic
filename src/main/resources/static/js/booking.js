@@ -133,7 +133,6 @@ if (nextBtn) {
 
 if (servicesList) loadServices();
 
-// ========== ШАГ 2 ==========
 const datePicker = document.getElementById('datePicker');
 const slotsContainer = document.getElementById('slotsContainer');
 let selectedSlot = null;

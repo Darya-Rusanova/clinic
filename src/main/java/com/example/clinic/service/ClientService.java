@@ -29,7 +29,7 @@ public class ClientService {
     private AppointmentRepository appointmentRepository;
 
     @Autowired
-    private PasswordService passwordService;  // Используем отдельный сервис
+    private PasswordService passwordService;
 
     public List<Client> getAllClients() {
         return clientRepository.findAll();
@@ -131,9 +131,13 @@ public class ClientService {
     public void deleteClient(Integer id) {
         Client client = getClientById(id);
         if (client != null) {
-            List<Appointment> appointments = appointmentRepository.findAllByClient_UserId(id);
-            appointmentRepository.deleteAll(appointments);
-            clientRepository.delete(client);
+            User user = userRepository.findById(id).orElse(null);
+            if (user != null) {
+                List<Appointment> appointments = appointmentRepository.findAllByClient_UserId(id);
+                appointmentRepository.deleteAll(appointments);
+                clientRepository.delete(client);
+                userRepository.delete(user);
+            }
         }
     }
 }

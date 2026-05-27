@@ -27,7 +27,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model, HttpServletRequest request) {
-        // Проверяем авторизацию
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         if (auth != null && auth.isAuthenticated() && !(auth.getPrincipal() instanceof String)) {
@@ -44,7 +43,6 @@ public class HomeController {
             }
         }
 
-        // Для неавторизованных и клиентов показываем главную
         List<Service> services = serviceService.getAllServices();
         List<Doctor> doctors = doctorService.getAllDoctors();
 

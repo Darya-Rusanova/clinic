@@ -1038,3 +1038,199 @@ body {
     background: #F44336;
     transform: scale(1.05);
 }
+/* Цвет текста ошибки */
+.error-message {
+    color: #F44336;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Красная рамка для поля с ошибкой */
+.field-error {
+    border-color: #F44336 !important;
+}
+
+/* Красный фон для поля с ошибкой (опционально) */
+.field-error-bg {
+    background-color: #FFEBEE;
+}
+/* Компактная форма */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 180px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #4C2A1F;
+    margin-bottom: 0.3rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #D3836B;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-cancel {
+    background: #F0E0D6;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    color: #4C3A33;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.btn-save {
+    background: #D3836B;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 30px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-save:hover {
+    background: #bc6a52;
+}
+
+.btn-cancel:hover {
+    background: #e0d0c6;
+}
+
+/* Для трех колонок */
+.form-row.three-cols .form-group {
+    flex: 1;
+}
+
+/* Для двух колонок */
+.form-row.two-cols {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-row.two-cols .form-group {
+    flex: 1;
+}
+
+/* Узкая форма */
+.form-container.narrow {
+    max-width: 500px;
+}
+/* Уведомления (тосты) */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    color: white;
+    z-index: 9999;
+    animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-family: 'Inter', sans-serif;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+}
+
+.notification.error {
+    background-color: #F44336;
+}
+
+.notification.info {
+    background-color: #2196F3;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #F0E0D6;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    min-width: 36px;
+}
+
+.page-btn:hover {
+    background: #FFF2EC;
+    border-color: #D3836B;
+}
+
+.page-btn.active {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-dots {
+    padding: 0.4rem 0.2rem;
+    color: #A08B7E;
+}

@@ -41,13 +41,11 @@
 <input type="hidden" id="preSelectedClientId" th:value="${preSelectedClientId}">
 
 <script>
-  // Автоматический выбор услуги и врача при загрузке
   document.addEventListener('DOMContentLoaded', function() {
       const preSelectedServiceId = document.getElementById('preSelectedServiceId')?.value;
       const preSelectedDoctorId = document.getElementById('preSelectedDoctorId')?.value;
 
       if (preSelectedDoctorId && preSelectedDoctorId !== '') {
-          // Если выбран врач - устанавливаем фильтр и ждём загрузки услуг
           const doctorFilter = document.getElementById('doctorFilter');
           if (doctorFilter) {
               doctorFilter.value = preSelectedDoctorId;
@@ -56,7 +54,6 @@
       }
 
       if (preSelectedServiceId && preSelectedServiceId !== '') {
-          // Ждём, пока загрузятся услуги, затем выбираем нужную
           setTimeout(() => {
               const serviceCard = document.querySelector(`.service-card[data-service-id="${preSelectedServiceId}"]`);
               if (serviceCard) {

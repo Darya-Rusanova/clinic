@@ -30,12 +30,12 @@ public class AdminDoctorController {
     private ScheduleService scheduleService;
 
     @Autowired
-    private ScheduleValidator scheduleValidator; // Раскомментировано!
+    private ScheduleValidator scheduleValidator;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         if (binder.getTarget() != null && Map.class.isAssignableFrom(binder.getTarget().getClass())) {
-            binder.addValidators(scheduleValidator); // Раскомментировано!
+            binder.addValidators(scheduleValidator);
         }
     }
 
@@ -114,7 +114,6 @@ public class AdminDoctorController {
                                                   @RequestBody Map<String, Object> scheduleData) {
         Map<String, Object> response = new HashMap<>();
 
-        // Ручная валидация
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(scheduleData, "scheduleData");
         scheduleValidator.validate(scheduleData, bindingResult);
 

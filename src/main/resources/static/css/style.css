@@ -874,3 +874,46 @@ textarea.form-control {
 .login-link a:hover {
     text-decoration: underline;
 }
+
+/* Цвет текста ошибки */
+.error-message {
+    color: #F44336;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Красная рамка для поля с ошибкой */
+.field-error {
+    border-color: #F44336 !important;
+}
+
+/* Красный фон для поля с ошибкой (опционально) */
+.field-error-bg {
+    background-color: #FFEBEE;
+}
+
+.btn-view-license {
+    background: #D3836B;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.btn-view-license:hover {
+    background: #C07058;
+}
+.modal-license {
+    max-width: 800px;
+    width: 90%;
+    background: white;
+    border-radius: 16px;
+}
+
+.close-license-modal {
+    cursor: pointer;
+    font-size: 1.5rem;
+}

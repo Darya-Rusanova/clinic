@@ -25,7 +25,6 @@ public class ReportService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    // Получение данных с ПРАВИЛЬНОЙ пагинацией
     public Page<ReportDto> getFilteredAppointments(LocalDate startDate, LocalDate endDate,
                                                    String statusStr, int page, int size) {
 
@@ -34,15 +33,12 @@ public class ReportService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateTime"));
 
-        // Получаем ВСЕ записи за период
         List<Appointment> allAppointments = appointmentRepository.findByDateTimeBetween(start, end);
 
-        // Фильтруем валидные
         List<Appointment> validAppointments = allAppointments.stream()
                 .filter(this::isValidAppointment)
                 .collect(Collectors.toList());
 
-        // Фильтруем по статусу
         if (statusStr != null && !statusStr.isEmpty() && !statusStr.equals("all")) {
             Status status = Status.valueOf(statusStr);
             validAppointments = validAppointments.stream()
@@ -50,10 +46,8 @@ public class ReportService {
                     .collect(Collectors.toList());
         }
 
-        // Сортируем по дате
         validAppointments.sort((a, b) -> b.getDateTime().compareTo(a.getDateTime()));
 
-        // Пагинация вручную (потому что фильтрация в памяти)
         int startIdx = (int) pageable.getOffset();
         int endIdx = Math.min(startIdx + pageable.getPageSize(), validAppointments.size());
 
@@ -67,7 +61,6 @@ public class ReportService {
         return new PageImpl<>(pageContent, pageable, validAppointments.size());
     }
 
-    // Получение всех данных для экспорта (без пагинации)
     public List<ReportDto> getAllReportData(LocalDate startDate, LocalDate endDate, String statusStr) {
         LocalDateTime start = startDate != null ? startDate.atStartOfDay() : LocalDateTime.now().minusMonths(1);
         LocalDateTime end = endDate != null ? endDate.atTime(23, 59, 59) : LocalDateTime.now();
@@ -82,7 +75,7 @@ public class ReportService {
             Status status = Status.valueOf(statusStr);
             validAppointments = validAppointments.stream()
                     .filter(a -> a.getStatus() == status)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         return validAppointments.stream()
@@ -184,7 +177,7 @@ public class ReportService {
 
         List<Appointment> validAppointments = appointments.stream()
                 .filter(this::isValidAppointment)
-                .collect(Collectors.toList());
+                .toList();
 
         long total = validAppointments.size();
         long scheduled = 0;

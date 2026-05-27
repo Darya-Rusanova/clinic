@@ -69,12 +69,10 @@ public class BookingController {
         if (serviceId != null) model.addAttribute("preSelectedServiceId", serviceId);
         if (doctorId != null) model.addAttribute("preSelectedDoctorId", doctorId);
 
-        // Если clientId не передан, пробуем получить из сессии или из авторизации
         if (clientId != null) {
             model.addAttribute("preSelectedClientId", clientId);
             model.addAttribute("clientId", clientId);
         } else {
-            // Попробуем получить клиента из SecurityContext
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
                 String email = auth.getName();

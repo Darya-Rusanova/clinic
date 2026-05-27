@@ -1,14 +1,13 @@
-// Получаем ID клиента из URL
+
 const clientId = window.location.pathname.split('/')[2];
 
-// Параметры пагинации и сортировки
 let currentPage = 0;
 let pageSize = 5;
 let sortField = 'dateTime';
 let sortDirection = 'desc';
 let currentFilter = 'all';
 
-// Загрузка записей
+
 function loadAppointments() {
     const container = document.getElementById('appointmentsContainer');
     if (!container) return;
@@ -203,7 +202,6 @@ function escapeHtml(str) {
     });
 }
 
-// Обработчики фильтров
 document.querySelectorAll('.status-tab').forEach(btn => {
     btn.addEventListener('click', function() {
         currentFilter = this.getAttribute('data-filter');
@@ -212,7 +210,6 @@ document.querySelectorAll('.status-tab').forEach(btn => {
     });
 });
 
-// Обработчики сортировки
 document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const field = this.getAttribute('data-sort');
@@ -220,7 +217,6 @@ document.querySelectorAll('.sort-btn').forEach(btn => {
     });
 });
 
-// ========== ВЫПАДАЮЩЕЕ МЕНЮ ==========
 const userMenu = document.getElementById('userMenu');
 const userDropdown = document.getElementById('userDropdown');
 
@@ -235,7 +231,6 @@ document.addEventListener('click', () => {
     if (userDropdown) userDropdown.classList.remove('show');
 });
 
-// ========== СКРОЛЛ ХЕДЕРА ==========
 const header = document.getElementById('header');
 if (header) {
     window.addEventListener('scroll', () => {
@@ -247,7 +242,6 @@ if (header) {
     });
 }
 
-// ========== МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ==========
 const modal = document.getElementById('settingsModal');
 const settingsBtns = document.querySelectorAll('#settingsBtn, #settingsBtnSidebar');
 const closeModal = document.querySelector('#settingsModal .close-modal');
@@ -290,7 +284,6 @@ if (modal) {
     });
 }
 
-// ========== СОХРАНЕНИЕ ПРОФИЛЯ СО СМЕНОЙ ПАРОЛЯ ==========
 const profileForm = document.getElementById('profileForm');
 if (profileForm) {
     profileForm.addEventListener('submit', (e) => {
@@ -355,7 +348,6 @@ if (profileForm) {
     });
 }
 
-// ========== МОДАЛЬНОЕ ОКНО ПОДТВЕРЖДЕНИЯ ОТМЕНЫ ==========
 let pendingCancelId = null;
 
 const confirmModal = document.getElementById('confirmModal');
@@ -391,7 +383,6 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// ========== ОТМЕНА ЗАПИСИ ==========
 document.addEventListener('click', function(e) {
     const cancelBtnEl = e.target.closest('.btn-cancel-appointment');
     if (cancelBtnEl) {
@@ -433,7 +424,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// ========== УВЕДОМЛЕНИЯ ==========
 function showNotification(message, type) {
     const oldNotifications = document.querySelectorAll('.notification');
     oldNotifications.forEach(n => n.remove());
@@ -456,7 +446,6 @@ function showNotification(message, type) {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// ========== УВЕДОМЛЕНИЯ ==========
 let notifications = [];
 let unreadCount = 0;
 let currentNotificationPage = 0;
@@ -562,7 +551,6 @@ function loadMoreNotifications() {
     }
 }
 
-// Инициализация уведомлений
 function initNotifications() {
     const bell = document.getElementById('notificationBell');
     const dropdown = document.getElementById('notificationsDropdown');
@@ -594,7 +582,6 @@ function initNotifications() {
     loadNotifications(0);
 }
 
-// Запуск
 document.addEventListener('DOMContentLoaded', () => {
     initNotifications();
     loadAppointments();

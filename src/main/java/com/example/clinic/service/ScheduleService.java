@@ -213,15 +213,12 @@ public class ScheduleService {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Врач не найден"));
 
-        // Получаем дни с АКТУАЛЬНЫМИ записями
         Map<Integer, Integer> activeAppointmentsCount = getAppointmentsCountByDay(doctorId);
 
-        // 1. Удаляем расписание только для дней БЕЗ активных записей
         List<Schedule> existingSchedules = scheduleRepository.findAllByDoctor_UserId(doctorId);
         for (Schedule s : existingSchedules) {
             int dayOfWeek = s.getDayOfWeek();
             if (activeAppointmentsCount.getOrDefault(dayOfWeek, 0) == 0) {
-                // Нет активных записей - можно удалять
                 List<Break> breaksToDelete = breakRepository.findAllBySchedule(s);
                 if (!breaksToDelete.isEmpty()) {
                     breakRepository.deleteAll(breaksToDelete);
@@ -232,11 +229,9 @@ public class ScheduleService {
         scheduleRepository.flush();
         breakRepository.flush();
 
-        // 2. Сохраняем новые данные только для дней БЕЗ активных записей
         for (Map.Entry<String, Object> entry : scheduleData.entrySet()) {
             int dayOfWeek = Integer.parseInt(entry.getKey());
 
-            // Пропускаем дни с активными записями
             if (activeAppointmentsCount.getOrDefault(dayOfWeek, 0) > 0) {
                 System.out.println("Day " + dayOfWeek + " has " + activeAppointmentsCount.get(dayOfWeek) + " active appointments - skipping save");
                 continue;
@@ -246,7 +241,6 @@ public class ScheduleService {
             Boolean isDayOff = (Boolean) dayData.getOrDefault("isDayOff", false);
 
             if (Boolean.TRUE.equals(isDayOff)) {
-                // Выходной - ничего не сохраняем
                 continue;
             }
 

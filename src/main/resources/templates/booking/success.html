@@ -14,7 +14,8 @@
     <p>Вы записаны на процедуру <strong th:text="${appointment.service.name}"></strong></p>
     <p>Дата и время: <strong th:text="${#temporals.format(appointment.dateTime, 'dd.MM.yyyy HH:mm')}"></strong></p>
     <p>Врач: <strong th:text="${appointment.doctor.user.name}"></strong></p>
-    <a href="/client/1" class="btn-next">Перейти в личный кабинет</a>
+    <br>
+    <br>
     <a href="/" class="btn-back">На главную</a>
   </div>
 </div>

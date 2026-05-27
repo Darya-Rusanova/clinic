@@ -12,16 +12,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User getUserById(Integer id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
     public  User getUserByEmail(String email){
         return userRepository.findByEmail(email).orElse(null);
-    }
-
-    @Transactional
-    public void updateUser(User user) {
-        userRepository.save(user);
     }
 }

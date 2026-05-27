@@ -1,5 +1,3 @@
-// admin-schedule.js - универсальный файл для работы с расписанием врачей
-
 const doctorId = window.location.pathname.split('/')[3];
 
 const days = [
@@ -12,7 +10,6 @@ const days = [
     { id: 7, name: 'Воскресенье' }
 ];
 
-// Загрузка информации о враче
 function loadDoctorInfo() {
     fetch(`/admin/api/doctors?search=`)
         .then(response => response.json())
@@ -26,7 +23,6 @@ function loadDoctorInfo() {
         .catch(error => console.error('Ошибка загрузки информации о враче:', error));
 }
 
-// Загрузка расписания
 function loadSchedule() {
     Promise.all([
         fetch(`/admin/api/doctors/${doctorId}/schedule`).then(res => res.json()),
@@ -41,8 +37,6 @@ function loadSchedule() {
     });
 }
 
-// Рендер расписания
-// Рендер расписания
 function renderSchedule(scheduleData, appointmentsCount) {
     const container = document.getElementById('scheduleContent');
     if (!container) return;
@@ -103,7 +97,6 @@ function renderSchedule(scheduleData, appointmentsCount) {
         `;
         container.appendChild(dayCard);
 
-        // Добавляем перерывы
         const breaksList = dayCard.querySelector('.breaks-list');
         const breaks = dayData.breaks || [];
         for (const b of breaks) {
@@ -130,17 +123,14 @@ function addBreakItem(breaksList, dayId, startTime = '12:00', endTime = '13:00',
     `;
     breaksList.appendChild(breakItem);
 
-    // Привязываем обработчик удаления только если не disabled
     if (!isDisabled) {
         const removeBtn = breakItem.querySelector('.btn-remove-break');
         removeBtn.onclick = handleRemoveBreak;
 
-        // Привязываем валидацию
         attachBreakValidation(breakItem);
     }
 }
 
-// Валидация отдельного перерыва
 function attachBreakValidation(breakItem) {
     const breakStart = breakItem.querySelector('.break-start');
     const breakEnd = breakItem.querySelector('.break-end');
@@ -158,14 +148,12 @@ function attachBreakValidation(breakItem) {
     breakEnd.onchange = validateBreak;
 }
 
-// Привязка всех обработчиков
 function attachEventHandlers() {
-    // Обработчики чекбоксов выходного дня
+
     document.querySelectorAll('.day-off-checkbox').forEach(checkbox => {
         checkbox.onchange = handleDayOffChange;
     });
 
-    // Обработчики валидации рабочего времени
     document.querySelectorAll('.day-card').forEach(card => {
         const workStart = card.querySelector('.work-start');
         const workEnd = card.querySelector('.work-end');
@@ -185,13 +173,11 @@ function attachEventHandlers() {
         }
     });
 
-    // Обработчики добавления перерывов
     document.querySelectorAll('.btn-add-break').forEach(btn => {
         btn.onclick = handleAddBreak;
     });
 }
 
-// Обработчик изменения выходного дня
 function handleDayOffChange(e) {
     const checkbox = e.currentTarget;
     const dayCard = checkbox.closest('.day-card');
@@ -215,7 +201,6 @@ function handleDayOffChange(e) {
     }
 }
 
-// Обработчик добавления перерыва
 function handleAddBreak(e) {
     const btn = e.currentTarget;
     const dayId = btn.dataset.day;
@@ -224,7 +209,6 @@ function handleAddBreak(e) {
     addBreakItem(breaksList, dayId);
 }
 
-// Обработчик удаления перерыва
 function handleRemoveBreak(e) {
     e.stopPropagation();
     const btn = e.currentTarget;
@@ -234,7 +218,6 @@ function handleRemoveBreak(e) {
     }
 }
 
-// Сбор данных расписания
 function collectScheduleData() {
     const data = {};
 
@@ -274,7 +257,6 @@ function collectScheduleData() {
     return data;
 }
 
-// Валидация всех данных
 function validateAll() {
     let isValid = true;
 
@@ -309,7 +291,6 @@ function validateAll() {
     return isValid;
 }
 
-// Сохранение расписания
 function saveSchedule() {
     if (!validateAll()) {
         showNotification('Исправьте ошибки в расписании', 'error');
@@ -351,9 +332,7 @@ function saveSchedule() {
     });
 }
 
-// Показ уведомления
 function showNotification(message, type) {
-    // Удаляем старые уведомления
     const oldNotifications = document.querySelectorAll('.notification');
     oldNotifications.forEach(n => n.remove());
 
@@ -375,11 +354,9 @@ function showNotification(message, type) {
     setTimeout(() => notification.remove(), 3000);
 }
 
-// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
     const saveBtn = document.getElementById('saveScheduleBtn');
     if (saveBtn) {
-        // Удаляем старые обработчики
         const newSaveBtn = saveBtn.cloneNode(true);
         saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
         newSaveBtn.addEventListener('click', saveSchedule);

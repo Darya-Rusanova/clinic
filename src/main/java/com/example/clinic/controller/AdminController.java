@@ -13,10 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +35,7 @@ public class AdminController {
     AppointmentService appointmentService;
     @Autowired
     ServiceService serviceService;
+
 
     @GetMapping
     public String adminPage(Model model) {
@@ -72,7 +70,6 @@ public class AdminController {
 
         Sort.Direction sortDirection = direction.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
 
-        // Правильное маппинг полей сортировки
         String sortField;
         switch (sort) {
             case "clientName":
@@ -95,21 +92,18 @@ public class AdminController {
             map.put("id", app.getId());
             map.put("dateTime", app.getDateTime().toString());
 
-            // Безопасное получение имени клиента
             String clientName = "Клиент удалён";
             if (app.getClient() != null && app.getClient().getUser() != null) {
                 clientName = app.getClient().getUser().getName();
             }
             map.put("clientName", clientName);
 
-            // Безопасное получение названия услуги
             String serviceName = "Услуга удалена";
             if (app.getService() != null) {
                 serviceName = app.getService().getName();
             }
             map.put("serviceName", serviceName);
 
-            // Безопасное получение имени врача
             String doctorName = "Врач удалён";
             if (app.getDoctor() != null && app.getDoctor().getUser() != null) {
                 doctorName = app.getDoctor().getUser().getName();

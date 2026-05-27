@@ -42,13 +42,11 @@ public class ScheduleValidator implements Validator {
             @SuppressWarnings("unchecked")
             List<Map<String, String>> breaks = (List<Map<String, String>>) dayData.get("breaks");
 
-            // Проверка рабочего времени
             String workError = validateWorkingTime(startTimeStr, endTimeStr);
             if (workError != null) {
                 errors.reject("day." + dayOfWeek + ".workTime", workError);
             }
 
-            // Проверка перерывов
             List<String> breakErrors = validateBreaks(startTimeStr, endTimeStr, breaks);
             for (String breakError : breakErrors) {
                 errors.reject("day." + dayOfWeek + ".breaks", breakError);
@@ -142,7 +140,6 @@ public class ScheduleValidator implements Validator {
             }
         }
 
-        // Проверка пересечений
         for (int i = 0; i < breakTimes.size(); i++) {
             LocalTime[] break1 = breakTimes.get(i);
             for (int j = i + 1; j < breakTimes.size(); j++) {

@@ -64,7 +64,6 @@
     </div>
   </div>
 </main>
-<!-- Модальное окно подтверждения удаления -->
 <div id="deleteModal" class="modal">
   <div class="modal-content modal-small">
     <div class="modal-header">
@@ -82,7 +81,7 @@
     </div>
   </div>
 </div>
-<!-- Модальное окно для добавления/редактирования -->
+
 <div id="categoryModal" class="modal">
   <div class="modal-content modal-small">
     <div class="modal-header">
@@ -103,92 +102,7 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('categoryModal');
-      const deleteModal = document.getElementById('deleteModal');
-      const modalTitle = document.getElementById('modalTitle');
-      const categoryForm = document.getElementById('categoryForm');
-      const categoryIdInput = document.getElementById('categoryId');
-      const categoryNameInput = document.getElementById('categoryName');
-
-      let pendingDeleteId = null;
-
-      // Открытие модалки для добавления
-      const openAddModalBtn = document.getElementById('openAddModalBtn');
-      if (openAddModalBtn) {
-          openAddModalBtn.addEventListener('click', () => {
-              modalTitle.textContent = 'Добавить категорию';
-              categoryIdInput.value = '';
-              categoryNameInput.value = '';
-              categoryForm.action = '/admin/categories/add';
-              modal.classList.add('show');
-          });
-      }
-
-      // Открытие модалки для редактирования
-      window.openEditModal = function(id, name) {
-          modalTitle.textContent = 'Редактировать категорию';
-          categoryIdInput.value = id;
-          categoryNameInput.value = name;
-          categoryForm.action = '/admin/categories/edit';
-          modal.classList.add('show');
-      };
-
-      // Открытие модалки подтверждения удаления
-      function showDeleteModal(id) {
-          pendingDeleteId = id;
-          deleteModal.classList.add('show');
-      }
-
-      // Закрытие модалок
-      function closeModal() {
-          modal.classList.remove('show');
-          deleteModal.classList.remove('show');
-          pendingDeleteId = null;
-      }
-
-      // Подтверждение удаления
-      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-      if (confirmDeleteBtn) {
-          confirmDeleteBtn.addEventListener('click', () => {
-              if (pendingDeleteId) {
-                  window.location.href = '/admin/categories/delete?id=' + pendingDeleteId;
-              }
-          });
-      }
-
-      // Закрытие по крестикам
-      document.querySelectorAll('.close-modal, .close-delete-modal').forEach(btn => {
-          btn.addEventListener('click', closeModal);
-      });
-
-      document.getElementById('cancelModalBtn')?.addEventListener('click', closeModal);
-
-      // Закрытие по клику вне модалки
-      window.addEventListener('click', (e) => {
-          if (e.target === modal) closeModal();
-          if (e.target === deleteModal) closeModal();
-      });
-
-      // Обработчики для кнопок редактирования
-      document.querySelectorAll('.action-btn.edit').forEach(btn => {
-          btn.addEventListener('click', () => {
-              const id = btn.getAttribute('data-id');
-              const name = btn.getAttribute('data-name');
-              openEditModal(id, name);
-          });
-      });
-
-      // Обработчики для кнопок удаления
-      document.querySelectorAll('.action-btn.delete').forEach(btn => {
-          btn.addEventListener('click', () => {
-              const id = btn.getAttribute('data-id');
-              showDeleteModal(id);
-          });
-      });
-  });
-</script>
+<script src="/js/admin-categories.js"></script>
 <script src="/js/admin.js"></script>
 </body>
 </html>

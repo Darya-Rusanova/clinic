@@ -1,0 +1,125 @@
+.filters-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    color: #A08B7E;
+}
+
+.filter-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #F0E0D6;
+    border-radius: 30px;
+    background: white;
+    font-size: 0.85rem;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.sorting-bar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.sort-label {
+    font-size: 0.8rem;
+    color: #A08B7E;
+}
+
+.sort-btn {
+    background: transparent;
+    border: 1px solid #F0E0D6;
+    padding: 0.4rem 0.8rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.sort-btn:hover {
+    background: #FFF2EC;
+    border-color: #D3836B;
+}
+
+.sort-btn.active {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
+
+.sort-icon {
+    font-size: 0.7rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #F0E0D6;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    min-width: 36px;
+}
+
+.page-btn:hover {
+    background: #FFF2EC;
+    border-color: #D3836B;
+}
+
+.page-btn.active {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.status {
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.status.scheduled {
+    background: #FFF3E0;
+    color: #FF9800;
+}
+
+.status.completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
+
+.status.cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+}
