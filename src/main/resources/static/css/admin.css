@@ -14,7 +14,6 @@ body {
     min-height: 100vh;
 }
 
-/* ХЕДЕР */
 .header {
     position: fixed;
     top: 0;
@@ -83,7 +82,6 @@ body {
     color: #D3836B;
 }
 
-/* ДАШБОРД */
 .dashboard {
     min-height: 100vh;
     padding: 6rem 2rem 4rem;
@@ -97,7 +95,6 @@ body {
     align-items: flex-start;
 }
 
-/* БОКОВАЯ ПАНЕЛЬ */
 .admin-sidebar {
     flex: 0 0 280px;
     position: sticky;
@@ -231,7 +228,6 @@ body {
     color: #D3836B;
 }
 
-/* ===== ЗАГОЛОВОК РАЗДЕЛА ===== */
 .section-title {
     display: flex;
     justify-content: space-between;
@@ -260,12 +256,10 @@ body {
     background: #D3836B;
 }
 
-/* ОСНОВНОЙ КОНТЕНТ */
 .main-content {
     flex: 1;
 }
 
-/* СТАТИСТИКА */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -305,7 +299,6 @@ body {
     color: #4CAF50;
 }
 
-/* ПОСЛЕДНИЕ ЗАПИСИ */
 .recent-section {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -394,12 +387,10 @@ body {
     transform: translateY(-2px);
 }
 
-/* ===== ПОЛНОШИРИННЫЙ КОНТЕНТ ===== */
 .full-content {
     width: 100%;
 }
 
-/* ===== ФИЛЬТРЫ ===== */
 .filters-bar {
     width: 40%;
     display: flex;
@@ -425,7 +416,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* ===== ТАБЛИЦЫ ===== */
 .table-container {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -477,7 +467,6 @@ body {
     color: #A08B7E;
 }
 
-/* ===== КНОПКИ ДЕЙСТВИЙ ===== */
 .action-btn {
     display: inline-flex;
     align-items: center;
@@ -571,7 +560,7 @@ body {
     color: white;
     cursor:pointer;
 }
-/* ===== МОДАЛЬНЫЕ ОКНА ===== */
+
 .modal {
     display: none;
     position: fixed;
@@ -656,7 +645,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Тело модалки */
 .modal-body {
     text-align: center;
     padding: 0.5rem 0;
@@ -683,7 +671,6 @@ body {
     display: inline-block;
 }
 
-/* Форма в модалке */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -717,7 +704,6 @@ body {
     box-shadow: 0 0 0 2px rgba(211, 131, 107, 0.1);
 }
 
-/* Кнопки в модалке */
 .form-buttons {
     display: flex;
     justify-content: flex-end;
@@ -773,7 +759,6 @@ body {
     background: #d32f2f;
 }
 
-/* ===== ФОРМА ДОБАВЛЕНИЯ ===== */
 .form-container {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -881,7 +866,6 @@ body {
     color: #D3836B;
 }
 
-/* ===== КАРТОЧКИ ВРАЧЕЙ ДЛЯ ВЫБОРА ===== */
 .doctors-grid-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -957,7 +941,6 @@ body {
     color: #D3836B;
 }
 
-/* ===== ЗАГРУЗКА ИЗОБРАЖЕНИЯ ===== */
 .image-upload-area {
     width: 100%;
     min-height: 200px;
@@ -1038,7 +1021,6 @@ body {
     background: #F44336;
     transform: scale(1.05);
 }
-/* Цвет текста ошибки */
 .error-message {
     color: #F44336;
     font-size: 0.75rem;
@@ -1046,16 +1028,13 @@ body {
     display: block;
 }
 
-/* Красная рамка для поля с ошибкой */
 .field-error {
     border-color: #F44336 !important;
 }
 
-/* Красный фон для поля с ошибкой (опционально) */
 .field-error-bg {
     background-color: #FFEBEE;
 }
-/* Компактная форма */
 .form-container {
     max-width: 800px;
     margin: 0 auto;
@@ -1130,12 +1109,10 @@ body {
     background: #e0d0c6;
 }
 
-/* Для трех колонок */
 .form-row.three-cols .form-group {
     flex: 1;
 }
 
-/* Для двух колонок */
 .form-row.two-cols {
     display: flex;
     gap: 1rem;
@@ -1145,11 +1122,10 @@ body {
     flex: 1;
 }
 
-/* Узкая форма */
 .form-container.narrow {
     max-width: 500px;
 }
-/* Уведомления (тосты) */
+
 .notification {
     position: fixed;
     bottom: 20px;
@@ -1233,4 +1209,9 @@ body {
 .page-dots {
     padding: 0.4rem 0.2rem;
     color: #A08B7E;
+}
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
 }

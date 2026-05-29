@@ -78,8 +78,8 @@ public class AppointmentService {
         return appointmentRepository.countByClientIdAndStatus(clientId, status);
     }
 
-    public long countByDateTimeBetween(LocalDateTime start, LocalDateTime end){
-        return appointmentRepository.countByDateTimeBetween(start, end);
+    public long countByDateTimeBetween(LocalDateTime start, LocalDateTime end,Status status){
+        return appointmentRepository.countByDateTimeBetweenAndStatus(start, end, status);
     }
 
     public List<Appointment> getFirstScheduledAppointments(Status status, LocalDateTime dateTime, Pageable pageable){

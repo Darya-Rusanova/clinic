@@ -14,7 +14,6 @@ body {
     min-height: 100vh;
 }
 
-/* Контейнер записи */
 .booking-container {
     max-width: 900px;
     margin: 100px auto 50px;
@@ -24,7 +23,6 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* Прогресс-бар */
 .booking-progress {
     display: flex;
     justify-content: space-between;
@@ -58,7 +56,6 @@ body {
     background: #D3836B;
 }
 
-/* Заголовок */
 .booking-form h2 {
     text-align: center;
     font-size: 1.8rem;
@@ -69,7 +66,6 @@ body {
     letter-spacing: 2px;
 }
 
-/* Фильтры */
 .filters {
     display: flex;
     gap: 1rem;
@@ -95,7 +91,6 @@ body {
     border-color: #D3836B;
 }
 
-/* Сетка услуг */
 .services-grid, .slots-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -103,7 +98,6 @@ body {
     margin: 1.5rem 0;
 }
 
-/* Карточка услуги */
 .service-card {
     background: white;
     border-radius: 20px;
@@ -170,7 +164,6 @@ body {
     transform: scale(1.02);
 }
 
-/* Выбранная информация */
 .selected-info {
     display: flex;
     gap: 1rem;
@@ -192,7 +185,6 @@ body {
     margin-right: 0.5rem;
 }
 
-/* Выбор даты */
 .date-selector {
     text-align: center;
     margin-bottom: 1.5rem;
@@ -213,7 +205,6 @@ body {
     border-color: #D3836B;
 }
 
-/* Кнопки слотов */
 .slot-btn {
     padding: 0.8rem;
     background: #FFF2EC;
@@ -258,7 +249,6 @@ body {
     border-radius: 20px;
 }
 
-/* Информация подтверждения */
 .confirm-info {
     background: #F9F5F0;
     border-radius: 20px;
@@ -287,7 +277,6 @@ body {
     color: #4C2A1F;
 }
 
-/* Навигация */
 .navigation {
     display: flex;
     justify-content: space-between;
@@ -333,7 +322,6 @@ body {
     color: #D3836B;
 }
 
-/* Успех */
 .success-content {
     text-align: center;
     padding: 2rem;
@@ -362,14 +350,12 @@ body {
     margin-right: 1rem;
 }
 
-/* Ошибка */
 .error {
     text-align: center;
     padding: 2rem;
     color: #F44336;
 }
 
-/* Модальное окно выбора врача */
 .doctor-modal {
     position: fixed;
     top: 0;
@@ -434,7 +420,6 @@ body {
     color: #D3836B;
 }
 
-/* Страница ошибки */
 .error-content {
     text-align: center;
     padding: 2rem;

@@ -95,6 +95,7 @@ public class DoctorService {
         user.setGender(dto.getGender());
 
         doctor.setExperienceYears(dto.getExperienceYear());
+        doctor.setBio(dto.getBio());
 
         if (dto.getImagePath() != null && !dto.getImagePath().isEmpty()) {
             doctor.setImagePath(dto.getImagePath());

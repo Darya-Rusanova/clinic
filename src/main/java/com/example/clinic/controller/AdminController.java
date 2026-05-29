@@ -46,7 +46,7 @@ public class AdminController {
         long totalClients = clientService.getAllClients().size();
         long totalDoctors = doctorService.getAllDoctors().size();
         long totalServices = serviceService.getAllServices().size();
-        long todayAppointmentsCount = appointmentService.countByDateTimeBetween(LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay());
+        long todayAppointmentsCount = appointmentService.countByDateTimeBetween(LocalDate.now().atStartOfDay(), LocalDate.now().plusDays(1).atStartOfDay(),Status.SCHEDULED);
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "dateTime"));
         List<Appointment> recentAppointments = appointmentService.getFirstScheduledAppointments(Status.SCHEDULED, LocalDateTime.now(), pageable);

@@ -1,4 +1,4 @@
-/* ===== МОДАЛЬНЫЕ ОКНА ===== */
+
 .modal {
     display: none;
     position: fixed;
@@ -85,7 +85,6 @@
     transform: scale(1.1);
 }
 
-/* Тело модалки */
 .modal-body {
     text-align: center;
     padding: 0.5rem 0;
@@ -112,7 +111,6 @@
     display: inline-block;
 }
 
-/* Форма в модалке */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -153,7 +151,6 @@
     margin-bottom: 1rem;
 }
 
-/* Загрузка изображений */
 .image-upload-area {
     width: 100%;
     min-height: 120px;
@@ -236,7 +233,6 @@
     transform: scale(1.05);
 }
 
-/* Чекбоксы услуг */
 .services-checkboxes {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -280,7 +276,6 @@
     color: #A08B7E;
 }
 
-/* Кнопки */
 .form-buttons {
     display: flex;
     justify-content: flex-end;
@@ -333,7 +328,6 @@
     background: #d32f2f;
 }
 
-/* Скроллбар для модалки */
 .modal-content::-webkit-scrollbar {
     width: 6px;
 }

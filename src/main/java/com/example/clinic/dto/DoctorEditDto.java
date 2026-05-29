@@ -35,6 +35,7 @@ public class DoctorEditDto {
 
     private String imagePath;
     private String licensePath;
+    private String bio;
 
     private List<Integer> serviceIds;
 }

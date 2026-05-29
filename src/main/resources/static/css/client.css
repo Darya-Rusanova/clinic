@@ -13,7 +13,6 @@ body {
     background-attachment: fixed;
 }
 
-/* ХЕДЕР */
 .header {
     position: fixed;
     top: 0;
@@ -39,7 +38,6 @@ body {
     align-items: center;
 }
 
-/* Логотип */
 .logo {
     font-size: 1.6rem;
     font-weight: 500;
@@ -56,7 +54,6 @@ body {
     font-weight: 600;
 }
 
-/* Меню */
 .nav-menu {
     display: flex;
     gap: 2rem;
@@ -75,7 +72,6 @@ body {
     color: #D3836B;
 }
 
-/* Меню пользователя */
 .user-menu {
     position: relative;
     cursor: pointer;
@@ -127,7 +123,6 @@ body {
     color: #D3836B;
 }
 
-/* Дашборд */
 .dashboard {
     min-height: 100vh;
     padding: 6rem 2rem 4rem;
@@ -141,7 +136,6 @@ body {
     align-items: flex-start;
 }
 
-/* Левая колонка - карточка профиля */
 .profile-sidebar {
     flex: 0 0 320px;
     position: sticky;
@@ -217,12 +211,10 @@ body {
     color: white;
 }
 
-/* Правая колонка */
 .appointments-content {
     flex: 1;
 }
 
-/* Хедер записей с кнопкой */
 .appointments-header {
     display: flex;
     justify-content: space-between;
@@ -260,7 +252,6 @@ body {
     background: #D3836B;
 }
 
-/* Кнопка новой записи */
 .btn-new-appointment {
     text-decoration: none;
     background: #D3836B;
@@ -282,7 +273,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Фильтры */
 .status-tabs {
     display: flex;
     gap: 0.5rem;
@@ -313,14 +303,12 @@ body {
     color: white;
 }
 
-/* Список записей */
 .appointments-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-/* Карточка записи */
 .appointment-item {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -341,7 +329,6 @@ body {
     border-color: #D3836B;
 }
 
-/* Время записи */
 .appointment-time {
     font-weight: 600;
     color: #D3836B;
@@ -359,7 +346,6 @@ body {
     font-size: 0.8rem;
 }
 
-/* Информация о записи */
 .appointment-info {
     flex: 1;
     min-width: 200px;
@@ -378,7 +364,6 @@ body {
     line-height: 1.4;
 }
 
-/* Статус записи */
 .appointment-status {
     padding: 0.4rem 1rem;
     border-radius: 30px;
@@ -406,7 +391,6 @@ body {
     color: #F44336;
 }
 
-/* Кнопки действий */
 .appointment-actions {
     display: flex;
     gap: 0.5rem;
@@ -449,7 +433,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Пустое состояние */
 .appointments-empty {
     text-align: center;
     background: rgba(255, 255, 255, 0.95);
@@ -490,14 +473,12 @@ body {
     transform: translateY(-2px);
 }
 
-/* Загрузка */
 .loading {
     text-align: center;
     padding: 2rem;
     color: #A08B7E;
 }
 
-/* Модальное окно */
 .modal {
     display: none;
     position: fixed;
@@ -550,7 +531,6 @@ body {
     color: #D3836B;
 }
 
-/* Форма */
 .form-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -628,7 +608,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Уведомления */
 .notification {
     position: fixed;
     bottom: 20px;
@@ -686,7 +665,7 @@ body {
     color: #F44336;
     margin-bottom: 1rem;
 }
-/* ===== СОРТИРОВКА ===== */
+
 .sorting-bar {
     display: flex;
     align-items: center;
@@ -743,340 +722,336 @@ body {
     opacity: 1;
     color: #D3836B;
 }
-/* Пагинация */
-    .pagination-container {
-        margin-top: 2rem;
-        display: flex;
-        justify-content: center;
-    }
 
-    .pagination {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+.pagination-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
 
-    .page-btn {
-        padding: 0.5rem 1rem;
-        border: 1px solid #F0E0D6;
-        background: white;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.2s;
-        font-size: 0.85rem;
-    }
+.pagination {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
-    .page-btn:hover {
-        background: #FFF2EC;
-        border-color: #D3836B;
-    }
+.page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #F0E0D6;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.85rem;
+}
 
-    .page-btn.active {
-        background: #D3836B;
-        color: white;
-        border-color: #D3836B;
-    }
+.page-btn:hover {
+    background: #FFF2EC;
+    border-color: #D3836B;
+}
 
-    .page-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+.page-btn.active {
+    background: #D3836B;
+    color: white;
+    border-color: #D3836B;
+}
 
-    /* Сортировка */
-    .sort-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        cursor: pointer;
-        user-select: none;
-    }
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
-    .sort-header:hover {
-        color: #D3836B;
-    }
+.sort-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
 
-    .sort-icon {
-        font-size: 0.7rem;
-        opacity: 0.5;
-    }
+.sort-header:hover {
+    color: #D3836B;
+}
 
-    .sort-icon.active {
+.sort-icon {
+    font-size: 0.7rem;
+    opacity: 0.5;
+}
+
+.sort-icon.active {
+    opacity: 1;
+    color: #D3836B;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    color: white;
+    z-index: 9999;
+    animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.notification.success {
+    background: #4CAF50;
+}
+
+.notification.error {
+    background: #F44336;
+}
+
+.notification.info {
+    background: #D3836B;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
         opacity: 1;
-        color: #D3836B;
     }
+}
 
-    /* Уведомления */
-    .notification {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 12px 24px;
-        border-radius: 8px;
-        color: white;
-        z-index: 9999;
-        animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
     }
+}
 
-    .notification.success {
-        background: #4CAF50;
-    }
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #A08B7E;
+}
 
-    .notification.error {
-        background: #F44336;
-    }
+.loading::after {
+    content: "...";
+    animation: dots 1.5s steps(4, end) infinite;
+}
 
-    .notification.info {
-        background: #D3836B;
-    }
+@keyframes dots {
+    0%, 20% { content: "."; }
+    40% { content: ".."; }
+    60%, 100% { content: "..."; }
+}
 
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
+.btn-new-appointment {
+    background: #D3836B;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 40px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: 0.2s;
+    font-size: 0.85rem;
+}
 
-    @keyframes fadeOut {
-        to {
-            opacity: 0;
-            visibility: hidden;
-        }
-    }
+.btn-new-appointment:hover {
+    background: #bc6a52;
+    transform: translateY(-2px);
+}
 
-    /* Загрузка */
-    .loading {
-        text-align: center;
-        padding: 2rem;
-        color: #A08B7E;
-    }
+.notifications-menu {
+    position: relative;
+    margin-left: 1rem;
+}
 
-    .loading::after {
-        content: "...";
-        animation: dots 1.5s steps(4, end) infinite;
-    }
+.notification-bell {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #A08B7E;
+    transition: color 0.2s;
+}
 
-    @keyframes dots {
-        0%, 20% { content: "."; }
-        40% { content: ".."; }
-        60%, 100% { content: "..."; }
-    }
+.notification-bell:hover {
+    color: #D3836B;
+}
 
-    /* Кнопка записи */
-    .btn-new-appointment {
-        background: #D3836B;
-        color: white;
-        border: none;
-        padding: 0.5rem 1.2rem;
-        border-radius: 40px;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: 0.2s;
-        font-size: 0.85rem;
-    }
+.notification-dot {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    width: 10px;
+    height: 10px;
+    background-color: #F44336;
+    border-radius: 50%;
+    border: 2px solid white;
+}
 
-    .btn-new-appointment:hover {
-        background: #bc6a52;
-        transform: translateY(-2px);
-    }
-    /* ========== УВЕДОМЛЕНИЯ ========== */
-    .notifications-menu {
-        position: relative;
-        margin-left: 1rem;
-    }
+.notifications-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 380px;
+    max-width: 90vw;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 1000;
+    display: none;
+    margin-top: 10px;
+}
 
-    .notification-bell {
-        position: relative;
-        cursor: pointer;
-        font-size: 1.2rem;
-        color: #A08B7E;
-        transition: color 0.2s;
-    }
+.notifications-dropdown.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
 
-    .notification-bell:hover {
-        color: #D3836B;
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-    .notification-dot {
-        position: absolute;
-        top: -5px;
-        right: -8px;
-        width: 10px;
-        height: 10px;
-        background-color: #F44336;
-        border-radius: 50%;
-        border: 2px solid white;
-    }
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #F0E0D6;
+}
 
-    .notifications-dropdown {
-        position: absolute;
-        top: 100%;
-        right: 0;
-        width: 380px;
-        max-width: 90vw;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        z-index: 1000;
-        display: none;
-        margin-top: 10px;
-    }
+.notifications-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: #2C1810;
+}
 
-    .notifications-dropdown.show {
-        display: block;
-        animation: fadeIn 0.2s ease;
-    }
+.mark-read-btn {
+    background: none;
+    border: none;
+    color: #D3836B;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+.mark-read-btn:hover {
+    text-decoration: underline;
+}
 
-    .notifications-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        border-bottom: 1px solid #F0E0D6;
-    }
+.notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
 
-    .notifications-header h4 {
-        margin: 0;
-        font-size: 1rem;
-        color: #2C1810;
-    }
+.notification-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #F0E0D6;
+    cursor: pointer;
+    transition: background 0.2s;
+}
 
-    .mark-read-btn {
-        background: none;
-        border: none;
-        color: #D3836B;
-        font-size: 0.75rem;
-        cursor: pointer;
-    }
+.notification-item:hover {
+    background: #FFF9F7;
+}
 
-    .mark-read-btn:hover {
-        text-decoration: underline;
-    }
+.notification-item.unread {
+    background: #FFF2EC;
+}
 
-    .notifications-list {
-        max-height: 400px;
-        overflow-y: auto;
-    }
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
 
-    .notification-item {
-        display: flex;
-        gap: 1rem;
-        padding: 1rem;
-        border-bottom: 1px solid #F0E0D6;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
+.notification-icon.info {
+    background: #E3F2FD;
+    color: #2196F3;
+}
 
-    .notification-item:hover {
-        background: #FFF9F7;
-    }
+.notification-icon.success {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
 
-    .notification-item.unread {
-        background: #FFF2EC;
-    }
+.notification-icon.warning {
+    background: #FFF3E0;
+    color: #FF9800;
+}
 
-    .notification-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-    }
+.notification-icon.appointment_reminder {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
 
-    .notification-icon.info {
-        background: #E3F2FD;
-        color: #2196F3;
-    }
+.notification-icon.appointment_cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+}
 
-    .notification-icon.success {
-        background: #E8F5E9;
-        color: #4CAF50;
-    }
+.notification-icon.appointment_completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
 
-    .notification-icon.warning {
-        background: #FFF3E0;
-        color: #FF9800;
-    }
+.notification-content {
+    flex: 1;
+}
 
-    .notification-icon.appointment_reminder {
-        background: #E8F5E9;
-        color: #4CAF50;
-    }
+.notification-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    color: #2C1810;
+}
 
-    .notification-icon.appointment_cancelled {
-        background: #FFEBEE;
-        color: #F44336;
-    }
+.notification-message {
+    font-size: 0.75rem;
+    color: #A08B7E;
+    margin-bottom: 0.25rem;
+}
 
-    .notification-icon.appointment_completed {
-        background: #E8F5E9;
-        color: #4CAF50;
-    }
+.notification-time {
+    font-size: 0.65rem;
+    color: #C0A898;
+}
 
-    .notification-content {
-        flex: 1;
-    }
+.notifications-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #A08B7E;
+    font-size: 0.85rem;
+}
 
-    .notification-title {
-        font-weight: 600;
-        font-size: 0.85rem;
-        margin-bottom: 0.25rem;
-        color: #2C1810;
-    }
+.notifications-loading {
+    text-align: center;
+    padding: 2rem;
+    color: #A08B7E;
+}
 
-    .notification-message {
-        font-size: 0.75rem;
-        color: #A08B7E;
-        margin-bottom: 0.25rem;
-    }
+.notifications-footer {
+    padding: 0.5rem;
+    border-top: 1px solid #F0E0D6;
+    text-align: center;
+}
 
-    .notification-time {
-        font-size: 0.65rem;
-        color: #C0A898;
-    }
+.load-more-btn {
+    background: none;
+    border: none;
+    color: #D3836B;
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
 
-    .notifications-empty {
-        text-align: center;
-        padding: 2rem;
-        color: #A08B7E;
-        font-size: 0.85rem;
-    }
-
-    .notifications-loading {
-        text-align: center;
-        padding: 2rem;
-        color: #A08B7E;
-    }
-
-    .notifications-footer {
-        padding: 0.5rem;
-        border-top: 1px solid #F0E0D6;
-        text-align: center;
-    }
-
-    .load-more-btn {
-        background: none;
-        border: none;
-        color: #D3836B;
-        font-size: 0.75rem;
-        cursor: pointer;
-        padding: 0.5rem;
-    }
-
-    .load-more-btn:hover {
-        text-decoration: underline;
-    }
+.load-more-btn:hover {
+    text-decoration: underline;
+}

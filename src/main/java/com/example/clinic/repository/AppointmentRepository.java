@@ -32,13 +32,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     List<Appointment> findByDoctorIdAndDate(@Param("doctorId") Integer doctorId, @Param("date") LocalDate date);
 
     @Query("SELECT a FROM Appointment a " +
-            "LEFT JOIN FETCH a.service " +
-            "LEFT JOIN FETCH a.doctor d " +
-            "LEFT JOIN FETCH d.user " +
-            "WHERE a.client.userId = :clientId")
-    List<Appointment> findAllByClient_UserIdWithDetails(@Param("clientId") Integer clientId);
-
-    @Query("SELECT a FROM Appointment a " +
             "JOIN a.service s " +
             "WHERE a.doctor.userId = :doctorId " +
             "AND s.id IN :serviceIds " +
@@ -82,7 +75,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
             "WHERE a.status = :status")
     Page<Appointment> findByStatusWithClientsAndDoctors(@Param("status") Status status, Pageable pageable);
 
-    long countByDateTimeBetween(LocalDateTime start, LocalDateTime end);
+    long countByDateTimeBetweenAndStatus(LocalDateTime dateTimeStart, LocalDateTime dateTimeEnd, Status status);
 
     @Query("SELECT a FROM Appointment a WHERE a.status = :status AND a.dateTime > :now ORDER BY a.dateTime ASC")
     List<Appointment> findByStatusAndDateTimeAfter(@Param("status") Status status,
@@ -92,11 +85,4 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     @Query("SELECT a FROM Appointment a WHERE a.dateTime BETWEEN :start AND :end")
     List<Appointment> findByDateTimeBetween(@Param("start") LocalDateTime start,
                                             @Param("end") LocalDateTime end);
-
-    @Query("SELECT a FROM Appointment a WHERE a.dateTime BETWEEN :start AND :end")
-    Page<Appointment> findAppointmentsByDateRange(@Param("start") LocalDateTime start,
-                                                  @Param("end") LocalDateTime end,
-                                                  Pageable pageable);
-
-
 }

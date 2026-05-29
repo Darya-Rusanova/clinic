@@ -14,7 +14,6 @@ body {
     background-attachment: fixed;
 }
 
-/* ===== ХЕДЕР ===== */
 .header {
     position: fixed;
     top: 0;
@@ -40,7 +39,6 @@ body {
     align-items: center;
 }
 
-/* Логотип */
 .logo {
     font-size: 1.6rem;
     font-weight: 500;
@@ -57,7 +55,6 @@ body {
     font-weight: 600;
 }
 
-/* Навигация */
 nav {
     display: flex;
     align-items: center;
@@ -84,7 +81,6 @@ nav {
     color: #D3836B;
 }
 
-/* Кнопка записи */
 .btn-book {
     text-decoration: none;
     font-weight: 500;
@@ -100,14 +96,12 @@ nav {
     color: white;
 }
 
-/* Блок авторизации */
 .user-info {
     display: flex;
     align-items: center;
     gap: 0.8rem;
 }
 
-/* Имя пользователя — ссылка на личный кабинет */
 .user-name {
     display: flex;
     align-items: center;
@@ -134,7 +128,6 @@ nav {
     color: #D3836B;
 }
 
-/* Кнопка выхода — только иконка */
 .logout-link {
     display: flex;
     align-items: center;
@@ -156,7 +149,6 @@ nav {
     color: #F44336;
 }
 
-/* Ссылки входа и регистрации с разделителем */
 .login-link-header,
 .register-link-header {
     text-decoration: none;
@@ -175,7 +167,6 @@ nav {
     margin: 0 0.2rem;
 }
 
-/* ГЛАВНОЕ С ПРЕИМУЩЕСТВАМИ */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -396,7 +387,6 @@ nav {
     right: 0;
 }
 
-/* Секция врачей */
 .doctors-section {
     max-width: 1200px;
     margin: 0 auto;
@@ -429,7 +419,6 @@ nav {
     background: #D3836B;
 }
 
-/* Сетка */
 .doctors-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -439,7 +428,6 @@ nav {
     overflow: visible;
 }
 
-/* Карточка врача */
 .doctor-card {
     background: white;
     border-radius: 28px;
@@ -458,7 +446,6 @@ nav {
     box-shadow: 0 12px 28px rgba(211, 131, 107, 0.1);
 }
 
-/* Фото врача (квадратное со скруглением) */
 .doctor-avatar {
     width: 160px;
     height: 160px;
@@ -474,7 +461,6 @@ nav {
     object-fit: cover;
 }
 
-/* Информация */
 .doctor-info {
     text-align: center;
     margin-bottom: 1rem;
@@ -489,7 +475,6 @@ nav {
     font-family: 'Cormorant Garamond', serif;
 }
 
-/* Категории */
 .doctor-categories-label {
     font-size: 0.75rem;
     font-weight: 600;
@@ -516,7 +501,6 @@ nav {
     font-weight: 500;
 }
 
-/* Опыт */
 .doctor-experience {
     display: flex;
     align-items: center;
@@ -544,7 +528,6 @@ nav {
     font-size: 0.85rem;
 }
 
-/* Кнопка подробнее */
 .doctor-details-btn {
     width: 100%;
     background: #FFF2EC;
@@ -564,7 +547,6 @@ nav {
     color: white;
 }
 
-/* Разворачивающийся блок (накладывается поверх) */
 .doctor-details {
     display: none;
     position: absolute;
@@ -598,7 +580,6 @@ nav {
     margin-bottom: 1rem;
 }
 
-/* Лицензия */
 .license-info {
     display: flex;
     align-items: center;
@@ -636,8 +617,6 @@ nav {
     padding: 0.8rem;
 }
 
-
-/* О нас */
 .about-section {
     padding: 5rem 2rem;
     background: transparent;
@@ -692,7 +671,6 @@ nav {
     letter-spacing: 0.5px;
 }
 
-/* ===== СТРАНИЦЫ ВХОДА И РЕГИСТРАЦИИ ===== */
 body {
     font-family: 'Inter', sans-serif;
     background-image: url("/images/bg.jpg");
@@ -759,7 +737,6 @@ body {
     background: #D3836B;
 }
 
-/* Алерты */
 .alert {
     padding: 0.8rem 1rem;
     border-radius: 12px;
@@ -786,7 +763,6 @@ body {
     font-size: 1rem;
 }
 
-/* Форма */
 .form-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -831,7 +807,6 @@ textarea.form-control {
     min-height: 80px;
 }
 
-/* Кнопки */
 .btn-login,
 .btn-register {
     width: 100%;
@@ -854,7 +829,6 @@ textarea.form-control {
     box-shadow: 0 4px 8px rgba(211, 131, 107, 0.3);
 }
 
-/* Ссылки */
 .register-link,
 .login-link {
     text-align: center;
@@ -875,7 +849,6 @@ textarea.form-control {
     text-decoration: underline;
 }
 
-/* Цвет текста ошибки */
 .error-message {
     color: #F44336;
     font-size: 0.75rem;
@@ -883,12 +856,10 @@ textarea.form-control {
     display: block;
 }
 
-/* Красная рамка для поля с ошибкой */
 .field-error {
     border-color: #F44336 !important;
 }
 
-/* Красный фон для поля с ошибкой (опционально) */
 .field-error-bg {
     background-color: #FFEBEE;
 }

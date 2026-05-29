@@ -82,6 +82,7 @@ public class AdminDoctorController {
             info.put("experienceYear", doctor.getExperienceYears());
             info.put("phone", doctor.getUser().getPhone());
             info.put("email", doctor.getUser().getEmail());
+            info.put("bio", doctor.getBio());
             info.put("imagePath", doctor.getImagePath());
             info.put("licensePath", doctor.getLicensePath());
             info.put("services", doctor.getServices().size());
@@ -168,5 +169,26 @@ public class AdminDoctorController {
             response.put("error", e.getMessage());
         }
         return response;
+    }
+
+    @GetMapping("/api/doctors/{id}")
+    @ResponseBody
+    public Map<String, Object> getDoctor(@PathVariable Integer id) {
+        Doctor doctor = doctorService.getDoctorById(id);
+        Map<String, Object> result = new HashMap<>();
+        if (doctor != null) {
+            result.put("id", doctor.getUserId());
+            result.put("lastName", doctor.getUser().getLastName());
+            result.put("firstName", doctor.getUser().getFirstName());
+            result.put("patronymic", doctor.getUser().getPatronymic());
+            result.put("phone", doctor.getUser().getPhone());
+            result.put("email", doctor.getUser().getEmail());
+            result.put("gender", doctor.getUser().isGender());
+            result.put("experienceYear", doctor.getExperienceYears());
+            result.put("bio", doctor.getBio() != null ? doctor.getBio() : "");
+            result.put("imagePath", doctor.getImagePath() != null ? doctor.getImagePath() : "");
+            result.put("licensePath", doctor.getLicensePath() != null ? doctor.getLicensePath() : "");
+        }
+        return result;
     }
 }

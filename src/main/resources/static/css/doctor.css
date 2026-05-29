@@ -14,7 +14,6 @@ body {
     min-height: 100vh;
 }
 
-/* ХЕДЕР */
 .header {
     position: fixed;
     top: 0;
@@ -75,7 +74,6 @@ body {
     color: #D3836B;
 }
 
-/* Меню пользователя */
 .user-menu {
     position: relative;
     cursor: pointer;
@@ -127,7 +125,6 @@ body {
     color: #D3836B;
 }
 
-/* Дашборд */
 .dashboard {
     min-height: 100vh;
     padding: 6rem 2rem 4rem;
@@ -141,7 +138,6 @@ body {
     align-items: flex-start;
 }
 
-/* Левая колонка - карточка профиля */
 .profile-sidebar {
     flex: 0 0 320px;
     position: sticky;
@@ -217,7 +213,6 @@ body {
     color: white;
 }
 
-/* Правая колонка */
 .main-content {
     flex: 1;
 }
@@ -254,7 +249,6 @@ body {
     background: #D3836B;
 }
 
-/* Услуги - сетка */
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -301,7 +295,6 @@ body {
     color: #D3836B;
 }
 
-/* Карточки расписания */
 .working-hours-card, .breaks-card, .appointments-card {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 28px;
@@ -454,7 +447,6 @@ body {
     color: white;
 }
 
-/* Модальное окно */
 .modal {
     display: none;
     position: fixed;
@@ -584,7 +576,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Категории услуг */
 .category-group {
     margin-bottom: 2rem;
 }
@@ -642,7 +633,7 @@ body {
     color: #D3836B;
     font-size: 1rem;
 }
-/* Расписание - слоты */
+
 .date-selector {
     display: flex;
     align-items: center;
@@ -803,7 +794,6 @@ body {
     border-color: #D3836B;
 }
 
-/* Модальные окна */
 .modal {
     display: none;
     position: fixed;
@@ -1203,7 +1193,6 @@ body {
     font-weight: 500;
 }
 
-/* Статусные бейджи клиентов */
 .client-status-badge.completed {
     background: #E8F5E9;
     color: #4CAF50;
@@ -1234,7 +1223,6 @@ body {
     display: inline-block;
 }
 
-/* Кнопки фильтров */
 .status-tab {
     background: transparent;
     border: none;
